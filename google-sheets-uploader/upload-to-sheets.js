@@ -117,7 +117,7 @@ async function main() {
 
   const context = await chromium.launchPersistentContext(CHROME_USER_DATA, {
     executablePath: CHROME_EXE,
-    headless: false,
+    headless: true,
     args: ['--profile-directory=Default', '--no-first-run', '--no-default-browser-check'],
     timeout: 30000,
   });
