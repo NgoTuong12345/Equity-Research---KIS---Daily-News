@@ -1,0 +1,24 @@
+# Node.js
+node_modules/
+package-lock.json
+*.log
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.egg-info/
+.Python
+
+# Runtime files
+google-sheets-uploader/logs/
+*.csv
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
