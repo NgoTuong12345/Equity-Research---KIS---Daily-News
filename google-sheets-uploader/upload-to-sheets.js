@@ -115,14 +115,15 @@ async function main() {
   setWindowsClipboard(tsvData);
   log('Clipboard set with TSV data');
 
-  const context = await chromium.launchPersistentContext(CHROME_USER_DATA, {
+  // Launch fresh Chrome without authentication profile
+  log('Launching Chrome...');
+  const browser = await chromium.launch({
     executablePath: CHROME_EXE,
     headless: true,
-    args: ['--profile-directory=Default', '--no-first-run', '--no-default-browser-check'],
-    timeout: 30000,
   });
 
-  const page = context.pages().length > 0 ? context.pages()[0] : await context.newPage();
+  const context = await browser.newContext();
+  const page = await context.newPage();
 
   try {
     log('Navigating to Google Sheets...');
@@ -196,11 +197,12 @@ async function main() {
     log(`❌ Error during automation: ${err.message}`);
     throw err;
   } finally {
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     try {
       await context.close();
+      await browser.close();
     } catch (e) {
-      log(`Warning: Failed to close browser context: ${e.message}`);
+      log(`Warning: Failed to close browser: ${e.message}`);
     }
     log('Browser closed.');
   }
