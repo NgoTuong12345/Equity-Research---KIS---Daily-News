@@ -80,17 +80,39 @@ function parseCsvToTsv(csvPath) {
 }
 
 function setWindowsClipboard(text) {
-  const tmpFile = path.join(os.tmpdir(), 'gsheets_paste_' + Date.now() + '.tsv');
+  const tmpDir = path.join(os.tmpdir(), 'sheets_' + Math.random().toString(36).substr(2, 9));
+  const tmpFile = path.join(tmpDir, 'data.tsv');
+
   try {
+    // Create temp directory
+    fs.mkdirSync(tmpDir, { recursive: true });
+
+    // Write TSV data
     fs.writeFileSync(tmpFile, text, 'utf8');
-    execSync(`powershell -Command "Get-Content -Path '${tmpFile}' -Raw | Set-Clipboard"`, { stdio: 'pipe' });
+
+    // Use PowerShell to set clipboard with retry
+    try {
+      execSync(`powershell -Command "[System.IO.File]::ReadAllText('${tmpFile}') | Set-Clipboard"`, {
+        stdio: 'pipe',
+        timeout: 5000
+      });
+    } catch (err) {
+      // Fallback: try without file, using here-string (for smaller data)
+      if (text.length < 30000) {
+        const escaped = text.replace(/'/g, "''");
+        execSync(`powershell -Command "'${escaped}' | Set-Clipboard"`, { stdio: 'pipe', timeout: 5000 });
+      } else {
+        throw err;
+      }
+    }
   } catch (err) {
     throw new Error(`Failed to set clipboard: ${err.message}`);
   } finally {
     try {
       if (fs.existsSync(tmpFile)) fs.unlinkSync(tmpFile);
+      if (fs.existsSync(tmpDir)) fs.rmdirSync(tmpDir);
     } catch (e) {
-      log(`Warning: Failed to delete temp file: ${tmpFile}`);
+      // Ignore cleanup errors
     }
   }
 }
