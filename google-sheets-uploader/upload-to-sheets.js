@@ -149,8 +149,8 @@ async function main() {
 
   try {
     log('Navigating to Google Sheets...');
-    await page.goto(SHEETS_URL, { waitUntil: 'networkidle', timeout: 60000 });
-    await page.waitForLoadState('networkidle');
+    await page.goto(SHEETS_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
+    await page.waitForTimeout(2000); // Allow scripts to initialize
 
     // Click "+" button to add new sheet tab
     log('Creating new sheet tab...');
