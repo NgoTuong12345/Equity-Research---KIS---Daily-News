@@ -1,0 +1,12 @@
+{
+  "name": "google-sheets-uploader",
+  "version": "1.0.0",
+  "description": "Uploads Vietnam news CSV to Google Sheets via Playwright",
+  "main": "upload-to-sheets.js",
+  "scripts": {
+    "upload": "node upload-to-sheets.js"
+  },
+  "dependencies": {
+    "playwright": "^1.60.0"
+  }
+}
