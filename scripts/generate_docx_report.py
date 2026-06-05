@@ -97,10 +97,12 @@ def generate_report(base: str, lang: str):
     doc.add_paragraph().add_run(h1_trading).bold = True
     
     # Trading items
+    # Trading items
     for item in trading_data.get("items", []):
         title = ticker_company_exchange_title(item, lang)
         summary = item.get(f"summary_{lang}", "")
-        doc.add_paragraph(f"{title}: {summary}" if title else summary)
+        p_text = f"{title}: {summary}" if title else summary
+        doc.add_paragraph(f"- {p_text}")
         
     # 4. 2. Macro indicators: (Bold)
     doc.add_paragraph()
@@ -110,7 +112,8 @@ def generate_report(base: str, lang: str):
     for item in macro_data.get("items", []):
         title = normalized_item_title(item, "macro", lang)
         summary = item.get(f"summary_{lang}", "")
-        doc.add_paragraph(f"{title}: {summary}" if title else summary)
+        p_text = f"{title}: {summary}" if title else summary
+        doc.add_paragraph(f"- {p_text}")
             
     # 5. 3. Vietnamese industry/ corporate news: (Bold)
     doc.add_paragraph()
@@ -143,7 +146,7 @@ def generate_report(base: str, lang: str):
                 summary = item.get(f"summary_{lang}", "")
                 
                 p_text = f"{title}: {summary}" if title else summary
-                doc.add_paragraph(p_text)
+                doc.add_paragraph(f"- {p_text}")
                 
     # 6. 4. Political, Social, and Economic News (Bold)
     doc.add_paragraph()
@@ -174,7 +177,7 @@ def generate_report(base: str, lang: str):
                 title = normalized_item_title(item, "economy_political_others", lang)
                 summary = item.get(f"summary_{lang}", "")
                 p_text = f"{prefix} {title}: {summary}" if title else f"{prefix} {summary}"
-                doc.add_paragraph(p_text)
+                doc.add_paragraph(f"- {p_text}")
                 
     # Save the generated document
     doc.save(str(out_path))
