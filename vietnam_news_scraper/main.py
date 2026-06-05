@@ -602,7 +602,27 @@ def process_data(articles: List[Dict]) -> pd.DataFrame:
 
 def main():
     logger.info("=== COMBINED HYBRID NEWS SCRAPER ===")
+    global HOURS_LOOKBACK
     
+    import argparse
+    parser = argparse.ArgumentParser(description="Combined Hybrid News Scraper")
+    parser.add_argument("--hours", type=int, default=None, help="Lookback window in hours (overrides default/automated logic)")
+    args, unknown = parser.parse_known_args()
+    
+    if args.hours is not None:
+        HOURS_LOOKBACK = args.hours
+        logger.info(f"Using command-line lookback hours: {HOURS_LOOKBACK}")
+    else:
+        local_now = dt.datetime.now(TZ)
+        is_monday = local_now.weekday() == 0
+        is_morning = local_now.hour < 12
+        if is_monday and is_morning:
+            HOURS_LOOKBACK = 72
+            logger.info(f"Monday morning detected. Setting default lookback to {HOURS_LOOKBACK} hours.")
+        else:
+            HOURS_LOOKBACK = 24
+            logger.info(f"Defaulting lookback to {HOURS_LOOKBACK} hours.")
+            
     all_articles = []
 
     # 1. RSS

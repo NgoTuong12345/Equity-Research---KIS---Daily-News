@@ -266,7 +266,26 @@ def run(hours: int = 24, scrape_pdfs: bool = True) -> str:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HSX insider trading scraper")
-    parser.add_argument("--hours", type=int, default=24, help="Lookback window in hours")
+    parser.add_argument("--hours", type=int, default=None, help="Lookback window in hours (overrides default/automated logic)")
     parser.add_argument("--no-pdfs", action="store_true", help="Skip PDF link scraping")
     args = parser.parse_args()
-    run(hours=args.hours, scrape_pdfs=not args.no_pdfs)
+    
+    hours = args.hours
+    if hours is None:
+        tz = timezone(timedelta(hours=7))
+        local_now = datetime.now(tz)
+        is_monday = local_now.weekday() == 0
+        is_morning = local_now.hour < 12
+        if is_monday and is_morning:
+            hours = 72
+            logger.info("Monday morning detected. Setting default HSX lookback to 72 hours.")
+        elif is_morning:
+            hours = 16
+            logger.info("Setting default morning HSX lookback to 16 hours.")
+        else:
+            hours = 7
+            logger.info("Setting default afternoon HSX lookback to 7 hours.")
+    else:
+        logger.info(f"Using command-line lookback hours: {hours}")
+            
+    run(hours=hours, scrape_pdfs=not args.no_pdfs)
