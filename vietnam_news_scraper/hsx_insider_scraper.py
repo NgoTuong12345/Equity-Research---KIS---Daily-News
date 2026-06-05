@@ -277,8 +277,8 @@ if __name__ == "__main__":
         is_monday = local_now.weekday() == 0
         is_morning = local_now.hour < 12
         if is_monday and is_morning:
-            hours = 72
-            logger.info("Monday morning detected. Setting default HSX lookback to 72 hours.")
+            hours = 60
+            logger.info("Monday morning detected. Setting default HSX lookback to 60 hours.")
         elif is_morning:
             hours = 16
             logger.info("Setting default morning HSX lookback to 16 hours.")
