@@ -13,6 +13,12 @@ __pycache__/
 # Runtime files
 google-sheets-uploader/logs/
 *.csv
+reports/
+vietnam_news_scraper/pdfs/
+vietnam_news_scraper/hsx_insider_trading_*.json
+vietnam_news_scraper/hsx_insider_trading_*_EN.txt
+vietnam_news_scraper/hsx_insider_trading_*_VN.txt
+HNX_insider_trading-20260605T020139Z-3-001/
 
 # OS
 .DS_Store
