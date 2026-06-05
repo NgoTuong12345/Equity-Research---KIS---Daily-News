@@ -332,10 +332,10 @@ body{font-family:Arial,Helvetica,sans-serif;background:#d8d8d8;color:var(--ink);
 .page-footer span{font-size:26px;color:var(--brown)}
 
 .outro-over{position:absolute;inset:0;color:#fff;text-align:center}
-.outro-company{position:absolute;top:350px;left:48px;right:48px;font-size:38px;font-weight:800;line-height:1.12;text-transform:uppercase;letter-spacing:0;white-space:nowrap}
+.outro-company{position:absolute;top:350px;left:48px;right:48px;font-size:24px;font-weight:800;line-height:1.12;text-transform:uppercase;letter-spacing:0;white-space:nowrap}
 .outro-thanks-row{position:absolute;top:420px;left:52px;right:52px;display:flex;align-items:center;gap:14px}
 .outro-rule{height:1px;flex:1;background:rgba(255,255,255,.78)}
-.outro-ty{font-size:50px;font-weight:400;color:#fff;line-height:1;text-transform:uppercase;white-space:nowrap}
+.outro-ty{font-size:28px;font-weight:400;color:#fff;line-height:1;text-transform:uppercase;white-space:nowrap}
 .outro-copy{position:absolute;left:26px;right:auto;bottom:20px;font-size:12px;line-height:1.15;color:#fff;text-align:left}
 
 @media print{
