@@ -10,19 +10,19 @@ echo  Vietnam Financial News Scraper - Bootstrapper
 echo ===================================================
 echo.
 
-:: Check if Python is installed
+REM Check if Python is installed
 python --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Python is not installed or not in your PATH.
-    echo Please install Python (3.8 or newer) and check "Add Python to PATH".
+    echo Please install Python [3.8 or newer] and check "Add Python to PATH".
     echo.
     if %INTERACTIVE_MODE% equ 1 pause
     exit /b 1
 )
 
-:: Create virtual environment if it doesn't exist
+REM Create virtual environment if it doesn't exist
 if not exist venv (
-    echo [INFO] Creating virtual environment (venv)...
+    echo [INFO] Creating virtual environment [venv]...
     python -m venv venv
     if !errorlevel! neq 0 (
         echo [ERROR] Failed to create virtual environment.
@@ -31,7 +31,7 @@ if not exist venv (
     )
 )
 
-:: Activate virtual environment and install requirements
+REM Activate virtual environment and install requirements
 echo [INFO] Activating virtual environment...
 call venv\Scripts\activate
 

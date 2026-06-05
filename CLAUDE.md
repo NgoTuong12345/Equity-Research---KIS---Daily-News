@@ -58,6 +58,9 @@ Do not write new generated reports, screenshots, summary files, data files, or v
 .\run-morning.bat
 .\run-afternoon.bat
 
+# Refresh NotebookLM authentication (if expired/2FA is needed)
+vietnam_news_scraper\venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force
+
 cd google-sheets-uploader
 node upload-to-sheets.js morning
 node upload-to-sheets.js afternoon

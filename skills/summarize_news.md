@@ -1,0 +1,58 @@
+# Summarize News Articles - KIS Style
+
+Use this skill when the user asks to summarize a selected batch of Vietnamese financial news.
+
+## Workflow
+
+1. Generate or read `reports/{base}/source/{base}_full.md`.
+2. Summarize every selected article in Vietnamese first, then English.
+3. Classify feed articles into `corporate` or `economy_political_others`.
+4. Write summary JSON and bilingual markdown into `reports/{base}/data/` and `reports/{base}/summaries/`.
+5. Run `python scripts/validate_summary_data.py {base}` before report generation.
+
+## Writing Rules
+
+- **35–45 words max per paragraph (must be strictly under 300 characters to avoid truncation)**
+- **Titles**: Generate objective, fact-based descriptive titles driven from the full content. Do not rely on the raw fetched title. Avoid question marks, personal opinions, quotes, or clickbait. Keep them concise (max 70 chars / 12 words) in VN and EN to avoid truncation.
+- **Start with date**: Vietnamese → `Ngày D/M,`  |  English → `On D Month,`
+- **Prioritize data/figures/numbers** from the source
+- Active voice. No contractions. Confident, institutional tone.
+- Do not mix Vietnamese and English inside the same section.
+
+## Classification
+
+- `corporate`: ONLY listed-company news with a specific stock ticker (e.g., VIC, VHM, FPT). Include ticker, exchange (must be exactly one of: HSX, HNX, UPCoM, OTC, Unlisted), company names, and sector. NEVER use `others` for the sector; always map to a specific sector (e.g. VNM -> consumers).
+- `economy_political_others`: ALL non-ticker news. This includes: policy, macro aggregates, public projects, social issues, commodities, international relations, AND any associations, labor unions, exchanges, or unlisted entities (e.g., Vietnam Blockchain Association, Labor Union, Mercantile Exchange).
+- Do not assign feed articles to `macro` or `trading`; those come from deterministic/non-feed sources.
+
+## Style
+
+- Use `bn`, `tn`, `mn`; avoid `bln` and `trn`.
+- Use `~12%` for approximate values.
+- Use hyphen ranges such as `10%-15%`.
+- Keep market acronyms unchanged: USD, VND, FDI, PMI, VNINDEX, HSX, HNX, UPCoM, KIS, Bloomberg.
+- Use local financial terms naturally: NHNN, TPCP, LNST, LNTT, yoy, qoq, NPAT, EBT, PM, BOD.
+
+## Output Shape
+
+Create four JSON files:
+
+- `{base}_macro.json`
+- `{base}_trading.json`
+- `{base}_corporate.json`
+- `{base}_economy_political_others.json`
+
+Create two markdown files:
+
+- `{base}_summary_vn.md`
+- `{base}_summary_en.md`
+
+The exact category keys, section titles, subtype names, sector names, required fields, and count validation are defined in `scripts/summary_rules.py` and enforced by `scripts/validate_summary_data.py`.
+
+## Precision Rules (must follow to avoid audit failures)
+
+- **Numbers must be identical in EN and VN.** Copy figures verbatim from the macro sheet input (`body_en` / `body_vn`). Do NOT round independently in each language — divergence (e.g. `+17.89%` EN vs `+17,985%` VN) is an error.
+- **Organisation full names in `company_vn` must be complete and typo-free.** Always write the full Vietnamese name (e.g. `Hiệp hội Blockchain và Tài sản số Việt Nam`, not `Tá sản`). When only an English name is available, copy it to `company_vn` unchanged.
+- **Government agency names must be translated in full.** `Bảo hiểm xã hội Việt Nam` → `Vietnam Social Security` (never drop `Social`). Use the EN-VN term mapping in `skills/KIS_Writing_Style_Guide_final.md` as reference.
+- **`company_vn` for listed banks and institutions must use the full name**, not just the ticker (e.g. `Asia Commercial Bank`, not `ACB`).
+- **`title_en` / `title_vn` in macro JSON must match the label `news_title_rules.py` will render.** The script derives macro titles from content keywords (`interbank`, `G-bond`, etc.). Set JSON titles to the canonical label the script will show (e.g. `Government bond yield`, not `Money market`).

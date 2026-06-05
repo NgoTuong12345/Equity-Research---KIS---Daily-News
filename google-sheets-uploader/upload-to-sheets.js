@@ -166,6 +166,9 @@ async function main() {
     '--no-first-run',
     '--no-default-browser-check',
     '--window-size=1280,900',
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-software-rasterizer',
     'about:blank',
   ].join(' ');
   execSync(

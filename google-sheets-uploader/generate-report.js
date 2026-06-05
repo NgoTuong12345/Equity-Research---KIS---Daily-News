@@ -3,6 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 const { execSync } = require('child_process');
+const { getSourceFile } = require('./report-paths');
 
 // --- CONFIG ---
 const SESSION = process.argv[2] || 'morning'; // 'morning' or 'afternoon'
@@ -10,7 +11,6 @@ const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfot
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
 const CHROME_EXE = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const LOG_FILE = path.join(__dirname, 'logs', 'upload.log');
-const REPORTS_DIR = path.join(__dirname, '..', 'reports');
 
 function log(msg) {
   const line = `[${new Date().toISOString()}] ${msg}`;
@@ -41,10 +41,38 @@ function readClipboard() {
   }
 }
 
+// Robust TSV parser that handles Google Sheets format
+// Google Sheets uses \t between cells and \r\n between rows
+// Cells containing \n, \t, or " are enclosed in double-quotes (RFC 4180 style)
 function parseTsv(text) {
-  return text.split(/\r?\n/)
-    .map(line => line.split('\t'))
-    .filter(row => row.some(cell => cell.trim()));
+  const rows = [];
+  let row = [];
+  let cell = '';
+  let inQuotes = false;
+  let i = 0;
+
+  while (i < text.length) {
+    const ch = text[i];
+    if (inQuotes) {
+      if (ch === '"') {
+        if (text[i + 1] === '"') { cell += '"'; i += 2; continue; }
+        inQuotes = false; i++; continue;
+      }
+      cell += ch; i++; continue;
+    }
+    if (ch === '"') { inQuotes = true; i++; continue; }
+    if (ch === '\t') { row.push(cell); cell = ''; i++; continue; }
+    if (ch === '\r' && text[i + 1] === '\n') {
+      row.push(cell); rows.push(row); row = []; cell = ''; i += 2; continue;
+    }
+    if (ch === '\n') {
+      row.push(cell); rows.push(row); row = []; cell = ''; i++; continue;
+    }
+    cell += ch; i++;
+  }
+  if (cell || row.length) { row.push(cell); rows.push(row); }
+
+  return rows.filter(r => r.some(c => c.trim()));
 }
 
 function buildMarkdown(sheetName, rows) {
@@ -63,8 +91,14 @@ function buildMarkdown(sheetName, rows) {
   //          I=corp_url, J=poli_url
   const dataRows = rows.slice(1); // skip header
 
-  const corpRows = dataRows.filter(r => (r[8] || '').trim()); // col I
-  const poliRows = dataRows.filter(r => (r[9] || '').trim()); // col J
+  const corpRows    = dataRows.filter(r => (r[8] || '').trim()); // col I non-empty
+  const poliRows    = dataRows.filter(r => (r[9] || '').trim()); // col J non-empty
+  // Rows marked TAKE in col E or F but where the formula produced no URL
+  const takenRows   = dataRows.filter(r =>
+    ((r[4] || '').trim().toUpperCase() === 'TAKE' ||
+     (r[5] || '').trim().toUpperCase() === 'TAKE') &&
+    !(r[8] || '').trim() && !(r[9] || '').trim()
+  );
 
   const lines = [
     `# News Report — ${sheetName}`,
@@ -108,6 +142,25 @@ function buildMarkdown(sheetName, rows) {
     }
   }
 
+  // ⚠️ Dropped section — TAKE rows where formula produced no URL
+  if (takenRows.length > 0) {
+    lines.push(`## ⚠️ DROPPED — TAKE rows with no URL formula output (${takenRows.length} articles)`);
+    lines.push('> These rows had TAKE in col E or F but col I/J formula returned empty.');
+    lines.push('> Check that H (news_urls) is populated and the formula in I/J is correct.');
+    lines.push('');
+    for (const r of takenRows) {
+      const title = (r[6] || '').trim();
+      const url   = (r[7] || '').trim();
+      const src   = (r[2] || '').trim();
+      const colE  = (r[4] || '').trim();
+      const colF  = (r[5] || '').trim();
+      lines.push(`### ${title || '(no title)'}`);
+      lines.push(`- **Source:** ${src}  |  **E (corp):** ${colE}  |  **F (poli):** ${colF}`);
+      lines.push(`- **H (raw url):** <${url}>`);
+      lines.push('');
+    }
+  }
+
   return lines.join('\n');
 }
 
@@ -128,7 +181,6 @@ async function navigateToCell(page, cell) {
 // --- MAIN ---
 async function main() {
   fs.mkdirSync(path.dirname(LOG_FILE), { recursive: true });
-  fs.mkdirSync(REPORTS_DIR, { recursive: true });
 
   if (!['morning', 'afternoon'].includes(SESSION)) {
     throw new Error(`Invalid SESSION: ${SESSION}`);
@@ -153,6 +205,9 @@ async function main() {
     '--no-first-run',
     '--no-default-browser-check',
     '--window-size=1280,900',
+    '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--disable-software-rasterizer',
     'about:blank',
   ].join(' ');
   execSync(
@@ -203,12 +258,13 @@ async function main() {
     // Read clipboard content
     log('Reading clipboard...');
     const clipboardText = readClipboard();
+    fs.writeFileSync(path.join(__dirname, 'logs', 'clipboard_dump.tsv'), clipboardText, 'utf8');
     const rows = parseTsv(clipboardText);
     log(`Parsed ${rows.length - 1} data rows`);
 
     // Build and save markdown
     const md = buildMarkdown(sheetName, rows);
-    const outFile = path.join(REPORTS_DIR, `${sheetName}.md`);
+    const outFile = getSourceFile(sheetName);
     fs.writeFileSync(outFile, md, 'utf8');
     log(`✅ Report saved to ${outFile}`);
     console.log('\n' + md);

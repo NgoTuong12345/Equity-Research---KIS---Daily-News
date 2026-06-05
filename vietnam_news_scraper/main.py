@@ -198,14 +198,47 @@ class DateParser:
 
 date_parser = DateParser()
 
-def get_soup(url):
-    """Helper to get BeautifulSoup object from URL"""
-    try:
-        response = requests.get(url, headers=HEADERS, timeout=10)
-        if response.status_code != 200: return None
-        return BeautifulSoup(response.text, 'html.parser')
-    except Exception:
-        return None
+_session = None
+
+def get_session():
+    global _session
+    if _session is None:
+        _session = requests.Session()
+        # Add retries adapter for general connection/read failures
+        from requests.adapters import HTTPAdapter
+        from urllib3.util import Retry
+        retry_strategy = Retry(
+            total=3,
+            backoff_factor=1,
+            status_forcelist=[429, 500, 502, 503, 504],
+            raise_on_status=False
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy)
+        _session.mount("http://", adapter)
+        _session.mount("https://", adapter)
+        _session.headers.update(HEADERS)
+    return _session
+
+def get_soup(url, max_retries=3, base_delay=1.0):
+    """Helper to get BeautifulSoup object from URL with retry backoff"""
+    session = get_session()
+    for attempt in range(max_retries):
+        try:
+            response = session.get(url, timeout=10)
+            if response.status_code == 200:
+                return BeautifulSoup(response.text, 'html.parser')
+            elif response.status_code in (429, 503):
+                sleep_time = base_delay * (attempt + 1) * 2
+                logger.warning(f"Rate limited (HTTP {response.status_code}) on {url}. Retrying in {sleep_time}s...")
+                time.sleep(sleep_time)
+            else:
+                logger.warning(f"HTTP error {response.status_code} on {url}.")
+                break
+        except (requests.exceptions.RequestException, Exception) as e:
+            sleep_time = base_delay * (attempt + 1)
+            logger.warning(f"Error fetching {url} (Attempt {attempt+1}/{max_retries}): {e}. Retrying in {sleep_time}s...")
+            time.sleep(sleep_time)
+    return None
 
 # --- MODULE 1: TINNHANHCHUNGKHOAN (Request + BS4) ---
 
@@ -279,7 +312,8 @@ def fetch_tinnhanh_multi_category(urls: List[str], hours_lookback: int) -> List[
     results = []
     cutoff = dt.datetime.now() - dt.timedelta(hours=hours_lookback)
     
-    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    # Use fewer workers (max 2) to avoid rate limiting on tinnhanhchungkhoan.vn
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         futures = [executor.submit(scrape_tinnhanh_details, art) for art in article_list]
         for future in concurrent.futures.as_completed(futures):
             try:
@@ -527,7 +561,8 @@ def fetch_baodautu_multi_category(urls: List[str], hours_lookback: int) -> List[
     cutoff = dt.datetime.now() - dt.timedelta(hours=hours_lookback)
 
     # 2. Scrape Details
-    with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_WORKERS) as executor:
+    # Use fewer workers (max 2) to avoid rate limiting on baodautu.vn
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
         futures = [executor.submit(scrape_baodautu_details, art) for art in article_list]
         for future in concurrent.futures.as_completed(futures):
             try:

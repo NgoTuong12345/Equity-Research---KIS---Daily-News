@@ -20,6 +20,28 @@ vietnam_news_scraper/hsx_insider_trading_*_EN.txt
 vietnam_news_scraper/hsx_insider_trading_*_VN.txt
 HNX_insider_trading-20260605T020139Z-3-001/
 
+# Temporary / Scratch Files
+after_chunk_*
+chunk_*
+items_to_retitle.json
+long_titles.json
+new_titles.json
+paraphrased_titles.json
+temp_corp.json
+temp_epo.json
+combine_subagent_jsons.py
+combine_trading.py
+fetch_full_articles.py
+generate_final_jsons.py
+chunk_articles.py
+
+# Nested Git Repositories
+hnx_trading/
+
+# Reference/Archived data
+archive/
+gemini_hand_off/
+
 # OS
 .DS_Store
 Thumbs.db
@@ -28,3 +50,7 @@ Thumbs.db
 .vscode/
 .idea/
 *.swp
+
+# Credentials
+.env
+
