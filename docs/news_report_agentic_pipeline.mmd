@@ -1,0 +1,63 @@
+flowchart TD
+    A["Scheduler / Human Trigger<br/>run-morning.bat or run-afternoon.bat"] --> B["Scraper Agent Loop"]
+
+    B --> B1["Tool Call: RSS fetch<br/>feedparser + requests"]
+    B --> B2["Tool Call: Website scrape<br/>requests + BeautifulSoup"]
+    B --> B3["Tool Call: Browser scrape<br/>Selenium FireAnt"]
+    B --> B4["Tool Call: HSX insider scraper<br/>PDF disclosure discovery"]
+
+    B1 --> C["Observation:<br/>candidate news items"]
+    B2 --> C
+    B3 --> C
+    B4 --> D["HSX Extraction Agent Loop"]
+
+    D --> D1["Tool Call:<br/>download PDFs"]
+    D1 --> D2["Tool Call:<br/>NotebookLM extraction"]
+    D2 --> D3["Observation:<br/>structured insider transactions"]
+    D3 --> D4["Formatter Tool:<br/>bilingual trading-news prose"]
+
+    C --> E["Deterministic Processing"]
+    D4 --> E
+
+    E --> E1["Filter by time window"]
+    E1 --> E2["Deduplicate by URL"]
+    E2 --> E3["Categorize by rules / keywords"]
+    E3 --> F["Tool Call:<br/>upload-to-sheets.js"]
+
+    F --> G["Observation:<br/>Google Sheets session tab<br/>mor_DD_MM_YYYY or after_DD_MM_YYYY"]
+
+    G --> H["Human-in-the-loop Gate"]
+    H --> H1["Human marks TAKE rows"]
+    H1 --> H2["Macro tab / formulas classify<br/>Corporate vs Political-Macro"]
+
+    H2 --> I["Report Source Agent Loop"]
+    I --> I1["Tool Call:<br/>generate-report.js / read sheet"]
+    I1 --> I2["Observation:<br/>selected article URLs"]
+    I2 --> I3["Tool Call:<br/>fetch_full_articles.py"]
+    I3 --> I4["Observation:<br/>full article markdown"]
+
+    I4 --> J["Summarization Agent Loop"]
+    J --> J1["Prompt / Skill:<br/>summarize_news.md"]
+    J1 --> J2["LLM Tool Calls:<br/>summarize, translate, classify, structure"]
+    J2 --> J3["Observation:<br/>corporate JSON + economy/political JSON"]
+
+    J3 --> K["Validation Loop"]
+    K --> K1["Tool Call:<br/>validate_summary_data.py"]
+    K1 --> K2{"Valid contract?"}
+    K2 -- "No" --> J
+    K2 -- "Yes" --> L["Rendering Tools"]
+
+    L --> L1["Tool Call:<br/>generate_html_report.py"]
+    L --> L2["Tool Call:<br/>generate_pdf_report.py"]
+    L --> L3["Tool Call:<br/>generate_docx_report.py"]
+
+    L1 --> M["Visual QA Loop"]
+    L2 --> M
+    M --> M1["Tool Call:<br/>benchmark_html_against_pdf.py"]
+    M1 --> M2{"Layout OK?"}
+    M2 -- "No" --> L
+    M2 -- "Yes" --> N["Publishing Agent"]
+
+    N --> N1["Tool Call:<br/>upload-to-heyzine.js"]
+    N1 --> N2["Observation:<br/>flipbook share link"]
+    N2 --> O["Final Artifacts:<br/>HTML, PDF, DOCX, Heyzine links"]
