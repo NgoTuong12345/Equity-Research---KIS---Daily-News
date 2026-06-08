@@ -18,8 +18,13 @@ import argparse
 import json
 import re
 import unicodedata
+import sys
+import io
 from pathlib import Path
 from typing import Any
+
+# Force stdout to UTF-8 to support Vietnamese characters on Windows terminal
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 
 COMPANY_EN = {
@@ -33,6 +38,8 @@ COMPANY_EN = {
 
 RELATIONSHIP_EN = {
     "Thành viên Hội đồng quản trị độc lập": "Independent Member of the Board of Directors",
+    "Thành viên Hội đồng Quản trị": "Member of the Board of Directors",
+    "Thành viên Hội đồng quản trị": "Member of the Board of Directors",
     "Chủ tịch Hội đồng quản trị": "Chairman of the Board of Directors",
     "Chủ tịch HĐQT": "Chairman of the Board of Directors",
     "Con của Chủ tịch Hội đồng Quản trị": "Child of the Chairman of the Board of Directors",
@@ -45,6 +52,26 @@ RELATIONSHIP_EN = {
     "Người phụ trách quản trị Công ty": "Person in charge of Corporate Governance",
     "Người được ủy quyền CBTT": "Authorized person to disclose information",
     "Người có liên quan của người nội bộ": "Related person of insider",
+    "Cha ruột": "Father",
+    "Cha": "Father",
+    "Mẹ ruột": "Mother",
+    "Mẹ": "Mother",
+    "Vợ": "Wife",
+    "Chồng": "Husband",
+    "Con ruột": "Child",
+    "Con": "Child",
+    "Em ruột": "Sibling",
+    "Anh ruột": "Sibling",
+    "Chị ruột": "Sibling",
+    "Người ủy quyền công bố thông tin": "Authorized person to disclose information",
+    "Người phụ trách quản trị công ty": "Person in charge of Corporate Governance",
+    "Người phụ trách Quản trị công ty": "Person in charge of Corporate Governance",
+    "Phó Tổng giám đốc cấp cao": "Senior Deputy General Director",
+    "Phó Tổng Giám đốc": "Deputy General Director",
+    "Phó Tổng giám đốc": "Deputy General Director",
+    "Thành viên HĐQT, Tổng Giám Đốc": "Member of the Board of Directors, General Director",
+    "Giám đốc Kiểm toán nội bộ": "Director of Internal Audit",
+    "Giám đốc Tài chính kiêm Kế toán trưởng": "Chief Financial Officer and Chief Accountant",
 }
 
 NAME_EN = {
@@ -176,6 +203,8 @@ def format_transaction(record: dict[str, Any], tx: dict[str, Any], order: int) -
         "title_en": f"{ticker}. ({company_en}. {exchange})" if ticker and company_en else f"{company_en}. {exchange}",
         "summary_vn": summary_vn,
         "summary_en": summary_en,
+        "relationship_vn": rel_vn,
+        "relationship_en": rel_en,
         "raw_transaction": tx,
     }
 
@@ -220,9 +249,43 @@ def default_outputs(input_path: Path) -> tuple[Path, Path, Path]:
     )
 
 
+def double_check_extracted_data(items: list[dict[str, Any]]) -> None:
+    print("\n=== DOUBLE-CHECKING EXTRACTED TRADING DATA ===")
+    has_warnings = False
+    for item in items:
+        ticker = item.get("ticker", "N/A")
+        rel_vn = item.get("relationship_vn", "")
+        rel_en = item.get("relationship_en", "")
+        
+        # Check for untranslated relationship words
+        # If rel_en is just the ascii-folded version of rel_vn, and rel_vn contains Vietnamese words
+        folded_vn = ascii_fold(rel_vn).lower().strip()
+        folded_en = ascii_fold(rel_en).lower().strip()
+        
+        if rel_vn and folded_vn == folded_en and any(c.isalpha() for c in rel_vn):
+            # Known English words that might be identical to folded Vietnamese or standard abbreviations
+            known_en_words = {"ceo", "cfo", "director", "manager", "bod", "chairman", "assistant", "member", "independent", "accountant", "officer", "insider", "relative", "deputy", "vice"}
+            words_en = set(folded_en.split())
+            if not words_en.intersection(known_en_words):
+                print(f"WARNING: Untranslated relationship for {ticker}: '{rel_vn}' -> '{rel_en}'")
+                print("  Please update RELATIONSHIP_EN in format_hsx_trading_news.py with this term.")
+                has_warnings = True
+                
+        # Check for missing critical fields
+        for field in ("ticker", "company_vn", "summary_vn", "summary_en"):
+            if not item.get(field):
+                print(f"ERROR: Missing field '{field}' in item order {item.get('order')}")
+                has_warnings = True
+                
+    if not has_warnings:
+        print("All trading items passed verification successfully!")
+    print("=============================================\n")
+
+
 def run(input_path: Path, output_json: Path | None = None) -> Path:
     records = json.loads(input_path.read_text(encoding="utf-8"))
     items = format_records(records)
+    double_check_extracted_data(items)
     default_json, en_txt, vn_txt = default_outputs(input_path)
     output_json = output_json or default_json
 

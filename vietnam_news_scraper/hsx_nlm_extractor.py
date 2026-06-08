@@ -73,7 +73,7 @@ The document may contain multiple transaction notifications for different indivi
 Extract a list of transaction records. For each transaction, extract:
 1. "ticker": Stock symbol of the company (e.g., "NAB").
 2. "name": Full name of the transacting person (e.g., "Do Xuan Khanh").
-3. "relationship": Position or relationship of the person to the company (e.g., "Director of Hoan Kiem Branch Transaction Office").
+3. "relationship": Position or relationship of the person to the company. Extract this in Vietnamese exactly as written in the PDF (e.g., "Cha ruột", "Người ủy quyền công bố thông tin", "Phó Tổng giám đốc cấp cao"). Do NOT translate to English.
 4. "action": "buy" if purchasing/registering to buy/receiving, "sell" if selling/disposing.
 5. "change_volume": Absolute number of shares registered/expected to be traded (e.g., 48500).
 6. "after_volume": Total number of shares expected to be held after the transaction (e.g., 48500).

@@ -21,7 +21,7 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 
 ## Classification
 
-- `corporate`: ONLY listed-company news with a specific stock ticker (e.g., VIC, VHM, FPT). Include ticker, exchange (must be exactly one of: HSX, HNX, UPCoM, OTC, Unlisted), company names, and sector. NEVER use `others` for the sector; always map to a specific sector (e.g. VNM -> consumers).
+- `corporate`: ONLY listed-company news with a specific stock ticker (e.g., VIC, VHM, FPT). Include ticker, exchange (must be exactly one of: HSX, HNX, UPCoM, OTC, Unlisted), company names, and sector. If the company is unlisted/private/foreign and not listed on any stock exchange (e.g. AeonMall, Aeon Mall, Vinpearl, Thaispace, Green SM, VinSpeed, Vinspeed), you MUST use the exchange value `Unlisted` (do NOT classify them as UPCoM/UPCOM/HNX/HSX). NEVER use `others` for the sector; always map to a specific sector (e.g. VNM -> consumers).
 - `economy_political_others`: ALL non-ticker news. This includes: policy, macro aggregates, public projects, social issues, commodities, international relations, AND any associations, labor unions, exchanges, or unlisted entities (e.g., Vietnam Blockchain Association, Labor Union, Mercantile Exchange).
 - Do not assign feed articles to `macro` or `trading`; those come from deterministic/non-feed sources.
 

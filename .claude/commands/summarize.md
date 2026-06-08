@@ -85,7 +85,7 @@ If this command is called with `afternoon`, it writes an empty skipped payload a
 Read the resulting JSON. Each item is pre-summarized (do not re-summarize) and has a `source_tab` field:
 - **`source_tab: "macro"`**: These items route to `reports/{base}/data/{base}_macro.json` (under the `macro` category). Do not put them in `reports/{base}/data/{base}_economy_political_others.json`.
 - **`source_tab: "vin_bank"`**: Route these items dynamically based on their `news_category`:
-  - If the category is a listed company ticker (e.g., `VIC`, `VHM`, `ACB`, `MBB`, `BID` - check `ticker_index.json`), route it to `reports/{base}/data/{base}_corporate.json` under the correct sector. Look up the full company name and exchange as usual. Use `title_vn`/`title_en` and `body_vn`/`body_en` from the JSON item directly for the title and summary fields.
+  - If the category is a listed company ticker (e.g., `VIC`, `VHM`, `ACB`, `MBB`, `BID` - check `ticker_index.json`), route it to `reports/{base}/data/{base}_corporate.json` under the correct sector. Look up the full company name and exchange as usual. Use `title_vn`/`title_en` and `body_vn`/`body_en` from the JSON item directly for the title and summary fields. Note: If the category is `TCBS`, map it to `TCX`.
   - If the category is `Commodities`, route it to `reports/{base}/data/{base}_economy_political_others.json` under the `commodities` subtype.
   - If the category is anything else, route it to `reports/{base}/data/{base}_economy_political_others.json` under the appropriate subtype (e.g., `economies_investments` or `others`).
 
@@ -110,7 +110,7 @@ For each `### Article title` block, collect:
 Read `C:\Users\Administrator\Playwright-Daily-News\ticker_index.json` **once**. It contains 3,261 Vietnamese tickers with `company_en`, `company_vn`, `sector_key`, `exchange` pre-filled. Look up any corporate ticker here first — do not guess.
 
 If a ticker is not found:
-- `exchange`: use `"UPCOM"` for unlisted/private, `"SOE"` for state-owned not on any exchange
+- `exchange`: use `"Unlisted"` for unlisted/private or foreign companies (e.g. AeonMall, VinSpeed), `"SOE"` for state-owned not on any exchange
 - `sector_key`: infer from business type
 
 ### Category assignment
@@ -129,8 +129,8 @@ Assign each article from the batch feed exactly **one** category:
 > **HARD OVERRIDE:** If an article is under `## Corporate News` in `_full.md`, it is `corporate` — no reclassification.
 
 **Corporate articles** — also extract:
-- `ticker` — from `ticker_index.json` first, then from article text (e.g. `APSC` from "Chứng khoán Alpha (APSC)")
-- `exchange` — from index, or exactly one of: `HSX`, `HNX`, `UPCoM`, `OTC`, `Unlisted`
+- `ticker` — from `ticker_index.json` first, then from article text (e.g. `APSC` from "Chứng khoán Alpha (APSC)"). Note: If the ticker is `TCBS`, it must be mapped to `TCX` (exchange `HSX`, company `Chứng khoán TCBS`).
+- `exchange` — from index, or exactly one of: `HSX`, `HNX`, `UPCoM`, `OTC`, `Unlisted`. If the company is unlisted/private/foreign and not listed on any stock exchange (e.g. AeonMall, Aeon Mall, Vinpearl, Thaispace, Green SM, VinSpeed, Vinspeed), you MUST use the exchange value `Unlisted` (do NOT classify them as UPCoM/UPCOM/HNX/HSX).
 - `company_vn` / `company_en` — from index, or extracted from article text
 - `sector_key` — from index, or inferred. MUST be exactly one of: `banking`, `financials`, `consumers`, `industrials`, `materials`, `real_estate`, `technologies`, `pharma`, `utilities`, `oil_gas`. NEVER use `others` for corporate news; always map to a specific sector (e.g. VNM -> consumers).
 
@@ -287,6 +287,24 @@ Use the Write tool for each file. After saving all 4, confirm:
 - All 4 file paths
 - Item count per category (e.g. `macro: 4, trading: 1, corporate: 9, economy_political_others: 22 (incl. N from macro sheet)`)
 - Total = articles from Step 4 + macro sheet items from Step 3
+
+---
+
+## Step 8.5 — Perform semantic deduplication
+
+After emitting the 4 category JSON files, run the deduplication script to clean up any duplicate news items in the corporate, political, and policies categories:
+
+```powershell
+cd C:\Users\Administrator\Playwright-Daily-News
+C:\Users\Administrator\Playwright-Daily-News\vietnam_news_scraper\venv\Scripts\python.exe scripts/deduplicate_reports.py {base}
+```
+
+This script will read `{base}_corporate.json` and `{base}_economy_political_others.json`, detect duplicate announcements using a Jaccard word-set similarity metric, remove the duplicates (keeping the most descriptive summary version), reindex the item count and order, and save the updated payloads.
+
+Verify that the validation script passes after deduplication:
+```powershell
+C:\Users\Administrator\Playwright-Daily-News\vietnam_news_scraper\venv\Scripts\python.exe scripts/validate_summary_data.py {base}
+```
 
 ---
 
