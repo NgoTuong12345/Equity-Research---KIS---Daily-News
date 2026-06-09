@@ -8,7 +8,8 @@ Repository guide for Claude Code sessions. Keep this file short; put repeatable 
 2. `vietnam_news_scraper/` collects news and writes scraper outputs, including HSX insider trading disclosures.
 3. `google-sheets-uploader/upload-to-sheets.js` creates the Google Sheets session tab.
 4. A human marks `TAKE` rows and updates the Macro tab.
-5. `/summarize morning` or `/summarize afternoon` generates source markdown, fetched full articles, summary JSON, bilingual summaries, and final HTML/PDF/DOCX reports.
+5. Before summarizing, verify if the NotebookLM extraction failed (e.g. auth expired in logs). If so, run refresh auth.
+6. `/summarize morning` or `/summarize afternoon` automatically runs the trading news scraper, extractor, and formatter, fetches full articles, compiles and deduplicates macro/trading/corporate summaries, and outputs final HTML/PDF/DOCX reports.
 
 ## HSX Insider Trading
 
@@ -58,8 +59,13 @@ Do not write new generated reports, screenshots, summary files, data files, or v
 .\run-morning.bat
 .\run-afternoon.bat
 
-# Refresh NotebookLM authentication (if expired/2FA is needed)
+# Rerun HSX trading extraction manually if NotebookLM auth was expired:
 vietnam_news_scraper\venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force
+cd vietnam_news_scraper
+venv\Scripts\python.exe hsx_insider_scraper.py
+venv\Scripts\python.exe hsx_nlm_extractor.py
+venv\Scripts\python.exe format_hsx_trading_news.py <extracted_json_file>
+cd ..
 
 cd google-sheets-uploader
 node upload-to-sheets.js morning
@@ -73,7 +79,14 @@ cd google-sheets-uploader
 node read-macro-sheet.js DD/MM/YYYY
 
 cd ..
+# Combine chunks, macro sheet, and trading news
+python scripts/combine_chunks.py {base}
+
+# Deduplicate duplicates and validate output
+python scripts/deduplicate_reports.py {base}
 python scripts/validate_summary_data.py {base}
+
+# Generate final reports
 python scripts/generate_html_report.py {base}
 python scripts/generate_pdf_report.py {base}
 python scripts/generate_docx_report.py {base}

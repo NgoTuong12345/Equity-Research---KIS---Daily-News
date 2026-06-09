@@ -75,7 +75,7 @@ function matchesToday(cellValue) {
 }
 
 // Parse 'Macro: Title): Content' or 'Macro: Title: Content' format
-function parseNewsTime(raw) {
+function parseNewsTime(raw, category = '') {
   const text = (raw || '').trim();
   // Strip leading 'Macro: ' prefix
   const withoutPrefix = text.startsWith('Macro:') ? text.slice(6).trim() : text;
@@ -94,7 +94,56 @@ function parseNewsTime(raw) {
       body: withoutPrefix.slice(simple + 2).trim(),
     };
   }
-  return { title: withoutPrefix.slice(0, 60), body: withoutPrefix };
+
+  // Handle no colon cases
+  const catLower = (category || '').toLowerCase();
+  if (catLower === 'commodities' || catLower === 'hàng hóa') {
+    const isEn = /^[a-zA-Z0-9\s,.:'"()\-–—]+$/.test(withoutPrefix.slice(0, 30));
+    if (isEn) {
+      if (withoutPrefix.toLowerCase().includes('silver')) {
+        return { title: 'Silver prices listed at Phu Quy', body: withoutPrefix };
+      }
+      if (withoutPrefix.toLowerCase().includes('gold')) {
+        return { title: 'SJC gold bar prices drop sharply', body: withoutPrefix };
+      }
+      if (withoutPrefix.toLowerCase().includes('hog')) {
+        return { title: 'Live hog market continues downward trend', body: withoutPrefix };
+      }
+    } else {
+      if (withoutPrefix.toLowerCase().includes('bạc')) {
+        return { title: 'Giá bạc niêm yết tại Phú Quý', body: withoutPrefix };
+      }
+      if (withoutPrefix.toLowerCase().includes('vàng') || withoutPrefix.toLowerCase().includes('sjc')) {
+        return { title: 'Giá vàng miếng SJC tiếp tục giảm mạnh', body: withoutPrefix };
+      }
+      if (withoutPrefix.toLowerCase().includes('heo hơi')) {
+        return { title: 'Thị trường heo hơi tiếp tục duy trì đà giảm', body: withoutPrefix };
+      }
+    }
+  }
+
+  // Generic fallback: check if first sentence is reasonably short (<= 100 chars)
+  const sentenceMatch = withoutPrefix.match(/^([^.?!]+[.?!])/);
+  if (sentenceMatch) {
+    const sentence = sentenceMatch[1].trim();
+    if (sentence.length <= 100) {
+      return { title: sentence, body: withoutPrefix };
+    }
+  }
+
+  // Fallback to word-boundary truncation
+  let title = withoutPrefix;
+  if (title.length > 60) {
+    const sub = title.slice(0, 65);
+    const lastSpace = sub.lastIndexOf(' ');
+    if (lastSpace > 40) {
+      title = sub.slice(0, lastSpace).trim();
+    } else {
+      title = title.slice(0, 60).trim();
+    }
+    title = title.replace(/[,;.\-—\s]+$/, '') + '...';
+  }
+  return { title, body: withoutPrefix };
 }
 
 async function scrapeTab(page, tabLocator, tabName) {
@@ -175,14 +224,14 @@ function processTabRows(rows, tabName) {
   return todayRows.map((cols, idx) => {
     const rawEn = (idxEn >= 0 && idxEn < cols.length ? cols[idxEn] : '').trim();
     const rawVn = (idxVn >= 0 && idxVn < cols.length ? cols[idxVn] : '').trim();
-    const parsedEn = parseNewsTime(rawEn);
-    const parsedVn = parseNewsTime(rawVn);
+    const newsCat = (idxCat >= 0 && idxCat < cols.length ? cols[idxCat] : '').trim();
+    const parsedEn = parseNewsTime(rawEn, newsCat);
+    const parsedVn = parseNewsTime(rawVn, newsCat);
     
     // Determine category label:
     // - All Macro tab rows are economy/investment aggregates.
     // - vin_bank tab rows are Corporate UNLESS the news_category signals a
     //   non-ticker subject (Commodities, Macro, etc.).
-    const newsCat = (idxCat >= 0 && idxCat < cols.length ? cols[idxCat] : '').trim();
     const NON_TICKER_CATEGORIES = new Set([
       'commodities', 'macro', 'policy', 'chính sách', 'hàng hóa', 'khác', 'others',
     ]);

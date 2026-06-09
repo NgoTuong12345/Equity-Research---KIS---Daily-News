@@ -65,6 +65,27 @@ If the script errors, stop and report the error to the user.
 
 ---
 
+## Step 2.5 — Scrape and extract HSX Insider Trading disclosures
+
+Run the insider trading scraper, extractor, and formatter to fetch the latest trading news:
+
+```powershell
+cd C:\Users\Administrator\Playwright-Daily-News\vietnam_news_scraper
+venv\Scripts\python.exe hsx_insider_scraper.py
+venv\Scripts\python.exe hsx_nlm_extractor.py
+# Find the latest extracted JSON and format it:
+for /f "delims=" %F in ('dir /b /o-d hsx_insider_trading_*_extracted.json 2^>nul') do (
+    venv\Scripts\python.exe format_hsx_trading_news.py "%F"
+    goto :formatted_done
+)
+:formatted_done
+cd ..
+```
+
+This ensures that the latest trading news is fetched and processed via NotebookLM. If NotebookLM extraction fails due to credentials, run `venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force` from the root first, then re-run the extraction.
+
+---
+
 ## Step 3 — Read macro sheet data
 
 Run this step for **morning reports only**. Afternoon reports must skip Macro and vin_bank Google Sheets data.
@@ -189,18 +210,21 @@ Use the Write tool. Confirm both file paths.
 
 ---
 
-## Step 8 — Emit 4 category JSON files
+## Step 8 — Compile and Combine JSON files
 
-Save to:
+Instead of manually writing the 4 category JSON files, use the `scripts/combine_chunks.py` script to automatically compile and combine the subagent chunk JSONs, macro data (morning only), and trading news disclosures.
+
+```powershell
+python scripts/combine_chunks.py {base}
+```
+
+This script will automatically load all chunk JSONs (e.g., `mor_chunk_*.json` or `after_chunk_*.json`), the macro sheet JSON (if morning), and the latest formatted HSX trading disclosures, mapping unlisted tickers and mapping categories properly. It also automatically deduplicates trading transactions by comparing ticker, transacting person/entity, action, volume, and date range against previous reports, ensuring no duplicate trading news items are included. It outputs:
 - `reports/{base}/data/{base}_macro.json`
 - `reports/{base}/data/{base}_trading.json`
 - `reports/{base}/data/{base}_corporate.json`
 - `reports/{base}/data/{base}_economy_political_others.json`
 
-**Macro report (`reports/{base}/data/{base}_macro.json`):** Contains the pre-written macro sheet items read in **Step 3** from `reports/{base}/data/macro_sheet_*.json`. It does NOT contain any batch-summarized articles from `_full.md`.
-
 **Trading report (`reports/{base}/data/{base}_trading.json`):** Contains the HSX insider trading transactions extracted from the latest `vietnam_news_scraper/hsx_insider_trading_*_extracted.json`.
-- It does NOT contain any batch-summarized articles from `_full.md`.
 - Bilingual titles and summaries must be generated in KIS Style from the extracted PDF transaction parameters using these strict templates:
   - **`title_vn`**: `<ticker>. (<company_fullname_vn>. <exchange>)` (e.g. `SSI. (Công ty Cổ phần Chứng khoán SSI. HSX)`)
   - **`title_en`**: `<ticker>. (<company_fullname_en>. <exchange>)` (e.g. `SSI. (SSI Securities Corporation. HSX)`. Use standard English translations for the full company name, appending 'Joint Stock Company' or 'Corporation' where appropriate).

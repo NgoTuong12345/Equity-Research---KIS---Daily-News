@@ -72,6 +72,8 @@ RELATIONSHIP_EN = {
     "Thành viên HĐQT, Tổng Giám Đốc": "Member of the Board of Directors, General Director",
     "Giám đốc Kiểm toán nội bộ": "Director of Internal Audit",
     "Giám đốc Tài chính kiêm Kế toán trưởng": "Chief Financial Officer and Chief Accountant",
+    "Công ty mẹ đồng thời là người có liên quan của người nội bộ": "Parent company and related person of insider",
+    "Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes": "Parent company, related organization of Vinhomes's insider",
 }
 
 NAME_EN = {

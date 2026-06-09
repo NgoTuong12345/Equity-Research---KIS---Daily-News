@@ -27,6 +27,55 @@ from summary_rules import SECTOR_TITLES, SUBTYPE_TITLES
 def clean_ticker(ticker: str) -> str:
     return ticker.strip().upper() if ticker else ""
 
+def get_recent_trading_items(base_dir: Path, current_base: str, count: int = 3) -> list:
+    reports_dir = base_dir / "reports"
+    if not reports_dir.exists():
+        return []
+    
+    # List all subdirectories matching the pattern
+    report_dirs = []
+    for d in reports_dir.iterdir():
+        if d.is_dir():
+            m = re.match(r"^(mor|after)_(\d{2})_(\d{2})_(\d{4})$", d.name)
+            if m:
+                sess, dd, mm, yyyy = m.groups()
+                try:
+                    date_val = datetime(int(yyyy), int(mm), int(dd))
+                    sess_val = 1 if sess == "after" else 0
+                    report_dirs.append((date_val, sess_val, d.name))
+                except ValueError:
+                    continue
+                    
+    # Sort report dirs chronologically
+    report_dirs.sort()
+    
+    # Find index of current_base
+    curr_idx = -1
+    for i, (_, _, name) in enumerate(report_dirs):
+        if name == current_base:
+            curr_idx = i
+            break
+            
+    # Get up to `count` reports before current_base
+    prev_reports = []
+    if curr_idx != -1:
+        prev_reports = [name for (_, _, name) in report_dirs[max(0, curr_idx - count):curr_idx]]
+    else:
+        # If current_base is not yet in the list, just take the last `count` reports
+        prev_reports = [name for (_, _, name) in report_dirs[-count:]]
+        
+    recent_items = []
+    for prev_base in prev_reports:
+        trading_json_path = reports_dir / prev_base / "data" / f"{prev_base}_trading.json"
+        if trading_json_path.exists():
+            try:
+                with open(trading_json_path, "r", encoding="utf-8") as f:
+                    data = json.load(f)
+                    recent_items.extend(data.get("items", []))
+            except Exception as e:
+                print(f"WARNING: Failed to read previous trading report {trading_json_path}: {e}")
+    return recent_items
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: python scripts/combine_chunks.py <base_name> [session] [date]")
@@ -73,6 +122,8 @@ def main():
     chunk_patterns = [
         source_dir / f"chunk_*.json",
         source_dir / f"{session[:3]}_chunk_*.json",
+        source_dir / f"after_chunk_*.json",
+        source_dir / f"mor_chunk_*.json",
         BASE_DIR / f"chunk_*.json",
         BASE_DIR / f"{session[:3]}_chunk_*.json",
         BASE_DIR / f"after_chunk_*.json",
@@ -128,7 +179,40 @@ def main():
         print(f"Loading trading items from: {latest_trading_file}")
         with open(latest_trading_file, "r", encoding="utf-8") as f:
             trading_data = json.load(f)
-            trading_items = trading_data.get("items", [])
+            raw_trading_items = trading_data.get("items", [])
+            
+        # Get recent trading items for deduplication
+        recent_trading = get_recent_trading_items(BASE_DIR, base, count=3)
+        trading_items = []
+        for item in raw_trading_items:
+            # Check if this item matches any recent transaction
+            is_dup = False
+            ticker = item.get("ticker", "").strip().upper()
+            raw_tx = item.get("raw_transaction", {}) or {}
+            tx_name = raw_tx.get("name", "").strip().lower()
+            tx_action = raw_tx.get("action", "").strip().lower()
+            tx_volume = raw_tx.get("change_volume")
+            tx_range = raw_tx.get("date_range", "").strip()
+            
+            for prev in recent_trading:
+                prev_ticker = prev.get("ticker", "").strip().upper()
+                prev_raw = prev.get("raw_transaction", {}) or {}
+                prev_name = prev_raw.get("name", "").strip().lower()
+                prev_action = prev_raw.get("action", "").strip().lower()
+                prev_volume = prev_raw.get("change_volume")
+                prev_range = prev_raw.get("date_range", "").strip()
+                
+                # Check for equivalence
+                if (ticker == prev_ticker and
+                    tx_name == prev_name and
+                    tx_action == prev_action and
+                    tx_volume == prev_volume and
+                    tx_range == prev_range):
+                    print(f"Duplicate trading transaction detected and skipped: {ticker} | {tx_name} | {tx_action} | {tx_volume}")
+                    is_dup = True
+                    break
+            if not is_dup:
+                trading_items.append(item)
     else:
         print("WARNING: No formatted trading files found.")
         
