@@ -74,6 +74,12 @@ RELATIONSHIP_EN = {
     "Giám đốc Tài chính kiêm Kế toán trưởng": "Chief Financial Officer and Chief Accountant",
     "Công ty mẹ đồng thời là người có liên quan của người nội bộ": "Parent company and related person of insider",
     "Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes": "Parent company, related organization of Vinhomes's insider",
+    "Công đoàn": "Trade Union",
+    "Bố ruột": "Father",
+    "Bố": "Father",
+    "Em vợ": "Brother-in-law",
+    "Chủ tịch Hội đồng Quản trị": "Chairman of the Board of Directors",
+    "Cổ đông lớn, cổ đông nội bộ": "Major and internal shareholder",
 }
 
 NAME_EN = {

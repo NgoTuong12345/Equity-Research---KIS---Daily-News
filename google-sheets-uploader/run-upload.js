@@ -127,8 +127,10 @@ async function main() {
   }
 
   console.log('Uploading PDF to Heyzine...');
-  const fileInput = page.locator('input[type="file"][name="pdf"]').first();
-  await fileInput.setInputFiles(PDF_PATH);
+  const fileChooserPromise = page.waitForEvent('filechooser');
+  await page.locator('.btnUpload').first().click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles(PDF_PATH);
   console.log('PDF file set. Waiting 25 seconds for conversion and rendering to complete...');
   
   // Wait for rendering to complete (usually takes 15-20s for a multi-page PDF)

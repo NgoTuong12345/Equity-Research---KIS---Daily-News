@@ -287,7 +287,7 @@ class NLMWorker:
         self._page.wait_for_timeout(1_000)
 
         self._page.wait_for_selector("button[aria-label='Add source']", timeout=15_000)
-        self._page.click("button[aria-label='Add source']")
+        self._page.click("button[aria-label='Add source']", force=True)
         self._page.wait_for_timeout(1_000)
 
         for sel in ["button:has-text('Upload')", "button:has-text('PDF')", "[role='menuitem']:has-text('Upload')"]:
@@ -412,6 +412,13 @@ class NLMWorker:
             return data
         except Exception as e:
             log.error(f"Worker {self.worker_id}: failed on {article_id}: {e}")
+            try:
+                os.makedirs("C:/Users/Administrator/Playwright-Daily-News/reports/testing", exist_ok=True)
+                screenshot_path = f"C:/Users/Administrator/Playwright-Daily-News/reports/testing/fail_{article_id}.png"
+                self._page.screenshot(path=screenshot_path)
+                log.info(f"Saved failure screenshot to {screenshot_path}")
+            except Exception as se:
+                log.error(f"Failed to save screenshot: {se}")
             return None
         finally:
             if self._notebook_id:
@@ -444,6 +451,16 @@ def _thread_worker(worker_id: int, auth: dict, queue: list, queue_lock: threadin
             article_id = item["article_id"]
             pdf_path   = item["pdf_path"]
             data = worker.extract(article_id, pdf_path)
+            if data is None:
+                log.error(f"Worker {worker_id} extraction failed. Re-starting browser context...")
+                try:
+                    worker.stop()
+                except Exception:
+                    pass
+                try:
+                    worker.start(p)
+                except Exception as start_err:
+                    log.error(f"Worker {worker_id} restart failed: {start_err}")
             with _results_lock:
                 results.setdefault(article_id, []).append(data)
         worker.stop()

@@ -15,9 +15,13 @@ import json
 import os
 import re
 import sys
+import io
 from pathlib import Path
 from collections import defaultdict
 from datetime import datetime
+
+# Force stdout to UTF-8 to support Vietnamese characters on Windows terminal
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
 
 # Define directories
 BASE_DIR = Path(__file__).parent.parent
