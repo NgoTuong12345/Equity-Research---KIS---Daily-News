@@ -8,7 +8,8 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 2. Summarize every selected article in Vietnamese first, then English.
 3. Classify feed articles into `corporate` or `economy_political_others`.
 4. Write summary JSON and bilingual markdown into `reports/{base}/data/` and `reports/{base}/summaries/`.
-5. Run `python scripts/validate_summary_data.py {base}` before report generation.
+5. After writing each JSON file, run the harness to validate output (see **Harness Validation** below).
+6. When all items pass (or retries are exhausted), automatically invoke the `/dedup-news` skill.
 
 ## Writing Rules
 
@@ -47,7 +48,7 @@ Create two markdown files:
 - `{base}_summary_vn.md`
 - `{base}_summary_en.md`
 
-The exact category keys, section titles, subtype names, sector names, required fields, and count validation are defined in `scripts/summary_rules.py` and enforced by `scripts/validate_summary_data.py`.
+The exact category keys, section titles, subtype names, sector names, required fields, and count validation are defined in `llm_brain/prompts_and_rules/summary_rules.py` and enforced by `core_tools/validation/validate_summary_data.py`.
 
 ## Precision Rules (must follow to avoid audit failures)
 
@@ -56,3 +57,33 @@ The exact category keys, section titles, subtype names, sector names, required f
 - **Government agency names must be translated in full.** `Bảo hiểm xã hội Việt Nam` → `Vietnam Social Security` (never drop `Social`). Use the EN-VN term mapping in `skills/KIS_Writing_Style_Guide_final.md` as reference.
 - **`company_vn` for listed banks and institutions must use the full name**, not just the ticker (e.g. `Asia Commercial Bank`, not `ACB`).
 - **`title_en` / `title_vn` in macro JSON must match the label `news_title_rules.py` will render.** The script derives macro titles from content keywords (`interbank`, `G-bond`, etc.). Set JSON titles to the canonical label the script will show (e.g. `Government bond yield`, not `Money market`).
+
+---
+
+## Harness Validation
+
+After writing each JSON file to `reports/{base}/data/`, run:
+
+```
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\harness.py reports\{base}\data\{filename}.json
+```
+
+**If any item fails:**
+- Re-summarize only the failing item(s)
+- Include the exact error in your re-prompt, e.g.:
+  - "summary_vn word count is 32, must be 40–60 — please rewrite to hit that range"
+  - "numbers not preserved: ['12%', '500bn'] missing from summary — include them"
+- Retry up to **3 times** per item
+- After 3 failures, log the item title and error, skip it, and continue
+
+The harness checks:
+1. Schema — `title`, `summary_vn`, `summary_en`, `source`, `category` all present
+2. Word count — both VN and EN must be 40–60 words
+3. Both languages — each ≥ 20 words, not identical
+4. Numbers preserved — key figures from source must appear in the summary
+
+---
+
+## Auto-Chain
+
+When all JSON files are written and validated (or retries exhausted), **automatically invoke the `/dedup-news` skill** without waiting for user input.
