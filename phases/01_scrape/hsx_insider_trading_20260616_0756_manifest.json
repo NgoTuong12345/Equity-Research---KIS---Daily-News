@@ -1,0 +1,82 @@
+[
+  {
+    "article_id": 2470545,
+    "ticker": "HAP",
+    "title": "HAP: Thông báo giao dịch cổ phiếu của người nội bộ Trần Quang Tiến",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470545",
+    "date": "2026-06-16",
+    "pdf_count": 1,
+    "pdfs": [
+      {
+        "pdf_path": "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdfs\\2470545_0.pdf",
+        "image_paths": [
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470545\\2470545_0_p1.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470545\\2470545_0_p2.png"
+        ],
+        "text": "",
+        "has_text_layer": false
+      }
+    ]
+  },
+  {
+    "article_id": 2470498,
+    "ticker": "DHC",
+    "title": "DHC: Thông báo giao dịch cổ phiếu của người nội bộ Nguyễn Quốc Bình",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470498",
+    "date": "2026-06-15",
+    "pdf_count": 1,
+    "pdfs": [
+      {
+        "pdf_path": "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdfs\\2470498_0.pdf",
+        "image_paths": [
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470498\\2470498_0_p1.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470498\\2470498_0_p2.png"
+        ],
+        "text": "",
+        "has_text_layer": false
+      }
+    ]
+  },
+  {
+    "article_id": 2470413,
+    "ticker": "TMS",
+    "title": "TMS: Thông báo giao dịch cổ phiếu của tổ chức có liên quan đến người nội bộ CTCP VINAPRINT",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470413",
+    "date": "2026-06-15",
+    "pdf_count": 1,
+    "pdfs": [
+      {
+        "pdf_path": "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdfs\\2470413_0.pdf",
+        "image_paths": [
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470413\\2470413_0_p1.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470413\\2470413_0_p2.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470413\\2470413_0_p3.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470413\\2470413_0_p4.png"
+        ],
+        "text": "",
+        "has_text_layer": false
+      }
+    ]
+  },
+  {
+    "article_id": 2470232,
+    "ticker": "FPT",
+    "title": "FPT: Thông báo giao dịch cổ phiếu ESOP của Người nội bộ và người có liên quan của Người nội bộ",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470232",
+    "date": "2026-06-15",
+    "pdf_count": 1,
+    "pdfs": [
+      {
+        "pdf_path": "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdfs\\2470232_0.pdf",
+        "image_paths": [
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470232\\2470232_0_p1.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470232\\2470232_0_p2.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470232\\2470232_0_p3.png",
+          "C:\\Users\\Administrator\\Playwright-Daily-News\\vietnam_news_scraper\\pdf_images\\2470232\\2470232_0_p4.png"
+        ],
+        "text": "",
+        "has_text_layer": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,91 @@
+{
+  "source_file": "hsx_insider_trading_20260612_0756_extracted.json",
+  "category": "trading",
+  "item_count": 3,
+  "items": [
+    {
+      "order": 1,
+      "ticker": "LCG",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Lizen",
+      "company_en": "LIZEN",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469727",
+      "published": "2026-06-12",
+      "title_vn": "LCG. (Công ty Cổ phần Lizen. HSX)",
+      "title_en": "LCG. (LIZEN. HSX)",
+      "summary_vn": "LCG (Công ty Cổ phần Lizen) HSX: 06/17~07/16. CÔNG TY CỔ PHẦN TASA GROUP (Người có liên quan của người nội bộ) thông báo đăng ký bán 62,616 cổ phiếu, giảm tổng số lượng cổ phiếu nắm giữ xuống 0 cổ phiếu (0%);",
+      "summary_en": "LCG (LIZEN) HSX: 06/17~07/16. CONG TY CO PHAN TASA GROUP (Related person of insider) announced to sell 62,616 shares, decreasing total shares to 0 shares (0%);",
+      "relationship_vn": "Người có liên quan của người nội bộ",
+      "relationship_en": "Related person of insider",
+      "raw_transaction": {
+        "ticker": "LCG",
+        "name": "CÔNG TY CỔ PHẦN TASA GROUP",
+        "relationship": "Người có liên quan của người nội bộ",
+        "action": "sell",
+        "change_volume": 62616,
+        "after_volume": 0,
+        "after_percentage": "0%",
+        "date_range": "06/17~07/16",
+        "company_fullname": "Công ty Cổ phần Lizen",
+        "exchange": ""
+      }
+    },
+    {
+      "order": 2,
+      "ticker": "TCI",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Chứng khoán Thành Công",
+      "company_en": "Thanh Cong Securities",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469575",
+      "published": "2026-06-11",
+      "title_vn": "TCI. (Công ty Cổ phần Chứng khoán Thành Công. HSX)",
+      "title_en": "TCI. (Thanh Cong Securities. HSX)",
+      "summary_vn": "TCI (Công ty Cổ phần Chứng khoán Thành Công) HSX: 06/16~07/15. CÔNG TY TNHH SÀI GÒN 3 JEAN (Là người có liên quan của người nội bộ) thông báo đăng ký bán 3,435,000 cổ phiếu, giảm tổng số lượng cổ phiếu nắm giữ xuống 0 cổ phiếu (0.00%);",
+      "summary_en": "TCI (Thanh Cong Securities) HSX: 06/16~07/15. CONG TY TNHH SAI GON 3 JEAN (Related person of insider) announced to sell 3,435,000 shares, decreasing total shares to 0 shares (0.00%);",
+      "relationship_vn": "Là người có liên quan của người nội bộ",
+      "relationship_en": "Related person of insider",
+      "raw_transaction": {
+        "ticker": "TCI",
+        "name": "CÔNG TY TNHH SÀI GÒN 3 JEAN",
+        "relationship": "Là người có liên quan của người nội bộ",
+        "action": "sell",
+        "change_volume": 3435000,
+        "after_volume": 0,
+        "after_percentage": "0.00%",
+        "date_range": "06/16~07/15",
+        "company_fullname": "Công ty Cổ phần Chứng khoán Thành Công",
+        "exchange": "HSX"
+      }
+    },
+    {
+      "order": 3,
+      "ticker": "TCI",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Chứng khoán Thành Công",
+      "company_en": "Thanh Cong Securities",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469575",
+      "published": "2026-06-11",
+      "title_vn": "TCI. (Công ty Cổ phần Chứng khoán Thành Công. HSX)",
+      "title_en": "TCI. (Thanh Cong Securities. HSX)",
+      "summary_vn": "TCI (Công ty Cổ phần Chứng khoán Thành Công) HSX: 06/16~07/15. CÔNG TY TNHH ĐẦU TƯ SÀI GÒN 3 CAPITAL (Cổ đông, người có liên quan của người nội bộ) thông báo đăng ký bán 21,565,000 cổ phiếu, giảm tổng số lượng cổ phiếu nắm giữ xuống 41,786,059 cổ phiếu (36,14%);",
+      "summary_en": "TCI (Thanh Cong Securities) HSX: 06/16~07/15. CONG TY TNHH DAU TU SAI GON 3 CAPITAL (Shareholder, related person of insider) announced to sell 21,565,000 shares, decreasing total shares to 41,786,059 shares (36,14%);",
+      "relationship_vn": "Cổ đông, người có liên quan của người nội bộ",
+      "relationship_en": "Shareholder, related person of insider",
+      "raw_transaction": {
+        "ticker": "TCI",
+        "name": "CÔNG TY TNHH ĐẦU TƯ SÀI GÒN 3 CAPITAL",
+        "relationship": "Cổ đông, người có liên quan của người nội bộ",
+        "action": "sell",
+        "change_volume": 21565000,
+        "after_volume": 41786059,
+        "after_percentage": "36,14%",
+        "date_range": "06/16~07/15",
+        "company_fullname": "Công ty Cổ phần Chứng khoán Thành Công",
+        "exchange": "HSX"
+      }
+    }
+  ]
+}

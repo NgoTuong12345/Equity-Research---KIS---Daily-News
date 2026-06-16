@@ -1,0 +1,44 @@
+[
+  {
+    "date": "2026-06-09",
+    "time": "22:09",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "PAC",
+    "article_id": 2469031,
+    "title": "PAC: Thông báo giao dịch CP của tổ chức có liên quan đến người nội bộ Công đoàn CTCP Pin Ắc quy Miền Nam",
+    "summary": "Công đoàn CTCP Pin Ắc quy Miền Nam thông báo giao dịch CP của tổ chức có liên quan đến người nội bộ Công ty Cổ phần Pin Ắc quy miền Nam như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469031",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469031/20260609 - PAC - Thong bao giao dich CP cua NNC & NLQ - Cong doan PAC.pdf"
+    ]
+  },
+  {
+    "date": "2026-06-09",
+    "time": "21:47",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "PNJ",
+    "article_id": 2469010,
+    "title": "PNJ: Thông báo giao dịch cổ phiếu của người nội bộ Đào Trung Kiên",
+    "summary": "Đào Trung Kiên thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Vàng bạc Đá quý Phú Nhuận như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469010",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469010/20260609 - PNJ - TB giao dich cp (Phu luc VIII) - Dao Trung Kien (CBTT).pdf"
+    ]
+  },
+  {
+    "date": "2026-06-09",
+    "time": "21:45",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "PNJ",
+    "article_id": 2469009,
+    "title": "PNJ: Thông báo giao dịch cổ phiếu của người có liên quan của người nội bộ Đào Anh Dũng",
+    "summary": "Đào Anh Dũng thông báo giao dịch cổ phiếu của người có liên quan của người nội bộ Công ty Cổ phần Vàng bạc Đá quý Phú Nhuận như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469009",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469009/20260609 - PNJ - TB giao dich cp (Phu luc VIII) - Dao Anh Dung (CBTT).pdf"
+    ]
+  }
+]

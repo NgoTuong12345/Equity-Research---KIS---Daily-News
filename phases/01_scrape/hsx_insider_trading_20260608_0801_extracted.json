@@ -1,0 +1,222 @@
+[
+  {
+    "date": "2026-06-06",
+    "time": "00:19",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TVS",
+    "article_id": 2468317,
+    "title": "TVS: Thông báo giao dịch cổ phiếu của Người nội bộ Bùi Thành Trung",
+    "summary": "Bùi Thành Trung&nbsp;thông báo giao dịch cổ phiếu của Người nội bộ Công ty Cổ phần Chứng khoán Thiên Việt như sau:&nbsp;",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468317",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468317/20260605 - TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Bui Thanh Trung_xoa tt.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TVS",
+        "name": "Bùi Thành Trung",
+        "relationship": "Phó Tổng giám đốc cấp cao",
+        "action": "buy",
+        "change_volume": 150000,
+        "after_volume": 248560,
+        "after_percentage": "0.11%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": null
+      }
+    ]
+  },
+  {
+    "date": "2026-06-05",
+    "time": "23:20",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TVS",
+    "article_id": 2468270,
+    "title": "TVS: Thông báo giao dịch cổ phiếu của người nội bộ Nguyễn Thanh Thảo, Trần Vinh Quang",
+    "summary": "Nguyễn Thanh Thảo, Trần Vinh Quang thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Chứng khoán Thiên Việt như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468270",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468270/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Tran Vinh Quang_xoa.pdf",
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468270/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Nguyen Thanh Thao_xoa tt.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TVS",
+        "name": "Trần Vinh Quang",
+        "relationship": "Thành viên HĐQT",
+        "action": "buy",
+        "change_volume": 200000,
+        "after_volume": 815571,
+        "after_percentage": "0.36%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "TVS",
+        "name": "Nguyễn Thanh Thảo",
+        "relationship": "Thành viên HĐQT, Tổng Giám Đốc",
+        "action": "buy",
+        "change_volume": 600000,
+        "after_volume": 3220841,
+        "after_percentage": "1.41%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": ""
+      }
+    ]
+  },
+  {
+    "date": "2026-06-05",
+    "time": "23:19",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TVS",
+    "article_id": 2468269,
+    "title": "TVS: Thông báo giao dịch cổ phiếu của người nội bộ Lê Thị Tuyết Nhung, Ngô Nhật Minh",
+    "summary": "Lê Thị Tuyết Nhung, Ngô Nhật Minh thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Chứng khoán Thiên Việt như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468269",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468269/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Ngo Nhat Minh_xoa.pdf",
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468269/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Le Thi Tuyet Nhung_xoa tt.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TVS",
+        "name": "Ngô Nhật Minh",
+        "relationship": "Thành viên HĐQT, Phó Tổng Giám đốc",
+        "action": "buy",
+        "change_volume": 250000,
+        "after_volume": 645915,
+        "after_percentage": "0.28%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": ""
+      },
+      {
+        "ticker": "TVS",
+        "name": "Lê Thị Tuyết Nhung",
+        "relationship": "Người ủy quyền công bố thông tin",
+        "action": "buy",
+        "change_volume": 30000,
+        "after_volume": 55009,
+        "after_percentage": "0.02%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": null
+      }
+    ]
+  },
+  {
+    "date": "2026-06-05",
+    "time": "23:17",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TVS",
+    "article_id": 2468267,
+    "title": "TVS: Thông báo giao dịch cổ phiếu của người nội bộ Bùi Thế Toàn, Bùi Thị Trang, Đỗ Minh Tiến",
+    "summary": "Bùi Thế Toàn, Bùi Thị Trang, Đỗ Minh Tiến thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Chứng khoán Thiên Việt như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468267",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468267/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Bui The Toan_xoa tt.pdf",
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468267/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Do Minh Tien_xoa tt.pdf",
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468267/20260605- TVS - CBTT- Thong bao giao dich co phieu cua nguoi noi bo- Bui Thi Trang_xoa.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TVS",
+        "name": "Bùi Thế Toàn",
+        "relationship": "Giám đốc Kiểm toán nội bộ",
+        "action": "buy",
+        "change_volume": 40000,
+        "after_volume": 69984,
+        "after_percentage": "0.03%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": ""
+      },
+      {
+        "ticker": "TVS",
+        "name": "Đỗ Minh Tiến",
+        "relationship": "Giám đốc Tài chính kiêm Kế toán trưởng",
+        "action": "buy",
+        "change_volume": 90000,
+        "after_volume": 90000,
+        "after_percentage": "0.04%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": ""
+      },
+      {
+        "ticker": "TVS",
+        "name": "Bùi Thị Trang",
+        "relationship": "Người phụ trách quản trị công ty",
+        "action": "buy",
+        "change_volume": 20000,
+        "after_volume": 32947,
+        "after_percentage": "0.01%",
+        "date_range": "2026-06-16",
+        "company_fullname": "CTCP Chứng khoán Thiên Việt",
+        "exchange": ""
+      }
+    ]
+  },
+  {
+    "date": "2026-06-05",
+    "time": "23:07",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "HPG",
+    "article_id": 2468198,
+    "title": "HPG: Thông báo giao dịch cổ phiếu của người nội bộ Nguyễn Ngọc Quang",
+    "summary": "Công ty Cổ phần Tập đoàn Hòa Phát thông báo giao dịch cổ phiếu của người nội bộ Nguyễn Ngọc Quang như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468198",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468198/20260406 - HPG - Thong bao giao dich co phieu cua CDNB Nguyen Ngoc Quang ban CBTT.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "HPG",
+        "name": "Nguyễn Ngọc Quang",
+        "relationship": "Thành viên Hội đồng Quản trị",
+        "action": "sell",
+        "change_volume": 6600000,
+        "after_volume": 118885714,
+        "after_percentage": "1.55%",
+        "date_range": "06/11~07/10",
+        "company_fullname": "Công ty Cổ phần Tập đoàn Hòa Phát",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-05",
+    "time": "21:36",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TVT",
+    "article_id": 2468211,
+    "title": "TVT: Giải trình và thay thế thông báo giao dịch cổ phiếu của người có liên quan của Người nội bộ Diều Minh Lương",
+    "summary": "Tổng Công ty Việt Thắng - CTCP giải trình và thay thế thông báo giao dịch cổ phiếu của người có liên quan của Người nội bộ Diều Minh Lương như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468211",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468211/20260602 - TVT - Giai trinh va thay the thong bao giao dich cua NLQ Dieu Minh Luong (che thong tin).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TVT",
+        "name": "Điều Minh Lượng",
+        "relationship": "Cha ruột",
+        "action": "buy",
+        "change_volume": 22000,
+        "after_volume": 1677350,
+        "after_percentage": "7.99%",
+        "date_range": "06/05~06/30",
+        "company_fullname": "Tổng Công Ty Việt Thắng - CTCP",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]

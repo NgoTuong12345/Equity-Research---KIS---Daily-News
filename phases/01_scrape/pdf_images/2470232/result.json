@@ -1,0 +1,98 @@
+{"article_id": 2470232, "transactions": [
+  {
+    "ticker": "FPT",
+    "name": "Nguyễn Văn Khoa",
+    "relationship": "Tổng Giám đốc",
+    "action": "buy",
+    "change_volume": 428368,
+    "after_volume": 5842978,
+    "after_percentage": "0.34%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Nguyễn Thị Phương",
+    "relationship": "Phó Tổng Giám đốc kiêm Giám đốc tài chính",
+    "action": "buy",
+    "change_volume": 347161,
+    "after_volume": 6450955,
+    "after_percentage": "0.38%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Phạm Minh Tuấn",
+    "relationship": "Phó Tổng Giám đốc",
+    "action": "buy",
+    "change_volume": 490082,
+    "after_volume": 3447930,
+    "after_percentage": "0.20%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Hoàng Hữu Chiến",
+    "relationship": "Kế toán trưởng",
+    "action": "buy",
+    "change_volume": 118592,
+    "after_volume": 1057299,
+    "after_percentage": "0.06%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Nguyễn Việt Thắng",
+    "relationship": "Trưởng Ban kiểm soát",
+    "action": "buy",
+    "change_volume": 17215,
+    "after_volume": 173666,
+    "after_percentage": "0.01%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Nguyễn Khải Hoàn",
+    "relationship": "Thành viên Ban kiểm soát",
+    "action": "buy",
+    "change_volume": 415146,
+    "after_volume": 2912350,
+    "after_percentage": "0.17%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Mai Thị Lan Anh",
+    "relationship": "Người được ủy quyền công bố thông tin",
+    "action": "buy",
+    "change_volume": 19767,
+    "after_volume": 28976,
+    "after_percentage": "0.00%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  },
+  {
+    "ticker": "FPT",
+    "name": "Đỗ Thị Ngọc Mai",
+    "relationship": "Con gái Thành viên HĐQT Đỗ Cao Bảo, CBNV của FPT",
+    "action": "buy",
+    "change_volume": 125568,
+    "after_volume": 1507397,
+    "after_percentage": "0.09%",
+    "date_range": "06/23~06/24",
+    "company_fullname": "Công ty Cổ phần FPT",
+    "exchange": "HSX"
+  }
+]}

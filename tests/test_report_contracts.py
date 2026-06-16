@@ -4,8 +4,10 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT / "scripts"))
-sys.path.insert(0, str(ROOT / "vietnam_news_scraper"))
+sys.path.insert(0, str(ROOT / "phases" / "04_publish"))
+sys.path.insert(0, str(ROOT / "phases" / "01_scrape"))
+sys.path.insert(0, str(ROOT / "core_tools" / "paths"))
+sys.path.insert(0, str(ROOT / "llm_brain" / "prompts_and_rules"))
 
 import generate_html_report as html_report
 import format_hsx_trading_news as trading_news
@@ -15,9 +17,9 @@ class ReportContractTests(unittest.TestCase):
     def test_generated_html_uses_paths_relative_to_export_folder(self):
         html = html_report.generate("mor_05_06_2026", "en")
 
-        self.assertIn("../../../../news_html_template/image_library/background/mor_intro_background.jpg", html)
-        self.assertIn("../../../../news_html_template/company-logo.jpg", html)
-        self.assertNotIn("url('../news_html_template/image_library/background/mor_intro_background.jpg')", html)
+        self.assertIn("../../../../core_tools/templates/image_library/background/mor_intro_background.jpg", html)
+        self.assertIn("../../../../core_tools/templates/company-logo.jpg", html)
+        self.assertNotIn("url('../core_tools/templates/image_library/background/mor_intro_background.jpg')", html)
 
     def test_sections_follow_daily_report_order(self):
         sections = html_report.collect_sections("mor_05_06_2026")

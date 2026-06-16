@@ -1,0 +1,86 @@
+[
+  {
+    "date": "2026-06-09",
+    "time": "22:09",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "PAC",
+    "article_id": 2469031,
+    "title": "PAC: Thông báo giao dịch CP của tổ chức có liên quan đến người nội bộ Công đoàn CTCP Pin Ắc quy Miền Nam",
+    "summary": "Công đoàn CTCP Pin Ắc quy Miền Nam thông báo giao dịch CP của tổ chức có liên quan đến người nội bộ Công ty Cổ phần Pin Ắc quy miền Nam như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469031",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469031/20260609 - PAC - Thong bao giao dich CP cua NNC & NLQ - Cong doan PAC.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "PAC",
+        "name": "Công đoàn Công ty Cổ phần Pin Ắc quy Miền Nam",
+        "relationship": "Công đoàn",
+        "action": "sell",
+        "change_volume": 30000,
+        "after_volume": 2373401,
+        "after_percentage": "3.40%",
+        "date_range": "06/12~07/11",
+        "company_fullname": "Công ty Cổ phần Pin Ắc quy Miền Nam",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-09",
+    "time": "21:47",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "PNJ",
+    "article_id": 2469010,
+    "title": "PNJ: Thông báo giao dịch cổ phiếu của người nội bộ Đào Trung Kiên",
+    "summary": "Đào Trung Kiên thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Vàng bạc Đá quý Phú Nhuận như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469010",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469010/20260609 - PNJ - TB giao dich cp (Phu luc VIII) - Dao Trung Kien (CBTT).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "PNJ",
+        "name": "ĐÀO TRUNG KIÊN",
+        "relationship": "Thành viên HĐQT – Giám đốc cao cấp",
+        "action": "sell",
+        "change_volume": 561199,
+        "after_volume": 418466,
+        "after_percentage": "0.08%",
+        "date_range": "06/12~07/10",
+        "company_fullname": "Công ty Cổ phần Vàng Bạc Đá Quý Phú Nhuận",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-09",
+    "time": "21:45",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "PNJ",
+    "article_id": 2469009,
+    "title": "PNJ: Thông báo giao dịch cổ phiếu của người có liên quan của người nội bộ Đào Anh Dũng",
+    "summary": "Đào Anh Dũng thông báo giao dịch cổ phiếu của người có liên quan của người nội bộ Công ty Cổ phần Vàng bạc Đá quý Phú Nhuận như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469009",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469009/20260609 - PNJ - TB giao dich cp (Phu luc VIII) - Dao Anh Dung (CBTT).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "PNJ",
+        "name": "ĐÀO ANH DŨNG",
+        "relationship": "Bố ruột",
+        "action": "buy",
+        "change_volume": 561199,
+        "after_volume": 561199,
+        "after_percentage": "0.11%",
+        "date_range": "06/12~07/10",
+        "company_fullname": "Công ty Cổ phần Vàng bạc Đá quý Phú Nhuận",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]

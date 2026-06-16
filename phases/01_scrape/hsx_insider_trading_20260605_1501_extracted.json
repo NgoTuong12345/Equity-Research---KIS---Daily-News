@@ -1,0 +1,30 @@
+[
+  {
+    "date": "2026-06-05",
+    "time": "21:36",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TVT",
+    "article_id": 2468211,
+    "title": "TVT: Giải trình và thay thế thông báo giao dịch cổ phiếu của người có liên quan của Người nội bộ Diều Minh Lương",
+    "summary": "Tổng Công ty Việt Thắng - CTCP giải trình và thay thế thông báo giao dịch cổ phiếu của người có liên quan của Người nội bộ Diều Minh Lương như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468211",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468211/20260602 - TVT - Giai trinh va thay the thong bao giao dich cua NLQ Dieu Minh Luong (che thong tin).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TVT",
+        "name": "Điều Minh Lương",
+        "relationship": "Cha ruột",
+        "action": "buy",
+        "change_volume": 22000,
+        "after_volume": 1677350,
+        "after_percentage": "7.99%",
+        "date_range": "06/05~06/30",
+        "company_fullname": "Tổng Công Ty Việt Thắng - CTCP",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]

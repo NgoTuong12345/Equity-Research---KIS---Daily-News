@@ -1,0 +1,194 @@
+[
+  {
+    "date": "2026-06-11",
+    "time": "00:36",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TPC",
+    "article_id": 2469412,
+    "title": "TPC: Thông báo giao dịch cổ phiếu của Người nội bộ Ngô Thị Thanh Huyền",
+    "summary": "Ngô Thị Thanh Huyền&nbsp;thông báo giao dịch cổ phiếu của Người nội bộ Công ty Cổ phần Nhựa Tân Đại Hưng như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469412",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469412/20260610 - TPC - Thong bao giao dich cp cua NNB Ngo Thi Thanh Huyen.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TPC",
+        "name": "Ngô Thị Thanh Huyền",
+        "relationship": "Thành viên HĐQT",
+        "action": "sell",
+        "change_volume": 209200,
+        "after_volume": 0,
+        "after_percentage": "0%",
+        "date_range": "06/16~06/30",
+        "company_fullname": "Công ty Cổ phần Nhựa Tân Đại Hưng",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-11",
+    "time": "00:32",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "REE",
+    "article_id": 2469374,
+    "title": "REE: Thông báo giao dịch cổ phiếu của tổ chức có liên quan của Người nội bộ Platinum Victory Pte. Ltd.",
+    "summary": "Platinum Victory Pte. Ltd.&nbsp;thông báo giao dịch cổ phiếu của tổ chức có liên quan của Người nội bộ Công ty Cổ phần Cơ Điện Lạnh như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469374",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469374/20260610 - REE - TB giao dich co phieu cua NCLQ NNB  - PLATINUM VICTORY PTE. LTD.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "REE",
+        "name": "PLATINUM VICTORY PTE. LTD.",
+        "relationship": "Cổ đông Nội bộ",
+        "action": "buy",
+        "change_volume": 20485510,
+        "after_volume": 280242276,
+        "after_percentage": "44.99%",
+        "date_range": "06/15~07/14",
+        "company_fullname": "Công ty Cổ phần Cơ Điện Lạnh",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-11",
+    "time": "00:19",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "NAB",
+    "article_id": 2469395,
+    "title": "NAB: Thông báo giao dịch cổ phiếu của người nội bộ Hà Huy Cường",
+    "summary": "Hà Huy Cường thông báo Nghị quyết HĐQT thông báo giao dịch cổ phiếu của người nội bộ Ngân hàng Thương mại Cổ phần Nam Á như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469395",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469395/20260609 - NAB - CBTT GIAO DICH CO PHIEU CUA NGUOI NOI BO CHE.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "NAB",
+        "name": "HÀ HUY CƯỜNG",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 13112448,
+        "after_percentage": "0,607%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "HOÀNG VIỆT CƯỜNG",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 13112448,
+        "after_percentage": "0,607%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "NGUYỄN VĨNH TUYÊN",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 14347029,
+        "after_percentage": "0,665%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "VÕ HOÀNG HẢI",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 13579448,
+        "after_percentage": "0,629%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "LÊ ANH TÚ",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 14308343,
+        "after_percentage": "0,663%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "HỒ NGUYỄN THÚY VY",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 12915025,
+        "after_percentage": "0,598%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "HUỲNH THANH PHONG",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 7351325,
+        "after_percentage": "0,341%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "LÂM KIM KHÔI",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 11523661,
+        "after_percentage": "0,534%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "ĐỖ THỊ HỒNG TRÂM",
+        "relationship": "Phó Tổng giám đốc",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 7247803,
+        "after_percentage": "0,336%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "NAB",
+        "name": "TRẦN HUY KHANG",
+        "relationship": "Chánh Văn phòng HĐQT kiêm Người phụ trách quản trị",
+        "action": "buy",
+        "change_volume": 3621930,
+        "after_volume": 9204455,
+        "after_percentage": "0,426%",
+        "date_range": "06/1206/30",
+        "company_fullname": "Ngân hàng TMCP Nam Á",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]

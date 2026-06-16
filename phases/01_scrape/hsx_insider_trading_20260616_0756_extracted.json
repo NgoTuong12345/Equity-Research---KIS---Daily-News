@@ -1,0 +1,198 @@
+[
+  {
+    "date": "2026-06-16",
+    "time": "00:10",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "HAP",
+    "article_id": 2470545,
+    "title": "HAP: Thông báo giao dịch cổ phiếu của người nội bộ Trần Quang Tiến",
+    "summary": "Trần Quang Tiến thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Tập đoàn HAPACO như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470545",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2470545/20260615 - HAP - Thong bao giao dich co phieu HAP cua ong Tran Quang Tien.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "HAP",
+        "name": "Trần Quang Tiến",
+        "relationship": "Thành viên Hội đồng quản trị",
+        "action": "buy",
+        "change_volume": 2000000,
+        "after_volume": 4149000,
+        "after_percentage": "3.74%",
+        "date_range": "06/22~07/21",
+        "company_fullname": "Công ty cổ phần Tập đoàn Hapaco",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-15",
+    "time": "23:52",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "DHC",
+    "article_id": 2470498,
+    "title": "DHC: Thông báo giao dịch cổ phiếu của người nội bộ Nguyễn Quốc Bình",
+    "summary": "Nguyễn Quốc Bình thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Đông Hải Bến Tre như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470498",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2470498/20260612 - DHC - TB GIAO DICH CP NGUYEN QUOC BINH.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "DHC",
+        "name": "Nguyễn Quốc Bình",
+        "relationship": "Thành viên Ban Kiểm Soát",
+        "action": "buy",
+        "change_volume": 72000,
+        "after_volume": 1786637,
+        "after_percentage": "1.85%",
+        "date_range": "06/17~07/16",
+        "company_fullname": "Công ty Cổ phần Đông Hải Bến Tre",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-15",
+    "time": "18:19",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TMS",
+    "article_id": 2470413,
+    "title": "TMS: Thông báo giao dịch cổ phiếu của tổ chức có liên quan đến người nội bộ CTCP VINAPRINT",
+    "summary": "CTCP VINAPRINT thông báo giao dịch cổ phiếu của tổ chức có liên quan đến người nội bộ Công ty Cổ phần Transimex như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470413",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2470413/20260612 - TMS - CBTT  - Thong bao giao dich TCCLQ - VPR.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TMS",
+        "name": "Công ty Cổ phần Vinaprint",
+        "relationship": "Tổ chức có liên quan đến người nội bộ",
+        "action": "buy",
+        "change_volume": 100000,
+        "after_volume": 1331883,
+        "after_percentage": "0.77%",
+        "date_range": "06/18~07/17",
+        "company_fullname": "Công ty Cổ phần Transimex",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-15",
+    "time": "15:58",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "FPT",
+    "article_id": 2470232,
+    "title": "FPT: Thông báo giao dịch cổ phiếu ESOP của Người nội bộ và người có liên quan của Người nội bộ",
+    "summary": "Công ty Cổ phần FPT thông báo giao dịch cổ phiếu ESOP của Người nội bộ và người có liên quan của Người nội bộ như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470232",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2470232/20260612 - FPT - TB giao dich CP ESOP cua NNB va NCLQ cua NNB (ban CBTT).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "FPT",
+        "name": "Nguyễn Văn Khoa",
+        "relationship": "Tổng Giám đốc",
+        "action": "buy",
+        "change_volume": 428368,
+        "after_volume": 5842978,
+        "after_percentage": "0.34%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Nguyễn Thị Phương",
+        "relationship": "Phó Tổng Giám đốc kiêm Giám đốc tài chính",
+        "action": "buy",
+        "change_volume": 347161,
+        "after_volume": 6450955,
+        "after_percentage": "0.38%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Phạm Minh Tuấn",
+        "relationship": "Phó Tổng Giám đốc",
+        "action": "buy",
+        "change_volume": 490082,
+        "after_volume": 3447930,
+        "after_percentage": "0.20%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Hoàng Hữu Chiến",
+        "relationship": "Kế toán trưởng",
+        "action": "buy",
+        "change_volume": 118592,
+        "after_volume": 1057299,
+        "after_percentage": "0.06%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Nguyễn Việt Thắng",
+        "relationship": "Trưởng Ban kiểm soát",
+        "action": "buy",
+        "change_volume": 17215,
+        "after_volume": 173666,
+        "after_percentage": "0.01%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Nguyễn Khải Hoàn",
+        "relationship": "Thành viên Ban kiểm soát",
+        "action": "buy",
+        "change_volume": 415146,
+        "after_volume": 2912350,
+        "after_percentage": "0.17%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Mai Thị Lan Anh",
+        "relationship": "Người được ủy quyền công bố thông tin",
+        "action": "buy",
+        "change_volume": 19767,
+        "after_volume": 28976,
+        "after_percentage": "0.00%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "FPT",
+        "name": "Đỗ Thị Ngọc Mai",
+        "relationship": "Con gái Thành viên HĐQT Đỗ Cao Bảo, CBNV của FPT",
+        "action": "buy",
+        "change_volume": 125568,
+        "after_volume": 1507397,
+        "after_percentage": "0.09%",
+        "date_range": "06/23~06/24",
+        "company_fullname": "Công ty Cổ phần FPT",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]

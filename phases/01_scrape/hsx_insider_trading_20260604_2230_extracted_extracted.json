@@ -1,0 +1,359 @@
+[
+  {
+    "date": "2026-06-05",
+    "time": "00:48",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SCS",
+    "article_id": 2467981,
+    "title": "SCS: Thông báo giao dịch cổ phiếu của người nội bộ Bùi Thị Thu Hương, Tạ Thu Hà",
+    "summary": "Bùi Thị Thu Hương, Tạ Thu Hà thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467981",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467981/20260604 - SCS - Thong bao giao dich NNB -Ta Thu Ha (rut gon).pdf",
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467981/20260604 - SCS - Thong bao giao dich NNB - Bui Thi Thu Huong (rut gon).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SCS",
+        "name": "Tạ Thu Hà",
+        "relationship": "Thành viên Hội đồng quản trị độc lập",
+        "action": "buy",
+        "change_volume": 24200,
+        "after_volume": 64200,
+        "after_percentage": "0.062%",
+        "date_range": "06/09~06/10",
+        "company_fullname": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-04",
+    "time": "00:50",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SIP",
+    "article_id": 2467574,
+    "title": "SIP: Thông báo giao dịch cổ phiếu của người có liên quan đến người nội bộ Trần Lê An",
+    "summary": "Trần Lê An thông báo giao dịch cổ phiếu của người có liên quan đến người nội bộ Công ty Cổ phần Đầu tư Sài Gòn VRG như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467574",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467574/20260603 - SIP - Thong bao giao dich co phieu NLQ cua NNB Chu tich HDQT Ong Tran Le An.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SIP",
+        "name": "TRẦN LÊ AN",
+        "relationship": "Con của Chủ tịch Hội đồng Quản trị",
+        "action": "buy",
+        "change_volume": 3700000,
+        "after_volume": 6003174,
+        "after_percentage": "2.48%",
+        "date_range": "06/10~07/09",
+        "company_fullname": "Công ty Cổ phần Đầu tư Sài Gòn VRG",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-04",
+    "time": "00:48",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SIP",
+    "article_id": 2467516,
+    "title": "SIP: Thông báo giao dịch cổ phiếu của người nội bộ Trần Mạnh Hùng",
+    "summary": "Trần Mạnh Hùng thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Đầu tư Sài Gòn VRG như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467516",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467516/20260603 - SIP - Thong bao giao dich co phieu NNB Chu tich HDQT Ong Tran Manh Hung.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SIP",
+        "name": "Trần Mạnh Hùng",
+        "relationship": "Chủ tịch Hội đồng quản trị",
+        "action": "sell",
+        "change_volume": 3700000,
+        "after_volume": 17210280,
+        "after_percentage": "7.11%",
+        "date_range": "06/10~07/09",
+        "company_fullname": "Công ty Cổ phần Đầu tư Sài Gòn VRG",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-04",
+    "time": "00:44",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SSI",
+    "article_id": 2467514,
+    "title": "SSI: Thông báo giao dịch mua cổ phiếu ESOP của NNB và người có liên quan",
+    "summary": "Công ty Cổ phần Chứng khoán SSI thông báo giao dịch mua cổ phiếu ESOP của NNB và người có liên quan như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467514",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467514/20260603 - SSI - Thong bao giao dich mua ESOP cua NNB va NCLQ - Ban cong bo_signed.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Duy Hưng",
+        "relationship": "Chủ tịch HĐQT, Người đại diện theo pháp luật",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 20416198,
+        "after_percentage": "0.816%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Hồng Nam",
+        "relationship": "Thành viên HĐQT",
+        "action": "buy",
+        "change_volume": 400000,
+        "after_volume": 10361615,
+        "after_percentage": "0.414%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Phạm Viết Muôn",
+        "relationship": "Thành viên độc lập HĐQT, Trưởng UBKT",
+        "action": "buy",
+        "change_volume": 20000,
+        "after_volume": 692763,
+        "after_percentage": "0.028%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Quốc Cường",
+        "relationship": "Thành viên độc lập HĐQT, Thành viên UBKT",
+        "action": "buy",
+        "change_volume": 20000,
+        "after_volume": 106400,
+        "after_percentage": "0.004%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Duy Khánh",
+        "relationship": "Thành viên HĐQT",
+        "action": "buy",
+        "change_volume": 200000,
+        "after_volume": 5898435,
+        "after_percentage": "0.236%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Duy Linh",
+        "relationship": "Giám đốc Phát triển Kinh doanh toàn cầu Công ty Quốc tế SSI",
+        "action": "buy",
+        "change_volume": 50000,
+        "after_volume": 50000,
+        "after_percentage": "0.002%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Đức Thông",
+        "relationship": "Tổng Giám đốc",
+        "action": "buy",
+        "change_volume": 500000,
+        "after_volume": 5268000,
+        "after_percentage": "0.210%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Thị Thanh Hà",
+        "relationship": "Giám đốc Tài chính",
+        "action": "buy",
+        "change_volume": 450000,
+        "after_volume": 6080043,
+        "after_percentage": "0.243%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Từ Cẩm Huê",
+        "relationship": "Kế toán trưởng",
+        "action": "buy",
+        "change_volume": 30000,
+        "after_volume": 53500,
+        "after_percentage": "0.002%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Kim Long",
+        "relationship": "Người phụ trách quản trị Công ty kiêm Thư ký Công ty, Người được ủy quyền CBTT, Giám đốc Luật và Kiểm soát tuân thủ",
+        "action": "buy",
+        "change_volume": 40000,
+        "after_volume": 1956017,
+        "after_percentage": "0.078%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Nguyễn Mạnh Hùng",
+        "relationship": "Chủ tịch Công Ty TNHH Quản lý Quỹ SSI",
+        "action": "buy",
+        "change_volume": 150000,
+        "after_volume": 10832500,
+        "after_percentage": "0.433%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SSI",
+        "name": "Phùng Thị Ngọc Linh",
+        "relationship": "Giám đốc Dịch vụ Tài chính",
+        "action": "buy",
+        "change_volume": 33200,
+        "after_volume": 85500,
+        "after_percentage": "0.003%",
+        "date_range": "06/0806/10",
+        "company_fullname": "Công ty Cổ phần Chứng khoán SSI",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-04",
+    "time": "00:36",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "UIC",
+    "article_id": 2467566,
+    "title": "UIC: Thông báo giao dịch cổ phiếu của người nội bộ Mai Thị Nguyệt",
+    "summary": "Mai Thị Nguyệt thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Đầu tư Phát triển Nhà và Đô thị IDICO như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467566",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467566/20260603 - UIC - Thong bao giao dich co phieu NNB - Mai Thi Nguyet.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "UIC",
+        "name": "Mai Thị Nguyệt",
+        "relationship": "Người Phụ trách quản trị Công ty",
+        "action": "sell",
+        "change_volume": 7500,
+        "after_volume": 14500,
+        "after_percentage": "0.1745%",
+        "date_range": "06/09~06/15",
+        "company_fullname": "Công ty cổ phần Đầu tư phát triển nhà và đô thị IDICO",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-04",
+    "time": "00:35",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "UIC",
+    "article_id": 2467565,
+    "title": "UIC: Thông báo giao dịch cổ phiếu của người nội bộ Nguyễn Mạnh Toại",
+    "summary": "&nbsp;Nguyễn Mạnh Toại thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Đầu tư Phát triển Nhà và Đô thị IDICO như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467565",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467565/20260603 - UIC - Thong bao giao dich co phieu NNB - Nguyen Manh Toai.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "UIC",
+        "name": "Nguyễn Mạnh Toại",
+        "relationship": "Kế toán trưởng, Người được ủy quyền CBTT",
+        "action": "sell",
+        "change_volume": 7500,
+        "after_volume": 13100,
+        "after_percentage": "0.1576%",
+        "date_range": "06/09~06/15",
+        "company_fullname": "Công ty cổ phần Đầu tư phát triển nhà và đô thị IDICO",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-03",
+    "time": "23:34",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SKG",
+    "article_id": 2467477,
+    "title": "SKG: Thông báo giao dịch cổ phiếu của người có liên quan đến người nội bộ Wong Ai Yieng",
+    "summary": "Wong Ai Yieng thông báo giao dịch cổ phiếu của người có liên quan đến người nội bộ Công ty Cổ phần Tàu cao tốc Superdong – Kiên Giang như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467477",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467477/20260603 - SKG - Thong bao GDCP cua NCLQ cua NNB - Wong Ai Yieng.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SKG",
+        "name": "WONG AI YIENG",
+        "relationship": "Người có liên quan của người nội bộ",
+        "action": "buy",
+        "change_volume": 1000000,
+        "after_volume": 1000000,
+        "after_percentage": "1.5%",
+        "date_range": "06/08~07/07",
+        "company_fullname": "Công ty CP Tàu cao tốc Superdong Kiên Giang",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-03",
+    "time": "23:34",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SKG",
+    "article_id": 2467462,
+    "title": "SKG: Thông báo giao dịch cổ phiếu của người có liên quan đến người nội bộ Puan Chiong",
+    "summary": "Puan Chiong thông báo giao dịch cổ phiếu của người có liên quan đến người nội bộ Công ty Cổ phần Tàu cao tốc Superdong – Kiên Giang như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467462",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467462/20260603 - SKG - Thong bao GDCP cua NCLQ cua NNB - Puan Chiong.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SKG",
+        "name": "Puan Chiong",
+        "relationship": "Người có liên quan của người nội bộ",
+        "action": "sell",
+        "change_volume": 1000000,
+        "after_volume": 2228828,
+        "after_percentage": "3.35%",
+        "date_range": "06/08~07/07",
+        "company_fullname": "Công ty CP Tàu cao tốc Superdong Kiên Giang",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]

@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2026-06-15",
+    "time": "18:19",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TMS",
+    "article_id": 2470413,
+    "title": "TMS: Thông báo giao dịch cổ phiếu của tổ chức có liên quan đến người nội bộ CTCP VINAPRINT",
+    "summary": "CTCP VINAPRINT thông báo giao dịch cổ phiếu của tổ chức có liên quan đến người nội bộ Công ty Cổ phần Transimex như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470413",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2470413/20260612 - TMS - CBTT  - Thong bao giao dich TCCLQ - VPR.pdf"
+    ],
+    "transactions": []
+  },
+  {
+    "date": "2026-06-15",
+    "time": "15:58",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "FPT",
+    "article_id": 2470232,
+    "title": "FPT: Thông báo giao dịch cổ phiếu ESOP của Người nội bộ và người có liên quan của Người nội bộ",
+    "summary": "Công ty Cổ phần FPT thông báo giao dịch cổ phiếu ESOP của Người nội bộ và người có liên quan của Người nội bộ như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2470232",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2470232/20260612 - FPT - TB giao dich CP ESOP cua NNB va NCLQ cua NNB (ban CBTT).pdf"
+    ],
+    "transactions": []
+  }
+]

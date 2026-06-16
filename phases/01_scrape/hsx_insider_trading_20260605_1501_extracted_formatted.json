@@ -1,0 +1,33 @@
+{
+  "source_file": "hsx_insider_trading_20260605_1501_extracted.json",
+  "category": "trading",
+  "item_count": 1,
+  "items": [
+    {
+      "order": 1,
+      "ticker": "TVT",
+      "exchange": "HSX",
+      "company_vn": "Tổng Công Ty Việt Thắng - CTCP",
+      "company_en": "Tong Cong Ty Viet Thang - CTCP",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468211",
+      "published": "2026-06-05",
+      "title_vn": "TVT. (Tổng Công Ty Việt Thắng - CTCP. HSX)",
+      "title_en": "TVT. (Tong Cong Ty Viet Thang - CTCP. HSX)",
+      "summary_vn": "TVT (Tổng Công Ty Việt Thắng - CTCP) HSX: 06/05~06/30. Điều Minh Lương (Cha ruột) thông báo đăng ký mua 22,000 cổ phiếu, tăng tổng số lượng cổ phiếu nắm giữ lên 1,677,350 cổ phiếu (7.99%);",
+      "summary_en": "TVT (Tong Cong Ty Viet Thang - CTCP) HSX: 06/05~06/30. Dieu Minh Luong (Cha ruot) announced to buy 22,000 shares, increasing total shares to 1,677,350 shares (7.99%);",
+      "raw_transaction": {
+        "ticker": "TVT",
+        "name": "Điều Minh Lương",
+        "relationship": "Cha ruột",
+        "action": "buy",
+        "change_volume": 22000,
+        "after_volume": 1677350,
+        "after_percentage": "7.99%",
+        "date_range": "06/05~06/30",
+        "company_fullname": "Tổng Công Ty Việt Thắng - CTCP",
+        "exchange": "HSX"
+      }
+    }
+  ]
+}

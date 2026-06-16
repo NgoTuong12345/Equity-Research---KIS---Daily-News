@@ -1,0 +1,63 @@
+{
+  "source_file": "hsx_insider_trading_20260608_1501_extracted.json",
+  "category": "trading",
+  "item_count": 2,
+  "items": [
+    {
+      "order": 1,
+      "ticker": "AAA",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Nhựa An Phát Xanh",
+      "company_en": "Cong ty Co phan Nhua An Phat Xanh",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468664",
+      "published": "2026-06-08",
+      "title_vn": "AAA. (Công ty Cổ phần Nhựa An Phát Xanh. HSX)",
+      "title_en": "AAA. (Cong ty Co phan Nhua An Phat Xanh. HSX)",
+      "summary_vn": "AAA (Công ty Cổ phần Nhựa An Phát Xanh) HSX: 06/11~07/10. Công ty Cổ phần Tập đoàn An Phát Holdings (Công ty mẹ đồng thời là người có liên quan của người nội bộ) thông báo đăng ký mua 6,000,000 cổ phiếu, tăng tổng số lượng cổ phiếu nắm giữ lên 197,787,394 cổ phiếu (50.23%);",
+      "summary_en": "AAA (Cong ty Co phan Nhua An Phat Xanh) HSX: 06/11~07/10. Cong ty Co phan Tap doan An Phat Holdings (Parent company and related person of insider) announced to buy 6,000,000 shares, increasing total shares to 197,787,394 shares (50.23%);",
+      "relationship_vn": "Công ty mẹ đồng thời là người có liên quan của người nội bộ",
+      "relationship_en": "Parent company and related person of insider",
+      "raw_transaction": {
+        "ticker": "AAA",
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "relationship": "Công ty mẹ đồng thời là người có liên quan của người nội bộ",
+        "action": "buy",
+        "change_volume": 6000000,
+        "after_volume": 197787394,
+        "after_percentage": "50.23%",
+        "date_range": "06/11~07/10",
+        "company_fullname": "Công ty Cổ phần Nhựa An Phát Xanh",
+        "exchange": "HSX"
+      }
+    },
+    {
+      "order": 2,
+      "ticker": "VHM",
+      "exchange": "HSX",
+      "company_vn": "Công ty cổ phần Vinhomes",
+      "company_en": "Cong ty co phan Vinhomes",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468601",
+      "published": "2026-06-08",
+      "title_vn": "VHM. (Công ty cổ phần Vinhomes. HSX)",
+      "title_en": "VHM. (Cong ty co phan Vinhomes. HSX)",
+      "summary_vn": "VHM (Công ty cổ phần Vinhomes) HSX: 06/11~07/10. TẬP ĐOÀN VINGROUP - CÔNG TY CP (Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes) thông báo đăng ký bán 15,226,260 cổ phiếu, giảm tổng số lượng cổ phiếu nắm giữ xuống 2,944,999,658 cổ phiếu (71.70%);",
+      "summary_en": "VHM (Cong ty co phan Vinhomes) HSX: 06/11~07/10. TAP DOAN VINGROUP - CONG TY CP (Parent company, related organization of Vinhomes's insider) announced to sell 15,226,260 shares, decreasing total shares to 2,944,999,658 shares (71.70%);",
+      "relationship_vn": "Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes",
+      "relationship_en": "Parent company, related organization of Vinhomes's insider",
+      "raw_transaction": {
+        "ticker": "VHM",
+        "name": "TẬP ĐOÀN VINGROUP - CÔNG TY CP",
+        "relationship": "Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes",
+        "action": "sell",
+        "change_volume": 15226260,
+        "after_volume": 2944999658,
+        "after_percentage": "71.70%",
+        "date_range": "06/11~07/10",
+        "company_fullname": "Công ty cổ phần Vinhomes",
+        "exchange": "HSX"
+      }
+    }
+  ]
+}

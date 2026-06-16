@@ -1,0 +1,43 @@
+[
+  {
+    "date": "2026-06-05",
+    "time": "00:48",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "SCS",
+    "article_id": 2467981,
+    "title": "SCS: Thông báo giao dịch cổ phiếu của người nội bộ Bùi Thị Thu Hương, Tạ Thu Hà",
+    "summary": "Bùi Thị Thu Hương, Tạ Thu Hà thông báo giao dịch cổ phiếu của người nội bộ Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467981",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467981/20260604 - SCS - Thong bao giao dich NNB -Ta Thu Ha (rut gon).pdf",
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2467981/20260604 - SCS - Thong bao giao dich NNB - Bui Thi Thu Huong (rut gon).pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "SCS",
+        "name": "Bùi Thị Thu Hương",
+        "relationship": "Chủ tịch Hội đồng quản trị",
+        "action": "buy",
+        "change_volume": 29500,
+        "after_volume": 85550,
+        "after_percentage": "0.083%",
+        "date_range": "06/09~06/10",
+        "company_fullname": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+        "exchange": "HSX"
+      },
+      {
+        "ticker": "SCS",
+        "name": "Tạ Thu Hà",
+        "relationship": "Thành viên Hội đồng quản trị độc lập",
+        "action": "buy",
+        "change_volume": 24200,
+        "after_volume": 64200,
+        "after_percentage": "0.062%",
+        "date_range": "06/09~06/10",
+        "company_fullname": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+        "exchange": ""
+      }
+    ]
+  }
+]

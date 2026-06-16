@@ -1,0 +1,73 @@
+[
+  {
+    "date": "2026-06-08",
+    "time": "20:53",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "AAA",
+    "article_id": 2468664,
+    "title": "AAA: Thông báo giao dịch cổ phiếu của tổ chức có liên quan của người nội bộ CTCP Tập đoàn An Phát Holdings",
+    "summary": "CTCP Tập đoàn An Phát Holdings thông báo giao dịch cổ phiếu của tổ chức có liên quan của người nội bộ Công ty Cổ phần Nhựa An Phát Xanh như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468664",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468664/20260608 - AAA - Thong bao giao dich CP cua CTCP Tap doan An Phat Holdings.CBTT.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "AAA",
+        "name": "Công ty Cổ phần Tập đoàn An Phát Holdings",
+        "relationship": "Công ty mẹ đồng thời là người có liên quan của người nội bộ",
+        "action": "buy",
+        "change_volume": 6000000,
+        "after_volume": 197787394,
+        "after_percentage": "50.23%",
+        "date_range": "06/11~07/10",
+        "company_fullname": "Công ty Cổ phần Nhựa An Phát Xanh",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-08",
+    "time": "20:46",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "VHM",
+    "article_id": 2468601,
+    "title": "VHM: Thông báo giao dịch cổ phiếu của tổ chức có liên quan của người nội bộ Tập đoàn Vingroup - Công ty Cổ phần",
+    "summary": "Tập đoàn Vingroup - Công ty Cổ phần&nbsp;thông báo giao dịch cổ phiếu của tổ chức có liên quan của người nội bộ Công ty Cổ phần Vinhomes sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468601",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468601/20260605 - VHM - TBGD CP CD LQ - Tap doan Vingroup - ban CBTT.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "VHM",
+        "name": "TẬP ĐOÀN VINGROUP – CÔNG TY CP",
+        "relationship": "Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes",
+        "action": "sell",
+        "change_volume": 15226260,
+        "after_volume": 2944999658,
+        "after_percentage": "71.70%",
+        "date_range": "06/11~07/10",
+        "company_fullname": "Công ty cổ phần Vinhomes",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-08",
+    "time": "16:38",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "BVH",
+    "article_id": 2468564,
+    "title": "BVH: Thông báo giao dịch với người có liên quan",
+    "summary": "Tập đoàn Bảo Việt thông báo giao dịch với người có liên quan như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2468564",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2468564/20260605 - BVH - CBTT giao dich voi Nguoi co lien quan (IDS of transactions with RPs) signed.pdf"
+    ],
+    "transactions": []
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "source_file": "hsx_insider_trading_20260605_1400_extracted.json",
+  "category": "trading",
+  "item_count": 2,
+  "items": [
+    {
+      "order": 1,
+      "ticker": "SCS",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+      "company_en": "Saigon Cargo Service",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467981",
+      "published": "2026-06-05",
+      "title_vn": "SCS. (Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn. HSX)",
+      "title_en": "SCS. (Saigon Cargo Service. HSX)",
+      "summary_vn": "SCS (Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn) HSX: 06/09~06/10. Bùi Thị Thu Hương (Chủ tịch Hội đồng quản trị) thông báo đăng ký mua 29,500 cổ phiếu, tăng tổng số lượng cổ phiếu nắm giữ lên 85,550 cổ phiếu (0.083%);",
+      "summary_en": "SCS (Saigon Cargo Service) HSX: 06/09~06/10. Bui Thi Thu Huong (Chairman of the Board of Directors) announced to buy 29,500 shares, increasing total shares to 85,550 shares (0.083%);",
+      "raw_transaction": {
+        "ticker": "SCS",
+        "name": "Bùi Thị Thu Hương",
+        "relationship": "Chủ tịch Hội đồng quản trị",
+        "action": "buy",
+        "change_volume": 29500,
+        "after_volume": 85550,
+        "after_percentage": "0.083%",
+        "date_range": "06/09~06/10",
+        "company_fullname": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+        "exchange": "HSX"
+      }
+    },
+    {
+      "order": 2,
+      "ticker": "SCS",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+      "company_en": "Saigon Cargo Service",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2467981",
+      "published": "2026-06-05",
+      "title_vn": "SCS. (Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn. HSX)",
+      "title_en": "SCS. (Saigon Cargo Service. HSX)",
+      "summary_vn": "SCS (Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn) HSX: 06/09~06/10. Tạ Thu Hà (Thành viên Hội đồng quản trị độc lập) thông báo đăng ký mua 24,200 cổ phiếu, tăng tổng số lượng cổ phiếu nắm giữ lên 64,200 cổ phiếu (0.062%);",
+      "summary_en": "SCS (Saigon Cargo Service) HSX: 06/09~06/10. Ta Thu Ha (Independent Member of the Board of Directors) announced to buy 24,200 shares, increasing total shares to 64,200 shares (0.062%);",
+      "raw_transaction": {
+        "ticker": "SCS",
+        "name": "Tạ Thu Hà",
+        "relationship": "Thành viên Hội đồng quản trị độc lập",
+        "action": "buy",
+        "change_volume": 24200,
+        "after_volume": 64200,
+        "after_percentage": "0.062%",
+        "date_range": "06/09~06/10",
+        "company_fullname": "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn",
+        "exchange": ""
+      }
+    }
+  ]
+}

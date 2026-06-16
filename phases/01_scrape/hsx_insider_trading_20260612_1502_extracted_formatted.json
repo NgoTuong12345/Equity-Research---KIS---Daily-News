@@ -1,0 +1,63 @@
+{
+  "source_file": "hsx_insider_trading_20260612_1502_extracted.json",
+  "category": "trading",
+  "item_count": 2,
+  "items": [
+    {
+      "order": 1,
+      "ticker": "TDM",
+      "exchange": "HSX",
+      "company_vn": "Công ty Cổ phần Nước Thủ Dầu Một",
+      "company_en": "Thu Dau Mot Water",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469971",
+      "published": "2026-06-12",
+      "title_vn": "TDM. (Công ty Cổ phần Nước Thủ Dầu Một. HSX)",
+      "title_en": "TDM. (Thu Dau Mot Water. HSX)",
+      "summary_vn": "TDM (Công ty Cổ phần Nước Thủ Dầu Một) HSX: 06/17~07/15. NGUYỄN THỊ NGỌC THANH (Trưởng ban kiểm soát) thông báo đăng ký mua 200,000 cổ phiếu, tăng tổng số lượng cổ phiếu nắm giữ lên 300,000 cổ phiếu (0.27%);",
+      "summary_en": "TDM (Thu Dau Mot Water) HSX: 06/17~07/15. NGUYEN THI NGOC THANH (Head of the Supervisory Board) announced to buy 200,000 shares, increasing total shares to 300,000 shares (0.27%);",
+      "relationship_vn": "Trưởng ban kiểm soát",
+      "relationship_en": "Head of the Supervisory Board",
+      "raw_transaction": {
+        "ticker": "TDM",
+        "name": "NGUYỄN THỊ NGỌC THANH",
+        "relationship": "Trưởng ban kiểm soát",
+        "action": "buy",
+        "change_volume": 200000,
+        "after_volume": 300000,
+        "after_percentage": "0.27%",
+        "date_range": "06/17~07/15",
+        "company_fullname": "Công ty Cổ phần Nước Thủ Dầu Một",
+        "exchange": "HSX"
+      }
+    },
+    {
+      "order": 2,
+      "ticker": "MCH",
+      "exchange": "HSX",
+      "company_vn": "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN",
+      "company_en": "Masan Consumer",
+      "source": "HSX",
+      "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469869",
+      "published": "2026-06-12",
+      "title_vn": "MCH. (CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN. HSX)",
+      "title_en": "MCH. (Masan Consumer. HSX)",
+      "summary_vn": "MCH (CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN) HSX: 2026-06-23. CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN (Tổ chức đăng ký giao dịch) thông báo đăng ký bán 32,583 cổ phiếu, giảm tổng số lượng cổ phiếu nắm giữ xuống 0 cổ phiếu (0.0%);",
+      "summary_en": "MCH (Masan Consumer) HSX: 2026-06-23. Masan Consumer Corporation (Trading organization) announced to sell 32,583 shares, decreasing total shares to 0 shares (0.0%);",
+      "relationship_vn": "Tổ chức đăng ký giao dịch",
+      "relationship_en": "Trading organization",
+      "raw_transaction": {
+        "ticker": "MCH",
+        "name": "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN",
+        "relationship": "Tổ chức đăng ký giao dịch",
+        "action": "sell",
+        "change_volume": 32583,
+        "after_volume": 0,
+        "after_percentage": "0.0%",
+        "date_range": "2026-06-23",
+        "company_fullname": "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN",
+        "exchange": "HSX"
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+[
+  {
+    "date": "2026-06-12",
+    "time": "18:19",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "TDM",
+    "article_id": 2469971,
+    "title": "TDM: Thông báo giao dịch cổ phiếu của Người nội bộ Nguyễn Thị Ngọc Thanh",
+    "summary": "Nguyễn Thị Ngọc Thanh&nbsp;thông báo giao dịch cổ phiếu của Người nội bộ Công ty Cổ phần Nước Thủ Dầu Một như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469971",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469971/20260612 - TDM - PL 13 TB GDCP CUA NNB CUA CTY DAI CHUNG - NGUYEN THI NGOC THANH.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "TDM",
+        "name": "NGUYỄN THỊ NGỌC THANH",
+        "relationship": "Trưởng ban kiểm soát",
+        "action": "buy",
+        "change_volume": 200000,
+        "after_volume": 300000,
+        "after_percentage": "0.27%",
+        "date_range": "06/17~07/15",
+        "company_fullname": "Công ty Cổ phần Nước Thủ Dầu Một",
+        "exchange": "HSX"
+      }
+    ]
+  },
+  {
+    "date": "2026-06-12",
+    "time": "16:31",
+    "source": "HSX",
+    "category": "insider_trading",
+    "ticker": "MCH",
+    "article_id": 2469869,
+    "title": "MCH: Thông báo giao dịch bán cổ phiếu quỹ",
+    "summary": "Công ty Cổ phần Hàng tiêu dùng Masan thông báo giao dịch bán cổ phiếu quỹ như sau:",
+    "url": "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/2469869",
+    "pdf_urls": [
+      "https://staticfile.hsx.vn/Uploads/UploadDocuments/2469869/20260611 - MCH - CBTT giao dich ban CP quy (su dung CP quy de phat hanh ESOP) - signed.pdf"
+    ],
+    "transactions": [
+      {
+        "ticker": "MCH",
+        "name": "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN",
+        "relationship": "Tổ chức đăng ký giao dịch",
+        "action": "sell",
+        "change_volume": 32583,
+        "after_volume": 0,
+        "after_percentage": "0.0%",
+        "date_range": "2026-06-23",
+        "company_fullname": "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN",
+        "exchange": "HSX"
+      }
+    ]
+  }
+]
