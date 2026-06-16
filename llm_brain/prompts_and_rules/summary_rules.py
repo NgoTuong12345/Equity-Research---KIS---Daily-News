@@ -7,9 +7,9 @@ CATEGORIES = ("macro", "trading", "corporate", "economy_political_others")
 FEED_CATEGORIES = ("corporate", "economy_political_others")
 
 SECTION_TITLES = {
-    "macro": {"vn": "KINH TẾ VĨ MÔ", "en": "Macro indicators"},
+    "macro": {"vn": "KINH TẾ VĨ MÔ", "en": "Macroeconomics"},
     "trading": {"vn": "GIAO DỊCH", "en": "Trading"},
-    "corporate": {"vn": "DOANH NGHIỆP", "en": "Corporate"},
+    "corporate": {"vn": "DOANH NGHIỆP", "en": "Corporate News"},
     "economy_political_others": {
         "vn": "KINH TẾ - CHÍNH TRỊ - KHÁC",
         "en": "Economy - Politics - Others",

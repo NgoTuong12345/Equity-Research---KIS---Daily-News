@@ -5,28 +5,23 @@ Reads the manifest produced by hsx_prepare_pdfs.py (or auto-generates it),
 then provides helpers for the AI agent to extract transaction data from
 each PDF's rendered images and write the final _extracted.json.
 
-This replaces hsx_nlm_extractor.py — no NotebookLM, no Google auth,
-no browser automation. The AI agent reads images directly using its
-vision capabilities.
+The AI agent reads images directly using its vision capabilities.
 
 Pipeline:
-  1. hsx_insider_scraper.py        → hsx_insider_trading_*.json
-  2. hsx_prepare_pdfs.py           → downloads PDFs, renders images, writes manifest
-  3. hsx_agent_extractor.py        → agent reads images, writes *_extracted.json
-  4. format_hsx_trading_news.py    → translates, deduplicates, writes *_extracted_formatted.json
+  1. phases/01_scrape/hsx_insider_scraper.py  → hsx_insider_trading_*.json
+  2. phases/01_scrape/hsx_prepare_pdfs.py     → downloads PDFs, renders images, writes manifest
+  3. hsx_agent_extractor.py                   → agent reads images, writes *_extracted.json
+  4. phases/01_scrape/format_hsx_trading_news.py → --prepare → agent → --merge → *_extracted_formatted.json
 
-Usage (from agent workflow):
+Usage (from agent workflow — all paths relative to project root):
   Step 1: Run preparation
-    python vietnam_news_scraper/hsx_prepare_pdfs.py
+    phases/01_scrape/venv/Scripts/python.exe phases/01_scrape/hsx_prepare_pdfs.py
 
   Step 2: Agent reads each article's images and extracts transactions
-    (The agent uses view_file to read each PNG, then extracts structured JSON)
+    (The agent reads each PNG from phases/01_scrape/pdf_images/ using Read tool)
 
-  Step 3: Write results
-    python vietnam_news_scraper/hsx_agent_extractor.py --manifest PATH --results PATH
-
-  Or all-in-one: agent runs hsx_prepare_pdfs.py, processes images, then calls
-  hsx_agent_extractor.py --save to write final output.
+  Step 3: Write results (pass explicit --manifest and --results paths)
+    phases/01_scrape/venv/Scripts/python.exe llm_brain/extractors/hsx_agent_extractor.py --manifest PATH --results PATH
 """
 from __future__ import annotations
 
@@ -47,7 +42,7 @@ logging.basicConfig(
 )
 log = logging.getLogger(__name__)
 
-OUTDIR = Path(__file__).resolve().parent
+SCRAPE_DIR = Path(__file__).resolve().parents[2] / "phases" / "01_scrape"
 
 # The extraction prompt — same fields as the old NLM extractor for compatibility
 EXTRACTION_FIELDS = """
@@ -76,7 +71,7 @@ Rules:
 def find_latest_json() -> Optional[Path]:
     """Find the latest hsx_insider_trading_*.json (excluding derived files)."""
     matches = [
-        p for p in sorted(glob.glob(str(OUTDIR / "hsx_insider_trading_*.json")))
+        p for p in sorted(glob.glob(str(SCRAPE_DIR / "hsx_insider_trading_*.json")))
         if not p.endswith("_extracted.json")
         and not p.endswith("_formatted.json")
         and not p.endswith("_manifest.json")
@@ -86,7 +81,7 @@ def find_latest_json() -> Optional[Path]:
 
 def find_latest_manifest() -> Optional[Path]:
     """Find the latest manifest JSON."""
-    matches = sorted(glob.glob(str(OUTDIR / "hsx_insider_trading_*_manifest.json")))
+    matches = sorted(glob.glob(str(SCRAPE_DIR / "hsx_insider_trading_*_manifest.json")))
     return Path(matches[-1]) if matches else None
 
 

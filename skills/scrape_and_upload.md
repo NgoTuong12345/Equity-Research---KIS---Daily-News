@@ -95,15 +95,33 @@ venv\Scripts\python.exe hsx_prepare_pdfs.py
 
 This downloads the PDF attachments from the latest `hsx_insider_trading_*.json`, renders each page to a PNG, and saves a manifest JSON at `phases\01_scrape\{timestamp}_manifest.json`. The PNG images are written to `phases\01_scrape\pdf_images\`.
 
-**2c — Format extracted data into bilingual news items:**
+**2c — Prepare unique transactions for agent formatting:**
 
 ```
 for /f "delims=" %F in ('dir /b /o-d hsx_insider_trading_*_extracted.json') do (
-    venv\Scripts\python.exe format_hsx_trading_news.py "%F"
+    venv\Scripts\python.exe format_hsx_trading_news.py --prepare "%F"
     goto done
 )
 :done
 ```
+
+This writes `*_to_format.json` with deduplicated transactions.
+
+**2d — Agent reads `*_to_format.json` and writes `*_agent_formatted.json`:**
+
+The agent (Claude) reads `phases\01_scrape\*_to_format.json`, translates each transaction into bilingual `summary_vn` and `summary_en` prose following KIS trading-item rules, and writes the result to `phases\01_scrape\*_agent_formatted.json`.
+
+**2e — Merge agent output into final formatted file:**
+
+```
+for /f "delims=" %F in ('dir /b /o-d hsx_insider_trading_*_extracted.json') do (
+    venv\Scripts\python.exe format_hsx_trading_news.py --merge "%F"
+    goto done
+)
+:done
+```
+
+This writes `*_extracted_formatted.json`, `*_extracted_EN.txt`, and `*_extracted_VN.txt`.
 
 If any sub-step of the HSX pipeline fails, log a warning and **continue** — this step is non-blocking for the upload.
 

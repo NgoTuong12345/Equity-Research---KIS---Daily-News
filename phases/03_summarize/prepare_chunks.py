@@ -8,10 +8,11 @@ import sys
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 def main():
-    if len(sys.argv) > 1:
-        base = sys.argv[1]
-    else:
-        base = "mor_10_06_2026"
+    if len(sys.argv) < 2:
+        print("Usage: python prepare_chunks.py <base>")
+        print("Example: python prepare_chunks.py mor_16_06_2026")
+        sys.exit(1)
+    base = sys.argv[1]
     filepath = BASE_DIR / "reports" / base / "source" / f"{base}_full.md"
     if not filepath.exists():
         print(f"Error: File {filepath} does not exist.")

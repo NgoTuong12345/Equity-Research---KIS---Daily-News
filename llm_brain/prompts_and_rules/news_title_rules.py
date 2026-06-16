@@ -7,11 +7,6 @@ def normalized_item_title(item: dict[str, Any], category: str, lang: str) -> str
     Since the pipeline has switched to an agent-driven title generation workflow,
     we directly return the pre-standardized titles merged into the data JSONs.
     """
-    title = str(item.get(f"title_{lang}") or "").strip()
-    if title:
-        return title
-        
-    # Fallback just in case
     return str(item.get(f"title_{lang}") or "").strip()
 
 def ticker_company_exchange_title(item: dict[str, Any], lang: str) -> str:
