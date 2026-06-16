@@ -280,8 +280,49 @@ def refresh_auth() -> None:
                     if current.startswith("https://notebooklm.google.com"):
                         print(f"  Reached NotebookLM ({current[:80]})")
                         break
+                    
+                    # Take screenshot and scan for 2-digit numbers
+                    try:
+                        screenshot_path = Path(__file__).resolve().parent.parent / "google_2fa_screenshot.png"
+                        page.screenshot(path=str(screenshot_path))
+                    except Exception:
+                        pass
+                    
+                    try:
+                        # Fast evaluation of 2-digit numbers in divs, spans, or blockquotes
+                        js_code = """
+                        () => {
+                            let results = [];
+                            let els = document.querySelectorAll('div, span, blockquote');
+                            for (let el of els) {
+                                let txt = el.innerText ? el.innerText.trim() : '';
+                                if (/^\\d{2}$/.test(txt)) {
+                                    results.push(txt);
+                                }
+                            }
+                            return Array.from(new Set(results));
+                        }
+                        """
+                        numbers = page.evaluate(js_code)
+                        if numbers:
+                            print(f"  [2FA Info] Found 2-digit numbers on screen: {', '.join(numbers)}")
+                    except Exception:
+                        pass
+
+                    # Auto-skip optional onboarding/recovery setups
+                    try:
+                        for text_val in ["Not now", "Bỏ qua", "Not right now", "Bỏ qua lúc này", "Bỏ qua thiết lập"]:
+                            for selector in [f'button:has-text("{text_val}")', f'span:has-text("{text_val}")']:
+                                locator = page.locator(selector).first
+                                if locator.is_visible():
+                                    print(f"  [2FA Info] Auto-clicking onboarding skip button: {text_val}")
+                                    locator.click()
+                                    page.wait_for_timeout(1000)
+                    except Exception:
+                        pass
+
                     remaining = int(deadline - time.time())
-                    if remaining % 20 == 0:
+                    if remaining % 10 == 0:
                         print(f"  Waiting for login / 2FA... {remaining}s remaining")
                     page.wait_for_timeout(2000)
                 else:

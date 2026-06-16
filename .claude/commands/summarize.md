@@ -67,22 +67,28 @@ If the script errors, stop and report the error to the user.
 
 ## Step 2.5 — Scrape and extract HSX Insider Trading disclosures
 
-Run the insider trading scraper, extractor, and formatter to fetch the latest trading news:
+Run the insider trading scraper and extractor to fetch the latest raw trading news:
 
 ```powershell
 cd C:\Users\Administrator\Playwright-Daily-News\vietnam_news_scraper
 venv\Scripts\python.exe hsx_insider_scraper.py
 venv\Scripts\python.exe hsx_nlm_extractor.py
-# Find the latest extracted JSON and format it:
-for /f "delims=" %F in ('dir /b /o-d hsx_insider_trading_*_extracted.json 2^>nul') do (
-    venv\Scripts\python.exe format_hsx_trading_news.py "%F"
-    goto :formatted_done
-)
-:formatted_done
 cd ..
 ```
 
-This ensures that the latest trading news is fetched and processed via NotebookLM. If NotebookLM extraction fails due to credentials, run `venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force` from the root first, then re-run the extraction.
+This ensures that the latest trading news is fetched and extracted. If NotebookLM extraction fails due to credentials, run `venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force` from the root first, then re-run the extraction.
+
+### Direct Translation via Antigravity (LLM)
+Do NOT run `format_hsx_trading_news.py` as it relies on deterministic string replacements that cause formatting and translation errors (such as 'Child trai' or 'Pho General Director'). Instead, the agent (Antigravity) must directly read the latest `hsx_insider_trading_*_extracted.json` file, translate the company names, names, and relationships professionally, and write the following formatted outputs:
+1. `hsx_insider_trading_*_extracted_formatted.json` conforming to KIS style templates:
+   - `company_en` should be the official/standard English translation.
+   - `relationship_en` should be standard financial terms (e.g. 'Child of insider', 'Deputy General Director', 'Chief Accountant').
+   - `summary_vn` and `summary_en` should be formatted using the standard bilingual templates:
+     - `summary_vn`: `<ticker> (<company_fullname_vn>) <exchange>: <date_range>. <name> (<relationship_vn>) thông báo đăng ký [mua/bán] <change_volume> cổ phiếu, [tăng/giảm] tổng số lượng cổ phiếu nắm giữ lên/xuống <after_volume> cổ phiếu (<after_percentage>);`
+     - `summary_en`: `<ticker> (<company_fullname_en>) <exchange>: <date_range>. <name_en> (<relationship_en>) announced to [buy/sell] <change_volume> shares, [increasing/decreasing] total shares to <after_volume> shares (<after_percentage>);`
+2. `hsx_insider_trading_*_extracted_EN.txt` containing one `summary_en` line per transaction.
+3. `hsx_insider_trading_*_extracted_VN.txt` containing one `summary_vn` line per transaction.
+
 
 ---
 
@@ -121,6 +127,13 @@ Read `reports/{base}/source/{base}_full.md` with the Read tool.
 For each `### Article title` block, collect:
 - Title, Source, Category, Published date (if present)
 - Summary and Full Content sections
+
+> [!IMPORTANT]
+> **Subagent & Tool Schema Rules (Preventing Agent Loops):**
+> If you spawn subagents to read or process these article files/chunks, or if you call the `view_file` tool yourself on large files:
+> - Always pass `ContentOffset` as a raw **integer** (e.g. `51200`), NEVER as a string (e.g. `"51200"`). 
+> - If passing the parameter as a string, the tool schema validation will fail on the platform side, causing the subagent/agent to get stuck in an infinite retry loop.
+> - Ensure this rule is explicitly defined in the system prompts of any subagents you define dynamically.
 
 ---
 

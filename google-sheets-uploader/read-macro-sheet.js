@@ -259,8 +259,10 @@ function processTabRows(rows, tabName) {
 
 async function main() {
   const baseInfo = reportBaseForSession(SESSION);
+
   if (baseInfo.session === 'afternoon') {
-    return writeEmptyAfternoonMacro(baseInfo);
+    writeEmptyAfternoonMacro(baseInfo);
+    return;
   }
 
   log('Launching Chrome...');

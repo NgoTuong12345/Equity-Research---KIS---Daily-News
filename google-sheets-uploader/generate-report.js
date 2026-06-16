@@ -45,34 +45,21 @@ function readClipboard() {
 // Google Sheets uses \t between cells and \r\n between rows
 // Cells containing \n, \t, or " are enclosed in double-quotes (RFC 4180 style)
 function parseTsv(text) {
+  const lines = text.split(/\r?\n/);
   const rows = [];
-  let row = [];
-  let cell = '';
-  let inQuotes = false;
-  let i = 0;
-
-  while (i < text.length) {
-    const ch = text[i];
-    if (inQuotes) {
-      if (ch === '"') {
-        if (text[i + 1] === '"') { cell += '"'; i += 2; continue; }
-        inQuotes = false; i++; continue;
+  for (const line of lines) {
+    if (!line.trim()) continue;
+    const cells = line.split('\t').map(cell => {
+      let cleaned = cell.trim();
+      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
+        cleaned = cleaned.slice(1, -1);
       }
-      cell += ch; i++; continue;
-    }
-    if (ch === '"') { inQuotes = true; i++; continue; }
-    if (ch === '\t') { row.push(cell); cell = ''; i++; continue; }
-    if (ch === '\r' && text[i + 1] === '\n') {
-      row.push(cell); rows.push(row); row = []; cell = ''; i += 2; continue;
-    }
-    if (ch === '\n') {
-      row.push(cell); rows.push(row); row = []; cell = ''; i++; continue;
-    }
-    cell += ch; i++;
+      cleaned = cleaned.replace(/""/g, '"');
+      return cleaned;
+    });
+    rows.push(cells);
   }
-  if (cell || row.length) { row.push(cell); rows.push(row); }
-
-  return rows.filter(r => r.some(c => c.trim()));
+  return rows;
 }
 
 function buildMarkdown(sheetName, rows) {

@@ -19,7 +19,7 @@ Core files:
 
 - `vietnam_news_scraper/hsx_insider_scraper.py`: fetches HSX disclosure/news items, filters insider-trading announcements, finds PDF attachments, and writes raw scrape JSON.
 - `vietnam_news_scraper/hsx_nlm_extractor.py`: downloads PDFs and extracts structured insider/related-party transaction records with NotebookLM.
-- `vietnam_news_scraper/format_hsx_trading_news.py`: formats extracted transaction JSON into bilingual trading-news prose.
+- `vietnam_news_scraper/format_hsx_trading_news.py`: legacy script (bypassed in favor of direct agent-driven LLM translation to avoid deterministic replacement errors).
 
 Extraction contract:
 
@@ -64,7 +64,7 @@ vietnam_news_scraper\venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force
 cd vietnam_news_scraper
 venv\Scripts\python.exe hsx_insider_scraper.py
 venv\Scripts\python.exe hsx_nlm_extractor.py
-venv\Scripts\python.exe format_hsx_trading_news.py <extracted_json_file>
+# (Note: Bypassed format_hsx_trading_news.py. Translate the latest extracted JSON directly via the agent's LLM context and save as _extracted_formatted.json)
 cd ..
 
 cd google-sheets-uploader
@@ -113,6 +113,10 @@ Chrome automation pattern:
 - Existing scripts connect to the user's Chrome profile over CDP on port `9222`.
 - If Chrome is stuck, close Chrome, clear profile singleton lock files, then reconnect with `chromium.connectOverCDP('http://127.0.0.1:9222')`.
 - Keep generated logs in `google-sheets-uploader/logs/`; keep report artifacts under `reports/{base}/`.
+
+Tool schema guidelines (preventing loop agents error):
+- **Integer Parameters for Tools**: When calling tools like `view_file` (specifically the `ContentOffset` argument), always pass the parameter as a raw **integer** (e.g. `51200`), NEVER as a string (e.g. `"51200"`). Schema validation will fail on strings, causing agents to get stuck in an infinite retry loop.
+- **Subagent Prompts**: If defining/spawning a subagent that reads files, explicitly instruct the subagent in its system prompt to pass `ContentOffset` as an integer.
 
 ## Karpathy Reasoning Guidelines
 

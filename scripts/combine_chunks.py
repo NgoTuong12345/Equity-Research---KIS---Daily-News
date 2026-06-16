@@ -246,6 +246,10 @@ def main():
                 exch = ticker_info.get("exchange", "")
                 sec_key = ticker_info.get("sector_key", "")
                 
+                # Normalize exchange name spelling
+                if exch.upper() == "UPCOM":
+                    exch = "UPCoM"
+                
                 # Format corporate display titles
                 title_vn = f"{news_cat}. ({co_vn}. {exch})"
                 title_en = f"{news_cat}. ({co_en}. {exch})"
@@ -301,11 +305,15 @@ def main():
                 item["sector_key"] = "real_estate"
                 
             ticker_info = tickers_dict.get(ticker, {})
-            co_vn = item.get("company_vn", "") or ticker_info.get("company_vn", "")
-            co_en = item.get("company_en", "") or ticker_info.get("company_en", "")
-            exch = item.get("exchange", "") or ticker_info.get("exchange", "")
-            sec_key = item.get("sector_key", "") or ticker_info.get("sector_key", "")
+            co_vn = ticker_info.get("company_vn", "") or item.get("company_vn", "")
+            co_en = ticker_info.get("company_en", "") or item.get("company_en", "")
+            exch = ticker_info.get("exchange", "") or item.get("exchange", "")
+            sec_key = ticker_info.get("sector_key", "") or item.get("sector_key", "")
             
+            # Normalize exchange name spelling
+            if exch.upper() == "UPCOM":
+                exch = "UPCoM"
+                
             # Fallback exchange mapping rule for unlisted/private companies
             if ticker not in tickers_dict or ticker in ("VPL", "Vinpearl") or exch.upper() in ("UNLISTED", "OTC"):
                 exch = "Unlisted"

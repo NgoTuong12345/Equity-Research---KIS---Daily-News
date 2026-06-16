@@ -25,6 +25,20 @@ from typing import Any
 
 # Force stdout to UTF-8 to support Vietnamese characters on Windows terminal
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+TICKER_INDEX = {}
+REVERSE_COMPANY_MAP = {}
+try:
+    ticker_index_path = Path(__file__).resolve().parent.parent / "ticker_index.json"
+    if ticker_index_path.exists():
+        with open(ticker_index_path, "r", encoding="utf-8") as f:
+            TICKER_INDEX = json.load(f).get("tickers", {})
+            for ticker, info in TICKER_INDEX.items():
+                co_vn = info.get("company_vn")
+                co_en = info.get("company_en")
+                if co_vn and co_en:
+                    REVERSE_COMPANY_MAP[co_vn.strip().lower()] = co_en.strip()
+except Exception as e:
+    pass
 
 
 COMPANY_EN = {
@@ -34,9 +48,13 @@ COMPANY_EN = {
     "Công ty Cổ phần Chứng khoán SSI": "SSI Securities Corporation",
     "Công ty CP Tàu cao tốc Superdong Kiên Giang": "Superdong Fast Ferry Kien Giang Joint Stock Company",
     "Công ty cổ phần Đầu tư phát triển nhà và đô thị IDICO": "IDICO Urban and House Development Investment Joint Stock Company",
+    "Ngân hàng TMCP Nam Á": "Nam A Commercial Joint Stock Bank",
+    "Ngân hàng Thương mại Cổ phần Nam Á": "Nam A Commercial Joint Stock Bank",
 }
 
 RELATIONSHIP_EN = {
+    "Cổ đông lớn và là tổ chức có liên quan đến người nội bộ của Công ty Cổ phần Xây dựng 47": "Major shareholder and related organization of Construction Joint Stock Company 47's insider",
+    "Người Phụ trách quản trị công ty": "Person in charge of Corporate Governance",
     "Thành viên Hội đồng quản trị độc lập": "Independent Member of the Board of Directors",
     "Thành viên Hội đồng Quản trị": "Member of the Board of Directors",
     "Thành viên Hội đồng quản trị": "Member of the Board of Directors",
@@ -52,6 +70,8 @@ RELATIONSHIP_EN = {
     "Người phụ trách quản trị Công ty": "Person in charge of Corporate Governance",
     "Người được ủy quyền CBTT": "Authorized person to disclose information",
     "Người có liên quan của người nội bộ": "Related person of insider",
+    "Là người có liên quan của người nội bộ": "Related person of insider",
+    "Cổ đông, người có liên quan của người nội bộ": "Shareholder, related person of insider",
     "Cha ruột": "Father",
     "Cha": "Father",
     "Mẹ ruột": "Mother",
@@ -80,6 +100,10 @@ RELATIONSHIP_EN = {
     "Em vợ": "Brother-in-law",
     "Chủ tịch Hội đồng Quản trị": "Chairman of the Board of Directors",
     "Cổ đông lớn, cổ đông nội bộ": "Major and internal shareholder",
+    "Cổ đông Nội bộ": "Internal shareholder",
+    "Chánh Văn phòng HĐQT kiêm Người phụ trách quản trị": "Chief of the Office of the Board of Directors and Person in charge of Corporate Governance",
+    "Trưởng ban kiểm soát": "Head of the Supervisory Board",
+    "Tổ chức đăng ký giao dịch": "Trading organization",
 }
 
 NAME_EN = {
@@ -87,6 +111,7 @@ NAME_EN = {
     "Bùi Thị Thu Hương": "Bui Thi Thu Huong",
     "Trần Lê An": "Tran Le An",
     "Trần Mạnh Hùng": "Tran Manh Hung",
+    "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN": "Masan Consumer Corporation",
 }
 
 NAME_VN = {
@@ -128,12 +153,30 @@ def exchange_for(record: dict[str, Any], tx: dict[str, Any]) -> str:
     return exchange or "HSX"
 
 
-def english_company(company_vn: str) -> str:
+def english_company(company_vn: str, ticker: str = "") -> str:
+    if ticker and ticker in TICKER_INDEX and TICKER_INDEX[ticker].get("company_en"):
+        return TICKER_INDEX[ticker]["company_en"]
+    company_vn_clean = company_vn.strip().lower()
+    if company_vn_clean in REVERSE_COMPANY_MAP:
+        return REVERSE_COMPANY_MAP[company_vn_clean]
     return COMPANY_EN.get(company_vn, ascii_fold(company_vn))
 
 
 def english_name(name_vn: str) -> str:
-    return NAME_EN.get(name_vn, ascii_fold(name_vn))
+    if name_vn in NAME_EN:
+        return NAME_EN[name_vn]
+    name_vn_clean = name_vn.strip().lower()
+    if name_vn_clean in REVERSE_COMPANY_MAP:
+        return REVERSE_COMPANY_MAP[name_vn_clean]
+    if name_vn in COMPANY_EN:
+        return COMPANY_EN[name_vn]
+    
+    # If the initiator name has corporate indicators, format as an English company name
+    indicators = ["công ty", "tập đoàn", "tổng công ty", "ngân hàng", "quỹ", "hiệp hội", "chi nhánh", "ban", "tổ chức"]
+    if any(ind in name_vn_clean for ind in indicators):
+        return english_company(name_vn)
+        
+    return ascii_fold(name_vn)
 
 
 def canonical_vn_name(name_vn: str) -> str:
@@ -174,7 +217,7 @@ def action_words(action: str) -> dict[str, str]:
 def format_transaction(record: dict[str, Any], tx: dict[str, Any], order: int) -> dict[str, Any]:
     ticker = normalize_text(tx.get("ticker") or record.get("ticker"))
     company_vn = normalize_text(tx.get("company_fullname"))
-    company_en = english_company(company_vn)
+    company_en = english_company(company_vn, ticker)
     exchange = exchange_for(record, tx)
     date_range = normalize_text(tx.get("date_range"))
     name_vn = canonical_vn_name(normalize_text(tx.get("name")))

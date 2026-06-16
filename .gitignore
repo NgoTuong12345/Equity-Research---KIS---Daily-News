@@ -54,3 +54,13 @@ Thumbs.db
 # Credentials
 .env
 
+# Local run/test scratch files
+articles_summary.txt
+google_2fa_screenshot.png
+scratch/
+scratch_classified.json
+scratch_parsed.json
+urls_to_summarize.tsv
+tickers_finnpro.xlsx
+google-sheets-uploader/test_heyzine.js
+

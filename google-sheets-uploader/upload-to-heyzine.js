@@ -7,9 +7,11 @@ const { getTestingDir } = require('./report-paths');
 
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
 const CHROME_EXE = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
-const PDF_PATH = 'C:\\Users\\Administrator\\Playwright-Daily-News\\reports\\after_04_06_2026\\exports\\pdf\\after_04_06_2026_report_en.pdf';
-const REPORT_BASE = (path.basename(PDF_PATH, '.pdf').match(/^(mor|after)_\d{2}_\d{2}_\d{4}/) || [])[0] || '_session';
-const TARGET_TITLE = 'Morning_News_KISRESEARCH_05_06_2026';
+const REPORT_BASE = process.argv[2] || 'after_11_06_2026';
+const isMorning = REPORT_BASE.startsWith('mor');
+const dateStr = REPORT_BASE.split('_').slice(1).join('_');
+const TARGET_TITLE = (isMorning ? 'Morning_News_KISRESEARCH_' : 'Afternoon_News_KISRESEARCH_') + dateStr;
+const PDF_PATH = `C:\\Users\\Administrator\\Playwright-Daily-News\\reports\\${REPORT_BASE}\\exports\\pdf\\${REPORT_BASE}_report_en.pdf`;
 const PAGE_EFFECT = 'notebook';
 
 async function main() {

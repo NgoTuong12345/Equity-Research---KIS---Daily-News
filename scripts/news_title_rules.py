@@ -67,6 +67,8 @@ def ticker_company_exchange_title(item: dict[str, Any], lang: str) -> str:
     exchange = str(item.get("exchange") or item.get("source") or "").strip()
     if ticker.casefold() in {"unlisted", "otc", "upcom", "soe"}:
         ticker = ""
+    if "sanofi" in company.lower():
+        return f"Sanofi. {exchange}" if exchange else "Sanofi"
     if ticker and company:
         suffix = f". {exchange}" if exchange else ""
         return f"{ticker}. ({company}{suffix})"
