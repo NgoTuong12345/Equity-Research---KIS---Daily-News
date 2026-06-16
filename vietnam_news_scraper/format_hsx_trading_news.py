@@ -103,7 +103,15 @@ RELATIONSHIP_EN = {
     "Cổ đông Nội bộ": "Internal shareholder",
     "Chánh Văn phòng HĐQT kiêm Người phụ trách quản trị": "Chief of the Office of the Board of Directors and Person in charge of Corporate Governance",
     "Trưởng ban kiểm soát": "Head of the Supervisory Board",
+    "Trưởng Ban kiểm soát": "Head of the Supervisory Board",
     "Tổ chức đăng ký giao dịch": "Trading organization",
+    "Thành viên Ban Kiểm Soát": "Member of the Supervisory Board",
+    "Thành viên Ban kiểm soát": "Member of the Supervisory Board",
+    "Thành viên ban kiểm soát": "Member of the Supervisory Board",
+    "Tổ chức có liên quan đến người nội bộ": "Organization related to insider",
+    "Người được ủy quyền công bố thông tin": "Authorized person to disclose information",
+    "Phó Tổng Giám đốc kiêm Giám đốc tài chính": "Deputy General Director and Chief Financial Officer",
+    "Con gái Thành viên HĐQT": "Daughter of Member of the Board of Directors",
 }
 
 NAME_EN = {

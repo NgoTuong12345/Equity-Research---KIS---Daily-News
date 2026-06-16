@@ -8,7 +8,7 @@ Repository guide for Claude Code sessions. Keep this file short; put repeatable 
 2. `vietnam_news_scraper/` collects news and writes scraper outputs, including HSX insider trading disclosures.
 3. `google-sheets-uploader/upload-to-sheets.js` creates the Google Sheets session tab.
 4. A human marks `TAKE` rows and updates the Macro tab.
-5. Before summarizing, verify if the NotebookLM extraction failed (e.g. auth expired in logs). If so, run refresh auth.
+5. Before summarizing, the agent runs the PDF extractor workflow (`hsx_prepare_pdfs.py` -> reads images -> `hsx_agent_extractor.py`) to process trading disclosures.
 6. `/summarize morning` or `/summarize afternoon` automatically runs the trading news scraper, extractor, and formatter, fetches full articles, compiles and deduplicates macro/trading/corporate summaries, and outputs final HTML/PDF/DOCX reports.
 
 ## HSX Insider Trading
@@ -18,7 +18,8 @@ The imported HNX/HSX insider-trading work is part of the main `vietnam_news_scra
 Core files:
 
 - `vietnam_news_scraper/hsx_insider_scraper.py`: fetches HSX disclosure/news items, filters insider-trading announcements, finds PDF attachments, and writes raw scrape JSON.
-- `vietnam_news_scraper/hsx_nlm_extractor.py`: downloads PDFs and extracts structured insider/related-party transaction records with NotebookLM.
+- `vietnam_news_scraper/hsx_prepare_pdfs.py`: downloads PDFs and renders them to images for agent extraction.
+- `vietnam_news_scraper/hsx_agent_extractor.py`: orchestrator that merges agent-extracted results into `_extracted.json`.
 - `vietnam_news_scraper/format_hsx_trading_news.py`: legacy script (bypassed in favor of direct agent-driven LLM translation to avoid deterministic replacement errors).
 
 Extraction contract:
@@ -59,12 +60,13 @@ Do not write new generated reports, screenshots, summary files, data files, or v
 .\run-morning.bat
 .\run-afternoon.bat
 
-# Rerun HSX trading extraction manually if NotebookLM auth was expired:
-vietnam_news_scraper\venv\Scripts\python.exe scripts\refresh_nlm_auth.py --force
+# Run HSX trading extraction manually using the agent workflow:
 cd vietnam_news_scraper
 venv\Scripts\python.exe hsx_insider_scraper.py
-venv\Scripts\python.exe hsx_nlm_extractor.py
-# (Note: Bypassed format_hsx_trading_news.py. Translate the latest extracted JSON directly via the agent's LLM context and save as _extracted_formatted.json)
+venv\Scripts\python.exe hsx_prepare_pdfs.py
+# The agent then reads rendered PDF images and produces an _agent_results.json file.
+venv\Scripts\python.exe hsx_agent_extractor.py
+venv\Scripts\python.exe format_hsx_trading_news.py hsx_insider_trading_YYYYMMDD_HHMM_extracted.json
 cd ..
 
 cd google-sheets-uploader

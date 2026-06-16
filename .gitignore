@@ -15,6 +15,7 @@ google-sheets-uploader/logs/
 *.csv
 reports/
 vietnam_news_scraper/pdfs/
+vietnam_news_scraper/pdf_images/
 vietnam_news_scraper/hsx_insider_trading_*.json
 vietnam_news_scraper/hsx_insider_trading_*_EN.txt
 vietnam_news_scraper/hsx_insider_trading_*_VN.txt
