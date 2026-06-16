@@ -105,6 +105,28 @@ def validate_item(item: dict, category: str = "", source_text: str = "") -> dict
                     f"(coverage {coverage:.0%}, minimum {NUMBER_COVERAGE_MIN:.0%})"
                 )
 
+    # 5. KIS Writing Style Check (only for LLM-generated items, i.e., non-exempt)
+    if not skip_word_count:
+        is_llm_summary = (category != "trading")
+        
+        # Check English style
+        if en:
+            if re.search(r"\b(?:VND|USD)\s+\d", en):
+                errors.append("summary_en style error: space found between currency symbol and amount (e.g., use 'VND100bn', not 'VND 100bn')")
+            if re.search(r"\d+\s*(?:billion|million|trillion|bln|mln|trn)\b", en, re.IGNORECASE):
+                errors.append("summary_en style error: use 'bn', 'mn', 'tn' instead of full words or non-standard abbreviations (e.g., use 'VND100bn', not 'VND100 billion' or 'VND100 bln')")
+            if re.search(r"\b(?:YoY|QoQ|YOY|QOQ|Yoy|Qoq)\b", en):
+                errors.append("summary_en style error: use lowercase 'yoy', 'qoq' (not 'YoY', 'QoQ')")
+            if is_llm_summary and not re.match(r"^On \d+ [A-Za-z]+,", en.strip()):
+                errors.append("summary_en style error: must start with date prefix matching format 'On D Month,' (e.g. 'On 16 June,')")
+        
+        # Check Vietnamese style
+        if vn:
+            if re.search(r"\b(?:yoy|qoq|YoY|QoQ|YOY|QOQ|N/N|Q/Q)\b", vn):
+                errors.append("summary_vn style error: use lowercase 'n/n', 'q/q' instead of 'yoy', 'qoq' or uppercase 'N/N', 'Q/Q'")
+            if is_llm_summary and not re.match(r"^Ngày \d+/\d+,", vn.strip()):
+                errors.append("summary_vn style error: must start with date prefix matching format 'Ngày D/M,' (e.g. 'Ngày 16/6,')")
+
     return {"valid": len(errors) == 0, "errors": errors}
 
 

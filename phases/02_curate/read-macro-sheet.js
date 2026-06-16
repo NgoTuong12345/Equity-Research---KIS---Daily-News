@@ -7,7 +7,9 @@ const { getDataFile } = require('./report-paths');
 
 const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit';
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
+  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 const CDP_PORT = 9222;
 const CLI_ARGS = process.argv.slice(2);
 const SESSION_ALIASES = {

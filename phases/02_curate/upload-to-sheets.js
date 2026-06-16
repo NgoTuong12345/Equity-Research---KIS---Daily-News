@@ -9,7 +9,9 @@ const SESSION = process.argv[2] || 'morning'; // 'morning' or 'afternoon'
 const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit';
 const CSV_DIR = path.join(__dirname, '..', '..', 'phases', '01_scrape');
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
+  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 const LOG_FILE = path.join(__dirname, 'logs', 'upload.log');
 
 // Sheet headers in order (10 columns: A–J)

@@ -6,6 +6,9 @@ const { execSync } = require('child_process');
 
 const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit';
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
+const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
+  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 const CDP_PORT = 9222;
 
 async function scrapeTab(page, tabLocator, tabName) {
@@ -44,7 +47,7 @@ async function main() {
     'about:blank',
   ].join(' ');
   execSync(
-    `powershell -Command "Start-Process -FilePath 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe' -ArgumentList '${chromeArgs.replace(/'/g, "''")}'"`,
+    `powershell -Command "Start-Process -FilePath '${CHROME_EXE.replace(/\\/g, '\\\\')}' -ArgumentList '${chromeArgs.replace(/'/g, "''")}'"`,
     { stdio: 'pipe' }
   );
   await new Promise(r => setTimeout(r, 3000));

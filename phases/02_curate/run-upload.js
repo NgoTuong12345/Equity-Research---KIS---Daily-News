@@ -6,7 +6,9 @@ const { execSync } = require('child_process');
 const { getTestingDir } = require('./report-paths');
 
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
+  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
 const args = process.argv.slice(2);
 const PDF_PATH = args[0] || 'C:\\Users\\Administrator\\Playwright-Daily-News\\reports\\after_04_06_2026\\exports\\pdf\\after_04_06_2026_report_en.pdf';
 let TARGET_TITLE = args[1];
@@ -127,19 +129,21 @@ async function main() {
   }
 
   console.log('Uploading PDF to Heyzine...');
-  const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.locator('.btnUpload').first().click();
-  const fileChooser = await fileChooserPromise;
-  await fileChooser.setFiles(PDF_PATH);
-  console.log('PDF file set. Waiting 25 seconds for conversion and rendering to complete...');
+  await page.setInputFiles('input[name="pdf"]', PDF_PATH);
+  console.log('PDF file set. Waiting up to 90 seconds for editor and conversion to complete...');
   
-  // Wait for rendering to complete (usually takes 15-20s for a multi-page PDF)
-  await page.waitForTimeout(25000);
+  // Wait for the title input to become visible (indicates editor loaded and conversion complete)
+  const titleInput = page.locator('#txtTitle').first();
+  try {
+    await titleInput.waitFor({ state: 'visible', timeout: 90000 });
+    console.log('Editor loaded successfully.');
+  } catch (e) {
+    console.warn('Timed out waiting for editor (#txtTitle) to become visible:', e.message);
+  }
 
   console.log('Customizing flipbook...');
   
   // Set Title
-  const titleInput = page.locator('#txtTitle').first();
   if (await titleInput.isVisible()) {
     console.log(`Setting Title to: ${TARGET_TITLE}`);
     await titleInput.fill(TARGET_TITLE);

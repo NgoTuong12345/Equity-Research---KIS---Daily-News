@@ -37,6 +37,8 @@ MAX_WORKERS = 8
 
 # Ordered list of (selector, is_css) tried in sequence
 ARTICLE_SELECTORS = [
+    # Site-specific
+    ('.ct-edtior-web', True),
     # Generic article body selectors (most sites)
     ('.article-body', True),
     ('.article-content', True),

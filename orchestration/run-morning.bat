@@ -36,6 +36,11 @@ venv\Scripts\python.exe hsx_insider_scraper.py --session morning >> "%LOG%" 2>&1
 if errorlevel 1 (
     echo [%DATE% %TIME%] WARNING: HSX insider scraper failed. Continuing news pipeline. >> "%LOG%"
 ) else (
+    echo [%DATE% %TIME%] Preparing HSX PDFs and images... >> "%LOG%"
+    venv\Scripts\python.exe hsx_prepare_pdfs.py >> "%LOG%" 2>&1
+    if errorlevel 1 (
+        echo [%DATE% %TIME%] WARNING: HSX PDF/image preparation failed. >> "%LOG%"
+    )
     for /f "delims=" %%F in ('dir /b /o-d hsx_insider_trading_*_extracted.json 2^>nul') do (
         venv\Scripts\python.exe format_hsx_trading_news.py "%%F" >> "%LOG%" 2>&1
         goto :morning_hsx_done
