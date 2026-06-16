@@ -86,6 +86,12 @@ python scripts/combine_chunks.py {base}
 
 # Deduplicate duplicates and validate output
 python scripts/deduplicate_reports.py {base}
+
+# Apply standardized news titles using the agent workflow
+python scripts/apply_news_title_rules.py --prepare {base}
+# The agent then generates titles based on the JSON
+python scripts/apply_news_title_rules.py --merge {base}
+
 python scripts/validate_summary_data.py {base}
 
 # Generate final reports
