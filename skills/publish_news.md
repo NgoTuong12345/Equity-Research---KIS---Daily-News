@@ -46,4 +46,27 @@ Report the generated file paths:
 ✓ DOCX: reports/{base}/exports/docx/{base}.docx
 ```
 
+---
+
+## Step 5 — Upload to Heyzine (Flipbook)
+
+Upload both the EN and VN PDFs to Heyzine to generate shareable flipbook links. Run sequentially (EN first, then VN):
+
+```
+node phases\02_curate\run-upload.js "reports\{base}\exports\pdf\{base}_report_en.pdf"
+node phases\02_curate\run-upload.js "reports\{base}\exports\pdf\{base}_report_vn.pdf"
+```
+
+Each run:
+- Launches Chrome using the saved user profile (auto-authenticated with Heyzine)
+- Uploads the PDF, sets the flipbook title and page effect
+- Extracts the share link and saves it to `reports/{base}/exports/heyzine_links.json`
+
+After both runs, read `heyzine_links.json` and report the links:
+
+```
+✓ Flipbook EN: https://heyzine.com/flip-book/...
+✓ Flipbook VN: https://heyzine.com/flip-book/...
+```
+
 Pipeline complete.

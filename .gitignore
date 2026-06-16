@@ -1,3 +1,6 @@
+# Claude Code tool artifacts
+.superpowers/
+
 # Node.js
 node_modules/
 package-lock.json
@@ -10,31 +13,19 @@ __pycache__/
 *.egg-info/
 .Python
 
-# Runtime files
-google-sheets-uploader/logs/
-*.csv
-reports/
-vietnam_news_scraper/pdfs/
-vietnam_news_scraper/pdf_images/
-vietnam_news_scraper/hsx_insider_trading_*.json
-vietnam_news_scraper/hsx_insider_trading_*_EN.txt
-vietnam_news_scraper/hsx_insider_trading_*_VN.txt
-HNX_insider_trading-20260605T020139Z-3-001/
+# Phase 01 — Scraper runtime output
+phases/01_scrape/hsx_insider_trading_*.json
+phases/01_scrape/hsx_insider_trading_*_EN.txt
+phases/01_scrape/hsx_insider_trading_*_VN.txt
+phases/01_scrape/*.csv
+phases/01_scrape/pdfs/
+phases/01_scrape/pdf_images/
 
-# Temporary / Scratch Files
-after_chunk_*
-chunk_*
-items_to_retitle.json
-long_titles.json
-new_titles.json
-paraphrased_titles.json
-temp_corp.json
-temp_epo.json
-combine_subagent_jsons.py
-combine_trading.py
-fetch_full_articles.py
-generate_final_jsons.py
-chunk_articles.py
+# Phase 02 — Curate runtime output
+phases/02_curate/logs/
+
+# Reports (all generated output)
+reports/
 
 # Nested Git Repositories
 hnx_trading/
@@ -52,16 +43,16 @@ Thumbs.db
 .idea/
 *.swp
 
-# Credentials
+# Credentials & secrets
 .env
+.env.*
 
-# Local run/test scratch files
+# Local scratch files
+scratch/
 articles_summary.txt
 google_2fa_screenshot.png
-scratch/
 scratch_classified.json
 scratch_parsed.json
 urls_to_summarize.tsv
 tickers_finnpro.xlsx
-google-sheets-uploader/test_heyzine.js
 

@@ -1,47 +1,46 @@
 # GEMINI.md
 
-Repository guide for Gemini Code sessions. Keep this file short; put repeatable rules in scripts.
+Repository guide for Gemini Code sessions. Follow exactly — all paths are verified against the current codebase.
 
-## Pipeline
+---
 
-1. Scheduled jobs run `run-morning.bat` or `run-afternoon.bat`.
-2. `vietnam_news_scraper/` collects news and writes scraper outputs, including HSX insider trading disclosures.
-3. `google-sheets-uploader/upload-to-sheets.js` creates the Google Sheets session tab.
-4. A human marks `TAKE` rows and updates the Macro tab.
-5. Before summarizing, the agent runs the PDF extractor workflow (`hsx_prepare_pdfs.py` -> reads images -> `hsx_agent_extractor.py`) to process trading disclosures.
-6. `/summarize morning` or `/summarize afternoon` automatically runs the trading news scraper, extractor, and formatter, fetches full articles, compiles and deduplicates macro/trading/corporate summaries, and outputs final HTML/PDF/DOCX reports.
+## Directory Map
 
-## HSX Insider Trading
-
-The imported HNX/HSX insider-trading work is part of the main `vietnam_news_scraper/` workflow. Do not create a second project-local agent guide; keep this root `GEMINI.md` as the only Gemini instruction file.
-
-Core files:
-
-- `vietnam_news_scraper/hsx_insider_scraper.py`: fetches HSX disclosure/news items, filters insider-trading announcements, finds PDF attachments, and writes raw scrape JSON.
-- `vietnam_news_scraper/hsx_prepare_pdfs.py`: downloads PDFs and renders them to images for agent extraction.
-- `vietnam_news_scraper/hsx_agent_extractor.py`: orchestrator that merges agent-extracted results into `_extracted.json`.
-- `vietnam_news_scraper/format_hsx_trading_news.py`: legacy script (bypassed in favor of direct agent-driven LLM translation to avoid deterministic replacement errors).
-
-Extraction contract:
-
-- Capture issuer ticker/name, insider name, insider role or relationship, transaction type, registered volume, executed volume when present, ownership before/after, transaction dates, disclosure dates, source news ID, source PDF URL/path, and notes for partial or failed transactions.
-- Classify only relevant disclosure/news items as insider trading. Do not merge unrelated bond disclosures, governance resolutions, or general corporate actions into insider records.
-- Prefer explicit PDF table values over inferred values. If a field is absent, keep it empty/null rather than fabricating it.
-- Keep insider identity separate from issuer identity; do not collapse names, roles, ticker, and company names into a single blob.
-- Preserve traceability from final report item back to scrape JSON, extracted JSON, and PDF attachment.
-- For scanned PDFs, check whether a text layer exists before assuming OCR is required. Validate OCR-heavy changes against representative extracted text or visual samples.
-
-## Output Layout
-
-Use shared path helpers for generated files:
-
-- Python: `scripts/report_paths.py`
-- Node: `google-sheets-uploader/report-paths.js`
-
-Report artifacts belong under `reports/{base}/`, where `{base}` is `mor_DD_MM_YYYY` or `after_DD_MM_YYYY`.
-
-```text
-reports/{base}/
+```
+phases/
+  01_scrape/          ← scraper scripts + venv (Python interpreter for ALL scripts)
+    venv/Scripts/python.exe   ← ALWAYS use this Python
+    main.py                   ← news scraper → CSV
+    hsx_insider_scraper.py
+    hsx_prepare_pdfs.py
+    format_hsx_trading_news.py
+  02_curate/          ← Node.js curate scripts (Sheets + Heyzine)
+    upload-to-sheets.js
+    generate-report.js
+    read-macro-sheet.js
+    run-upload.js
+  03_summarize/       ← Python summarize + dedup scripts
+    fetch_full_articles.py
+    prepare_chunks.py
+    combine_chunks.py
+    harness.py
+    dedup_engine.py
+    deduplicate_reports.py
+  04_publish/         ← report generators
+    generate_html_report.py
+    generate_pdf_report.py
+    generate_docx_report.py
+core_tools/
+  paths/report_paths.py     ← Python path helpers (import, do not copy)
+  paths/report-paths.js     ← Node path helpers
+  validation/
+    validate_summary_data.py
+    benchmark_html_against_pdf.py
+skills/                     ← skill definitions (read before acting)
+  summarize_news.md
+  dedup_news.md
+  publish_news.md
+reports/{base}/             ← ALL generated output lives here (root-level reports/)
   source/
   data/
   summaries/
@@ -52,89 +51,187 @@ reports/{base}/
   testing/diffs/
 ```
 
-Do not write new generated reports, screenshots, summary files, data files, or visual diff files into the project root, `reports/`, `news_html_template/`, or `google-sheets-uploader/logs/`.
+**Never reference old paths**: `vietnam_news_scraper/`, `google-sheets-uploader/`, `scripts/`. Those directories no longer exist — they were reorganized into `phases/`.
 
-## Manual Commands
+---
 
-```powershell
-.\run-morning.bat
-.\run-afternoon.bat
+## Pipeline Overview
 
-# Run HSX trading extraction manually using the agent workflow:
-cd vietnam_news_scraper
-venv\Scripts\python.exe hsx_insider_scraper.py
-venv\Scripts\python.exe hsx_prepare_pdfs.py
-# The agent then reads rendered PDF images and produces an _agent_results.json file.
-venv\Scripts\python.exe hsx_agent_extractor.py
-venv\Scripts\python.exe format_hsx_trading_news.py hsx_insider_trading_YYYYMMDD_HHMM_extracted.json
-cd ..
-
-cd google-sheets-uploader
-node upload-to-sheets.js morning
-node upload-to-sheets.js afternoon
-node generate-report.js morning
-
-cd ..
-python fetch_full_articles.py reports/{base}/source/{base}.md
-
-cd google-sheets-uploader
-node read-macro-sheet.js DD/MM/YYYY
-
-cd ..
-# Combine chunks, macro sheet, and trading news
-python scripts/combine_chunks.py {base}
-
-# Deduplicate duplicates and validate output
-python scripts/deduplicate_reports.py {base}
-
-# Apply standardized news titles using the agent workflow
-python scripts/apply_news_title_rules.py --prepare {base}
-# The agent then generates titles based on the JSON
-python scripts/apply_news_title_rules.py --merge {base}
-
-python scripts/validate_summary_data.py {base}
-
-# Generate final reports
-python scripts/generate_html_report.py {base}
-python scripts/generate_pdf_report.py {base}
-python scripts/generate_docx_report.py {base}
-python scripts/benchmark_html_against_pdf.py --html reports/{base}/exports/html/{base}_report_vn.html reports/{base}/exports/html/{base}_report_en.html
+```
+01_scrape → 02_curate → (human marks TAKE) → 03_summarize → 04_publish
 ```
 
-Scheduled Windows tasks:
+1. Scheduled run: `phases\01_scrape\run.bat` scrapes news → CSV.
+2. `phases\02_curate\upload-to-sheets.js` uploads CSV to Google Sheets.
+3. `phases\02_curate\generate-report.js` reads TAKE rows → `reports/{base}/source/{base}.md`.
+4. Human marks `TAKE` rows and fills the Macro tab.
+5. Agent runs `/summarize-news` → `/dedup-news` → `/publish-news` (skills auto-chain).
 
-- `VietnamNews-Morning`: daily morning run, calls `run-morning.bat`.
-- `VietnamNews-Afternoon`: daily afternoon run, calls `run-afternoon.bat`.
+### Skills auto-chain
+
+```
+/summarize-news  →  summarizes articles → writes JSON/MD → invokes /dedup-news
+/dedup-news      →  semantic dedup + HITL editing   → invokes /publish-news
+/publish-news    →  validate → HTML/PDF/DOCX → Heyzine upload
+```
+
+**Always read the skill file before executing any step in it.**
+
+---
+
+## Report Base
+
+Format: `{mor|after}_DD_MM_YYYY`  
+Example: `mor_16_06_2026`, `after_16_06_2026`
+
+Report root: `reports\{base}\`  
+Data files: `reports\{base}\data\{base}_{macro|trading|corporate|economy_political_others}.json`
+
+---
+
+## Manual Commands (verified paths)
+
+All commands run from the **project root** (`C:\Users\Administrator\Playwright-Daily-News`).  
+Python interpreter: `phases\01_scrape\venv\Scripts\python.exe` — use this for every `.py` script.
+
+### Phase 01 — Scrape
+
+```powershell
+# Run news scraper
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\main.py
+
+# HSX insider trading (run in order)
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\hsx_insider_scraper.py
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\hsx_prepare_pdfs.py
+# Agent reads rendered PDF images, produces _agent_results.json
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\format_hsx_trading_news.py
+```
+
+### Phase 02 — Curate (Sheets + Heyzine)
+
+```powershell
+# Upload CSV to Google Sheets
+node phases\02_curate\upload-to-sheets.js morning
+node phases\02_curate\upload-to-sheets.js afternoon
+
+# Generate source .md from TAKE rows
+node phases\02_curate\generate-report.js morning
+node phases\02_curate\generate-report.js afternoon
+
+# Read macro sheet (after human fills it)
+node phases\02_curate\read-macro-sheet.js DD/MM/YYYY
+```
+
+### Phase 03 — Summarize
+
+```powershell
+# Fetch full article text
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\fetch_full_articles.py reports\{base}\source\{base}.md
+
+# Split into chunks for agent summarization
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\prepare_chunks.py {base}
+
+# Combine agent chunk outputs + macro + trading → 4 category JSONs
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\combine_chunks.py {base}
+
+# Validate a specific JSON file (run after writing each)
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\harness.py reports\{base}\data\{filename}.json
+
+# Semantic dedup check
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\dedup_engine.py reports\{base}\data --threshold 0.75
+
+# Add kept items to dedup index
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\dedup_engine.py reports\{base}\data --add-to-index --report-id {base}
+
+# Cross-report deduplication
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\deduplicate_reports.py {base}
+```
+
+### Phase 04 — Validate + Publish
+
+```powershell
+# Schema validation (must pass before report generation)
+phases\01_scrape\venv\Scripts\python.exe core_tools\validation\validate_summary_data.py {base}
+
+# Generate reports (run in order)
+phases\01_scrape\venv\Scripts\python.exe phases\04_publish\generate_html_report.py {base}
+phases\01_scrape\venv\Scripts\python.exe phases\04_publish\generate_pdf_report.py {base}
+phases\01_scrape\venv\Scripts\python.exe phases\04_publish\generate_docx_report.py {base}
+
+# Visual benchmark (HTML vs PDF comparison)
+phases\01_scrape\venv\Scripts\python.exe core_tools\validation\benchmark_html_against_pdf.py --html reports\{base}\exports\html\{base}_report_vn.html reports\{base}\exports\html\{base}_report_en.html
+
+# Upload to Heyzine (EN first, then VN)
+node phases\02_curate\run-upload.js "reports\{base}\exports\pdf\{base}_report_en.pdf"
+node phases\02_curate\run-upload.js "reports\{base}\exports\pdf\{base}_report_vn.pdf"
+```
+
+---
+
+## HSX Insider Trading
+
+Core files (all under `phases/01_scrape/`):
+
+- `hsx_insider_scraper.py` — fetches HSX disclosure items, filters insider-trading, finds PDFs, writes raw scrape JSON.
+- `hsx_prepare_pdfs.py` — downloads PDFs, renders to images for agent extraction.
+- `format_hsx_trading_news.py` — formats extracted trading news (agent-driven LLM translation).
+
+Extraction contract:
+
+- Capture: issuer ticker/name, insider name, insider role/relationship, transaction type, registered volume, executed volume, ownership before/after, transaction dates, disclosure dates, source news ID, source PDF URL/path.
+- Classify only relevant insider-trading items. Do not merge bond disclosures, governance resolutions, or general corporate actions.
+- Prefer explicit PDF table values. If a field is absent, leave it empty/null — do not fabricate.
+- Keep insider identity separate from issuer identity.
+- Preserve traceability: final report item → scrape JSON → extracted JSON → PDF attachment.
+- For scanned PDFs: check for a text layer before assuming OCR is required.
+
+---
 
 ## Working Rules
 
-- Route new output-producing code through the shared path helpers.
+- Always use `phases\01_scrape\venv\Scripts\python.exe` — never `python`, `py`, or another venv.
+- Route new output-producing code through the shared path helpers (`core_tools/paths/report_paths.py` / `report-paths.js`).
+- All report artifacts belong in `reports/{base}/` — never write them to project root, `phases/`, or any other location.
 - Keep `news_html_template/` for templates and static assets only.
-- Keep `google-sheets-uploader/logs/` for small text logs only.
+- Keep `phases\02_curate\logs\` for small text logs only.
 - Put temporary browser/debug artifacts in `reports/{base}/testing/` or an OS temp directory.
 - Prefer overwriting stale files inside a run-specific testing folder over creating timestamped clutter.
 - Use `127.0.0.1` for Chrome CDP connections; `localhost` may resolve to IPv6.
-- Put HSX insider runtime JSON, downloaded PDFs, extraction text, and debug browser artifacts under a run-specific report/testing folder or `vietnam_news_scraper/pdfs/`; do not re-import `HNX_insider_trading-20260605T020139Z-3-001/` as a parallel project.
+- Put HSX insider runtime JSON, downloaded PDFs, and debug artifacts under `reports/{base}/testing/` or `phases/01_scrape/pdfs/`.
 
 Chrome automation pattern:
 
-- Existing scripts connect to the user's Chrome profile over CDP on port `9222`.
-- If Chrome is stuck, close Chrome, clear profile singleton lock files, then reconnect with `chromium.connectOverCDP('http://127.0.0.1:9222')`.
-- Keep generated logs in `google-sheets-uploader/logs/`; keep report artifacts under `reports/{base}/`.
+- Scripts connect to Chrome over CDP on port `9222`.
+- If Chrome is stuck: close Chrome, clear profile singleton lock files (`SingletonLock`, `SingletonCookie`, `SingletonSocket`), then reconnect with `chromium.connectOverCDP('http://127.0.0.1:9222')`.
 
-Tool schema guidelines (preventing loop agents error):
-- **Integer Parameters for Tools**: When calling tools like `view_file` (specifically the `ContentOffset` argument), always pass the parameter as a raw **integer** (e.g. `51200`), NEVER as a string (e.g. `"51200"`). Schema validation will fail on strings, causing agents to get stuck in an infinite retry loop.
-- **Subagent Prompts**: If defining/spawning a subagent that reads files, explicitly instruct the subagent in its system prompt to pass `ContentOffset` as an integer.
+---
+
+## Tool Schema Guidelines (prevents infinite retry loops)
+
+- **Integer Parameters**: When calling tools like `view_file` (`ContentOffset` argument), always pass as a raw **integer** (e.g. `51200`), NEVER as a string (`"51200"`). Schema validation will fail on strings, causing agents to loop.
+- **Subagent Prompts**: If spawning a subagent that reads files, explicitly instruct it in the system prompt to pass `ContentOffset` as an integer.
+
+---
 
 ## Karpathy Reasoning Guidelines
 
 - Think before coding: state the expected input shape, inspect evidence, then change the smallest useful piece.
-- Do not assume PDF layouts. Check representative PDFs, text layers, OCR output, extracted JSON, or current scraper output before changing parser behavior.
-- Prefer simple, direct implementations using existing helpers, standard Python, and clear data transformations before adding dependencies.
-- Keep changes surgical. Preserve existing style, file layout, imports, and output conventions unless the task requires otherwise.
-- Define concrete success criteria for parser changes, such as all transactions in a sample PDF being captured with correct dates and volumes.
-- If requirements are vague or document layouts are ambiguous, pause and clarify instead of encoding guesses.
+- Do not assume PDF layouts. Check representative PDFs, text layers, OCR output, or extracted JSON before changing parser behavior.
+- Prefer simple, direct implementations using existing helpers and standard Python.
+- Keep changes surgical — preserve existing style, file layout, imports, and output conventions.
+- Define concrete success criteria before changing parsers.
+- If requirements are vague or document layouts are ambiguous, pause and clarify instead of guessing.
 - Use diacritic-robust matching for Vietnamese classification and joins. Preserve final Vietnamese text with NFC normalization.
+- Vietnamese `đ` and `Đ` must be replaced with `d` and `D` **before** NFD decomposition. Always use NFC for output Vietnamese text — never NFKC/NFKD.
+
+---
+
+## Tool Schema Guidelines
+
+- **Integer Parameters**: When calling tools with integer arguments (e.g. `ContentOffset`), always pass a raw integer (`51200`), never a string (`"51200"`). Schema validation fails on strings and causes agents to loop.
+- **Subagent Prompts**: When spawning subagents that read files, explicitly instruct them to pass integer arguments as integers.
+
+---
 
 ## Google Sheets
 

@@ -37,7 +37,7 @@ if (!TARGET_TITLE) {
 }
 
 function saveShareLink(shareLink) {
-  const exportDir = path.join(__dirname, '..', 'reports', REPORT_BASE, 'exports');
+  const exportDir = path.join(__dirname, '..', '..', 'reports', REPORT_BASE, 'exports');
   fs.mkdirSync(exportDir, { recursive: true });
   const outPath = path.join(exportDir, 'heyzine_links.json');
   let payload = {};

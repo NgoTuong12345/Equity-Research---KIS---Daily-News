@@ -4,7 +4,7 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 
 ## Workflow
 
-1. Generate or read `reports/{base}/source/{base}_full.md`.
+1. Read `reports/{base}/source/{base}.md` — this file is produced by `/curate-news` (`node phases\02_curate\generate-report.js {SESSION}`). If it does not exist, stop and invoke `/curate-news` first.
 2. Summarize every selected article in Vietnamese first, then English.
 3. Classify feed articles into `corporate` or `economy_political_others`.
 4. Write summary JSON and bilingual markdown into `reports/{base}/data/` and `reports/{base}/summaries/`.

@@ -5,65 +5,114 @@ This repository powers the automated daily news reporting pipeline for KIS Vietn
 ## Overview
 
 The system replaces manual editorial aggregation with a semi-automated pipeline:
-1. **Scrape**: News articles and HSX/HNX disclosure PDFs are scraped automatically.
-2. **Extract**: AI agents (and occasionally NotebookLM) read raw PDF images to extract structured insider trading data.
+1. **Scrape**: News articles and HSX disclosure PDFs are scraped automatically.
+2. **Extract**: AI agents read raw PDF images to extract structured insider trading data.
 3. **Curate**: Extracted news is uploaded to a Google Sheet where a human editor marks stories to "TAKE" and writes the daily Macro summary.
-4. **Publish**: The system fetches full text for the selected articles, summarizes them, generates standardized titles, and compiles everything into final HTML, PDF, and DOCX reports.
+4. **Publish**: The system fetches full text for selected articles, summarizes them, generates standardized titles, and compiles everything into final HTML, PDF, and DOCX reports.
 
 ## System Architecture
 
-The repository is organized into distinct sub-modules to handle different phases of the pipeline:
+```
+phases/
+  01_scrape/          ← news scraper + HSX insider trading pipeline
+  02_curate/          ← Google Sheets upload + report generation
+  03_summarize/       ← LLM summarization + semantic dedup
+  04_publish/         ← HTML / PDF / DOCX report generation
+core_tools/           ← shared path helpers + validation scripts
+skills/               ← agent skill definitions
+reports/{base}/       ← all generated output (gitignored)
+```
 
-### 1. Web Scraper (`vietnam_news_scraper/`)
-- Scrapes financial news sites and state exchange portals (HSX/HNX).
-- **`hsx_insider_scraper.py`**: Monitors and downloads HSX disclosure PDFs specifically filtering for insider trading.
-- **`hsx_prepare_pdfs.py` & `hsx_agent_extractor.py`**: Converts scanned PDFs into images and uses LLMs/Agents to robustly extract structured trading records (e.g., ticker, insider name, relationship, transaction volume, dates).
+### Phase 01 — Scrape (`phases/01_scrape/`)
+- **`main.py`**: Aggregates news from RSS feeds and Vietnamese financial portals → CSV.
+- **`hsx_insider_scraper.py`**: Fetches HSX disclosure items, filters for insider trading, saves raw JSON.
+- **`hsx_prepare_pdfs.py`**: Downloads PDFs and renders each page to PNG for agent extraction.
+- **`format_hsx_trading_news.py`**: LLM-driven formatter that translates and structures extracted trading records.
 
-### 2. Google Sheets Uploader (`google-sheets-uploader/`)
-- Connects to Google Sheets via Playwright/Puppeteer (CDP connection to an active Chrome profile).
-- Pushes the morning or afternoon news scrapes into a newly created session tab (e.g., `mor_DD_MM_YYYY`).
-- Allows human editors to visually review items, check "TAKE" boxes, and draft macroeconomic notes in the "Macro" tab.
+### Phase 02 — Curate (`phases/02_curate/`)
+- **`upload-to-sheets.js`**: Pushes scraped CSV data to a new Google Sheets session tab.
+- **`generate-report.js`**: Reads TAKE-marked rows from Sheets → `reports/{base}/source/{base}.md`.
+- **`read-macro-sheet.js`**: Reads the Macro tab after human fills it.
+- **`run-upload.js`**: Uploads final PDF reports to Heyzine flipbook platform.
 
-### 3. Report Generation and Summarization (`scripts/`)
-- Once curation is complete, `python fetch_full_articles.py` fetches the complete article content for stories marked "TAKE".
-- Agent workflows summarize the text, standardizing language and deduplicating overlapping stories.
-- **`generate_html_report.py` / `generate_pdf_report.py`**: Assembles the content into the final output format.
+### Phase 03 — Summarize (`phases/03_summarize/`)
+- **`fetch_full_articles.py`**: Fetches full article text for TAKE items.
+- **`prepare_chunks.py`** / **`combine_chunks.py`**: Splits and merges article chunks for LLM summarization.
+- **`harness.py`**: Validates per-article summary JSON.
+- **`dedup_engine.py`** / **`deduplicate_reports.py`**: Semantic deduplication across and within reports.
+
+### Phase 04 — Publish (`phases/04_publish/`)
+- **`generate_html_report.py`** / **`generate_pdf_report.py`** / **`generate_docx_report.py`**: Assembles final A4-fixed-layout reports in all three formats.
 
 ## Output and Design Requirements
 
-The resulting HTML/PDF artifacts are strictly designed to match the legacy **KIS Vietnam PDF bulletin format**. 
+- **A4 Fixed Layout**: Reports are fixed A4 pages (`210mm × 297mm`), not responsive web pages.
+- **Editorial Typography**: Adheres to KIS Vietnam brand guidelines in `DESIGN.md`.
+- **Regression Guard**: `core_tools/validation/benchmark_html_against_pdf.py` prevents footer overlap regressions.
 
-- **A4 Fixed Layout**: The reports are fixed A4 pages (`210mm x 297mm`). This is not a responsive web app.
-- **Editorial Typography**: Adheres strictly to the brand guidelines specified in `DESIGN.md` (brown primary text, exact font sizes, spacing, and strict overflow/pagination checks to avoid collisions with footers).
-- **Testing**: A benchmark script (`benchmark_html_against_pdf.py`) strictly guards against visual regressions (such as content overlapping the footer logo).
+## Setup
 
-## Usage & Automation
+### Prerequisites
+- Python 3.11+ (use `phases/01_scrape/venv/Scripts/python.exe` for all `.py` scripts)
+- Node.js 18+
+- Google Chrome (for Playwright CDP automation)
 
-The pipeline is generally executed via Windows Scheduled Tasks using batch scripts:
+### Environment Variables
+Copy `.env.example` to `.env` and fill in the required values:
+```powershell
+copy .env.example .env
+```
 
-- **`run-morning.bat`**: Triggers the morning run (scraper -> HSX pipeline -> Sheets upload).
-- **`run-afternoon.bat`**: Triggers the afternoon run.
+### Node Dependencies
+```powershell
+npm install
+cd phases\02_curate && npm install
+```
 
-### Manual Pipeline Steps
+## Usage
 
-If running manually or handling the summarization phase:
+### Daily Pipeline
 
-1. **Scrape & Upload**:
-   ```powershell
-   .\run-morning.bat
-   ```
-2. **Human Curation**: 
-   - Editor goes to Google Sheets, reviews the new tab, checks the "TAKE" column for desired articles, and updates the Macro tab.
-3. **Fetch & Summarize**: 
-   - Uses the agent summarizer command (e.g., `/summarize morning` in Gemini Code, or manually running the Python extraction/fetch scripts).
-4. **Compile Reports**:
-   ```powershell
-   # Example generation of final reports
-   python scripts/generate_html_report.py mor_16_06_2026
-   python scripts/generate_pdf_report.py mor_16_06_2026
-   ```
+```powershell
+# Phase 01 — Scrape
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\main.py
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\hsx_insider_scraper.py
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\hsx_prepare_pdfs.py
+# Agent reads rendered PDF images → _agent_results.json
+phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\format_hsx_trading_news.py
+
+# Phase 02 — Upload to Sheets (morning or afternoon)
+node phases\02_curate\upload-to-sheets.js morning
+
+# [Human] Mark TAKE rows and fill Macro tab in Google Sheets
+
+# Phase 02 — Generate source markdown from TAKE rows
+node phases\02_curate\generate-report.js morning
+
+# Phase 03–04 — Summarize and publish (via agent skills)
+# Run /summarize-news → /dedup-news → /publish-news in Claude Code
+```
+
+### Manual Phase 03–04 Commands
+
+```powershell
+# Summarize
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\fetch_full_articles.py reports\{base}\source\{base}.md
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\prepare_chunks.py {base}
+phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\combine_chunks.py {base}
+
+# Validate + Publish
+phases\01_scrape\venv\Scripts\python.exe core_tools\validation\validate_summary_data.py {base}
+phases\01_scrape\venv\Scripts\python.exe phases\04_publish\generate_html_report.py {base}
+phases\01_scrape\venv\Scripts\python.exe phases\04_publish\generate_pdf_report.py {base}
+phases\01_scrape\venv\Scripts\python.exe phases\04_publish\generate_docx_report.py {base}
+
+# Upload to Heyzine
+node phases\02_curate\run-upload.js "reports\{base}\exports\pdf\{base}_report_en.pdf"
+node phases\02_curate\run-upload.js "reports\{base}\exports\pdf\{base}_report_vn.pdf"
+```
 
 ## Development
 
-For detailed agent guidelines and manual component execution steps, refer to `GEMINI.md`.
-For UI layout constraints and CSS configurations, refer strictly to `DESIGN.md`.
+For detailed agent guidelines and verified command paths, refer to `GEMINI.md`.  
+For UI layout constraints and CSS configuration, refer to `DESIGN.md`.
