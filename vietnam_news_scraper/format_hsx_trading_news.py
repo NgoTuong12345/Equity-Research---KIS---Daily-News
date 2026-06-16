@@ -1,139 +1,36 @@
 """
-Format HSX NotebookLM extraction JSON into company trading-news prose.
+Format HSX agent extraction JSON into company trading-news prose.
 
-Input:
-    hsx_insider_trading_YYYYMMDD_HHMM_extracted.json
+This script acts as an orchestrator for the agent-driven translation workflow.
+Deterministic dictionaries have been removed to allow the LLM agent to handle
+long-tail unique names, organizations, and relationships reliably.
 
-Outputs by default:
-    hsx_insider_trading_YYYYMMDD_HHMM_extracted_formatted.json
-    hsx_insider_trading_YYYYMMDD_HHMM_extracted_EN.txt
-    hsx_insider_trading_YYYYMMDD_HHMM_extracted_VN.txt
+Workflow:
+1. PREPARE: python format_hsx_trading_news.py --prepare hsx_insider_trading_*_extracted.json
+   -> Deduplicates transactions and writes *_to_format.json
 
-Usage:
-    python format_hsx_trading_news.py hsx_insider_trading_20260605_1113_extracted.json
+2. AGENT: The agent reads *_to_format.json, translates the fields, and generates 
+   summary_vn and summary_en. It writes the result to *_agent_formatted.json.
+
+3. MERGE: python format_hsx_trading_news.py --merge hsx_insider_trading_*_extracted.json
+   -> Merges the agent's translations and writes the final outputs:
+      *_extracted_formatted.json
+      *_extracted_EN.txt
+      *_extracted_VN.txt
 """
 from __future__ import annotations
 
 import argparse
 import json
 import re
-import unicodedata
 import sys
 import io
+import unicodedata
 from pathlib import Path
 from typing import Any
 
 # Force stdout to UTF-8 to support Vietnamese characters on Windows terminal
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
-TICKER_INDEX = {}
-REVERSE_COMPANY_MAP = {}
-try:
-    ticker_index_path = Path(__file__).resolve().parent.parent / "ticker_index.json"
-    if ticker_index_path.exists():
-        with open(ticker_index_path, "r", encoding="utf-8") as f:
-            TICKER_INDEX = json.load(f).get("tickers", {})
-            for ticker, info in TICKER_INDEX.items():
-                co_vn = info.get("company_vn")
-                co_en = info.get("company_en")
-                if co_vn and co_en:
-                    REVERSE_COMPANY_MAP[co_vn.strip().lower()] = co_en.strip()
-except Exception as e:
-    pass
-
-
-COMPANY_EN = {
-    "Công ty Cổ phần Dịch vụ Hàng hóa Sài Gòn": "Saigon Cargo Service",
-    "Công ty Cổ Phần Dịch Vụ Hàng Hóa Sài Gòn": "Saigon Cargo Service",
-    "Công ty Cổ phần Đầu tư Sài Gòn VRG": "Sai Gon VRG Investment Joint Stock Company",
-    "Công ty Cổ phần Chứng khoán SSI": "SSI Securities Corporation",
-    "Công ty CP Tàu cao tốc Superdong Kiên Giang": "Superdong Fast Ferry Kien Giang Joint Stock Company",
-    "Công ty cổ phần Đầu tư phát triển nhà và đô thị IDICO": "IDICO Urban and House Development Investment Joint Stock Company",
-    "Ngân hàng TMCP Nam Á": "Nam A Commercial Joint Stock Bank",
-    "Ngân hàng Thương mại Cổ phần Nam Á": "Nam A Commercial Joint Stock Bank",
-}
-
-RELATIONSHIP_EN = {
-    "Cổ đông lớn và là tổ chức có liên quan đến người nội bộ của Công ty Cổ phần Xây dựng 47": "Major shareholder and related organization of Construction Joint Stock Company 47's insider",
-    "Người Phụ trách quản trị công ty": "Person in charge of Corporate Governance",
-    "Thành viên Hội đồng quản trị độc lập": "Independent Member of the Board of Directors",
-    "Thành viên Hội đồng Quản trị": "Member of the Board of Directors",
-    "Thành viên Hội đồng quản trị": "Member of the Board of Directors",
-    "Chủ tịch Hội đồng quản trị": "Chairman of the Board of Directors",
-    "Chủ tịch HĐQT": "Chairman of the Board of Directors",
-    "Con của Chủ tịch Hội đồng Quản trị": "Child of the Chairman of the Board of Directors",
-    "Thành viên HĐQT": "Member of the Board of Directors",
-    "Tổng Giám Đốc": "General Director",
-    "Tổng Giám đốc": "General Director",
-    "Kế toán trưởng": "Chief Accountant",
-    "Giám đốc Tài chính": "Chief Financial Officer",
-    "Người Phụ trách quản trị Công ty": "Person in charge of Corporate Governance",
-    "Người phụ trách quản trị Công ty": "Person in charge of Corporate Governance",
-    "Người được ủy quyền CBTT": "Authorized person to disclose information",
-    "Người có liên quan của người nội bộ": "Related person of insider",
-    "Là người có liên quan của người nội bộ": "Related person of insider",
-    "Cổ đông, người có liên quan của người nội bộ": "Shareholder, related person of insider",
-    "Cha ruột": "Father",
-    "Cha": "Father",
-    "Mẹ ruột": "Mother",
-    "Mẹ": "Mother",
-    "Vợ": "Wife",
-    "Chồng": "Husband",
-    "Con ruột": "Child",
-    "Con": "Child",
-    "Em ruột": "Sibling",
-    "Anh ruột": "Sibling",
-    "Chị ruột": "Sibling",
-    "Người ủy quyền công bố thông tin": "Authorized person to disclose information",
-    "Người phụ trách quản trị công ty": "Person in charge of Corporate Governance",
-    "Người phụ trách Quản trị công ty": "Person in charge of Corporate Governance",
-    "Phó Tổng giám đốc cấp cao": "Senior Deputy General Director",
-    "Phó Tổng Giám đốc": "Deputy General Director",
-    "Phó Tổng giám đốc": "Deputy General Director",
-    "Thành viên HĐQT, Tổng Giám Đốc": "Member of the Board of Directors, General Director",
-    "Giám đốc Kiểm toán nội bộ": "Director of Internal Audit",
-    "Giám đốc Tài chính kiêm Kế toán trưởng": "Chief Financial Officer and Chief Accountant",
-    "Công ty mẹ đồng thời là người có liên quan của người nội bộ": "Parent company and related person of insider",
-    "Công ty mẹ, tổ chức có liên quan của Người nội bộ của Công ty cổ phần Vinhomes": "Parent company, related organization of Vinhomes's insider",
-    "Công đoàn": "Trade Union",
-    "Bố ruột": "Father",
-    "Bố": "Father",
-    "Em vợ": "Brother-in-law",
-    "Chủ tịch Hội đồng Quản trị": "Chairman of the Board of Directors",
-    "Cổ đông lớn, cổ đông nội bộ": "Major and internal shareholder",
-    "Cổ đông Nội bộ": "Internal shareholder",
-    "Chánh Văn phòng HĐQT kiêm Người phụ trách quản trị": "Chief of the Office of the Board of Directors and Person in charge of Corporate Governance",
-    "Trưởng ban kiểm soát": "Head of the Supervisory Board",
-    "Trưởng Ban kiểm soát": "Head of the Supervisory Board",
-    "Tổ chức đăng ký giao dịch": "Trading organization",
-    "Thành viên Ban Kiểm Soát": "Member of the Supervisory Board",
-    "Thành viên Ban kiểm soát": "Member of the Supervisory Board",
-    "Thành viên ban kiểm soát": "Member of the Supervisory Board",
-    "Tổ chức có liên quan đến người nội bộ": "Organization related to insider",
-    "Người được ủy quyền công bố thông tin": "Authorized person to disclose information",
-    "Phó Tổng Giám đốc kiêm Giám đốc tài chính": "Deputy General Director and Chief Financial Officer",
-    "Con gái Thành viên HĐQT": "Daughter of Member of the Board of Directors",
-}
-
-NAME_EN = {
-    "Tạ Thu Hà": "Ta Thu Ha",
-    "Bùi Thị Thu Hương": "Bui Thi Thu Huong",
-    "Trần Lê An": "Tran Le An",
-    "Trần Mạnh Hùng": "Tran Manh Hung",
-    "CÔNG TY CỔ PHẦN HÀNG TIÊU DÙNG MASAN": "Masan Consumer Corporation",
-}
-
-NAME_VN = {
-    "ta thu ha": "Tạ Thu Hà",
-    "bui thi thu huong": "Bùi Thị Thu Hương",
-    "tran le an": "Trần Lê An",
-    "tran manh hung": "Trần Mạnh Hùng",
-}
-
-
-def ascii_fold(text: str) -> str:
-    text = unicodedata.normalize("NFD", text or "")
-    text = text.replace("Đ", "D").replace("đ", "d")
-    return "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
 
 
 def normalize_text(value: Any) -> str:
@@ -156,118 +53,6 @@ def clean_percentage(value: Any) -> str:
     return text if text.endswith("%") else f"{text}%"
 
 
-def exchange_for(record: dict[str, Any], tx: dict[str, Any]) -> str:
-    exchange = normalize_text(tx.get("exchange") or record.get("source") or "HSX")
-    return exchange or "HSX"
-
-
-def english_company(company_vn: str, ticker: str = "") -> str:
-    if ticker and ticker in TICKER_INDEX and TICKER_INDEX[ticker].get("company_en"):
-        return TICKER_INDEX[ticker]["company_en"]
-    company_vn_clean = company_vn.strip().lower()
-    if company_vn_clean in REVERSE_COMPANY_MAP:
-        return REVERSE_COMPANY_MAP[company_vn_clean]
-    return COMPANY_EN.get(company_vn, ascii_fold(company_vn))
-
-
-def english_name(name_vn: str) -> str:
-    if name_vn in NAME_EN:
-        return NAME_EN[name_vn]
-    name_vn_clean = name_vn.strip().lower()
-    if name_vn_clean in REVERSE_COMPANY_MAP:
-        return REVERSE_COMPANY_MAP[name_vn_clean]
-    if name_vn in COMPANY_EN:
-        return COMPANY_EN[name_vn]
-    
-    # If the initiator name has corporate indicators, format as an English company name
-    indicators = ["công ty", "tập đoàn", "tổng công ty", "ngân hàng", "quỹ", "hiệp hội", "chi nhánh", "ban", "tổ chức"]
-    if any(ind in name_vn_clean for ind in indicators):
-        return english_company(name_vn)
-        
-    return ascii_fold(name_vn)
-
-
-def canonical_vn_name(name_vn: str) -> str:
-    folded = ascii_fold(name_vn).lower()
-    return NAME_VN.get(folded, name_vn)
-
-
-def english_relationship(relationship_vn: str) -> str:
-    if relationship_vn in RELATIONSHIP_EN:
-        return RELATIONSHIP_EN[relationship_vn]
-
-    translated = relationship_vn
-    # Replace known phrases inside longer relationship strings.
-    for vn, en in sorted(RELATIONSHIP_EN.items(), key=lambda item: len(item[0]), reverse=True):
-        translated = translated.replace(vn, en)
-    return ascii_fold(translated)
-
-
-def action_words(action: str) -> dict[str, str]:
-    action = (action or "").lower()
-    if action == "sell":
-        return {
-            "en_action": "sell",
-            "en_delta": "decreasing",
-            "vn_action": "bán",
-            "vn_delta": "giảm",
-            "vn_direction": "xuống",
-        }
-    return {
-        "en_action": "buy",
-        "en_delta": "increasing",
-        "vn_action": "mua",
-        "vn_delta": "tăng",
-        "vn_direction": "lên",
-    }
-
-
-def format_transaction(record: dict[str, Any], tx: dict[str, Any], order: int) -> dict[str, Any]:
-    ticker = normalize_text(tx.get("ticker") or record.get("ticker"))
-    company_vn = normalize_text(tx.get("company_fullname"))
-    company_en = english_company(company_vn, ticker)
-    exchange = exchange_for(record, tx)
-    date_range = normalize_text(tx.get("date_range"))
-    name_vn = canonical_vn_name(normalize_text(tx.get("name")))
-    name_en = english_name(name_vn)
-    rel_vn = normalize_text(tx.get("relationship"))
-    rel_en = english_relationship(rel_vn)
-    words = action_words(normalize_text(tx.get("action")))
-    change_volume = format_number(tx.get("change_volume"))
-    after_volume = format_number(tx.get("after_volume"))
-    after_percentage = clean_percentage(tx.get("after_percentage"))
-
-    summary_en = (
-        f"{ticker} ({company_en}) {exchange}: {date_range}. "
-        f"{name_en} ({rel_en}) announced to {words['en_action']} {change_volume} shares, "
-        f"{words['en_delta']} total shares to {after_volume} shares ({after_percentage});"
-    )
-    summary_vn = (
-        f"{ticker} ({company_vn}) {exchange}: {date_range}. "
-        f"{name_vn} ({rel_vn}) thông báo đăng ký {words['vn_action']} {change_volume} cổ phiếu, "
-        f"{words['vn_delta']} tổng số lượng cổ phiếu nắm giữ {words['vn_direction']} "
-        f"{after_volume} cổ phiếu ({after_percentage});"
-    )
-
-    return {
-        "order": order,
-        "ticker": ticker,
-        "exchange": exchange,
-        "company_vn": company_vn,
-        "company_en": company_en,
-        "source": exchange,
-        "url": record.get("url", ""),
-        "published": record.get("date", ""),
-        "title_vn": f"{ticker}. ({company_vn}. {exchange})" if ticker and company_vn else f"{company_vn}. {exchange}",
-        "title_en": f"{ticker}. ({company_en}. {exchange})" if ticker and company_en else f"{company_en}. {exchange}",
-        "summary_vn": summary_vn,
-        "summary_en": summary_en,
-        "relationship_vn": rel_vn,
-        "relationship_en": rel_en,
-        "raw_transaction": tx,
-    }
-
-
 def transaction_key(record: dict[str, Any], tx: dict[str, Any]) -> tuple[str, ...]:
     return tuple(
         normalize_text(value).casefold()
@@ -286,88 +71,125 @@ def transaction_key(record: dict[str, Any], tx: dict[str, Any]) -> tuple[str, ..
     )
 
 
-def format_records(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    items: list[dict[str, Any]] = []
-    seen: set[tuple[str, ...]] = set()
+def prepare_for_agent(input_path: Path) -> Path:
+    """Read extracted JSON, deduplicate transactions, and write _to_format.json."""
+    records = json.loads(input_path.read_text(encoding="utf-8"))
+    
+    items_to_format = []
+    seen = set()
+    order = 1
+    
     for record in records:
         for tx in record.get("transactions") or []:
             key = transaction_key(record, tx)
             if key in seen:
                 continue
             seen.add(key)
-            items.append(format_transaction(record, tx, len(items) + 1))
-    return items
+            
+            items_to_format.append({
+                "order": order,
+                "ticker": normalize_text(tx.get("ticker") or record.get("ticker")),
+                "exchange": normalize_text(tx.get("exchange") or record.get("source") or "HSX"),
+                "company_vn": normalize_text(tx.get("company_fullname")),
+                "name_vn": normalize_text(tx.get("name")),
+                "relationship_vn": normalize_text(tx.get("relationship")),
+                "action": normalize_text(tx.get("action")),
+                "change_volume": format_number(tx.get("change_volume")),
+                "after_volume": format_number(tx.get("after_volume")),
+                "after_percentage": clean_percentage(tx.get("after_percentage")),
+                "date_range": normalize_text(tx.get("date_range")),
+                "url": record.get("url", ""),
+                "published": record.get("date", ""),
+                "raw_transaction": tx
+            })
+            order += 1
+            
+    out_path = input_path.with_name(input_path.stem.replace("_extracted", "") + "_to_format.json")
+    out_path.write_text(json.dumps(items_to_format, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"Prepared {len(items_to_format)} unique transactions for agent formatting: {out_path}")
+    return out_path
 
 
-def default_outputs(input_path: Path) -> tuple[Path, Path, Path]:
-    stem = re.sub(r"_formatted$", "", input_path.stem)
-    return (
-        input_path.with_name(f"{stem}_formatted.json"),
-        input_path.with_name(f"{stem}_EN.txt"),
-        input_path.with_name(f"{stem}_VN.txt"),
-    )
-
-
-def double_check_extracted_data(items: list[dict[str, Any]]) -> None:
-    print("\n=== DOUBLE-CHECKING EXTRACTED TRADING DATA ===")
-    has_warnings = False
-    for item in items:
-        ticker = item.get("ticker", "N/A")
-        rel_vn = item.get("relationship_vn", "")
-        rel_en = item.get("relationship_en", "")
+def merge_agent_results(input_path: Path):
+    """Read agent's formatted JSON and write final formatted output and TXT files."""
+    agent_file = input_path.with_name(input_path.stem.replace("_extracted", "") + "_agent_formatted.json")
+    if not agent_file.exists():
+        print(f"ERROR: Agent output file not found: {agent_file}")
+        print("Please run the agent formatter workflow first.")
+        sys.exit(1)
         
-        # Check for untranslated relationship words
-        # If rel_en is just the ascii-folded version of rel_vn, and rel_vn contains Vietnamese words
-        folded_vn = ascii_fold(rel_vn).lower().strip()
-        folded_en = ascii_fold(rel_en).lower().strip()
+    formatted_items = json.loads(agent_file.read_text(encoding="utf-8"))
+    
+    # Reconstruct the final list with correct keys
+    final_items = []
+    for item in formatted_items:
+        ticker = item.get("ticker", "")
+        company_vn = item.get("company_vn", "")
+        company_en = item.get("company_en", "")
+        exchange = item.get("exchange", "HSX")
         
-        if rel_vn and folded_vn == folded_en and any(c.isalpha() for c in rel_vn):
-            # Known English words that might be identical to folded Vietnamese or standard abbreviations
-            known_en_words = {"ceo", "cfo", "director", "manager", "bod", "chairman", "assistant", "member", "independent", "accountant", "officer", "insider", "relative", "deputy", "vice"}
-            words_en = set(folded_en.split())
-            if not words_en.intersection(known_en_words):
-                print(f"WARNING: Untranslated relationship for {ticker}: '{rel_vn}' -> '{rel_en}'")
-                print("  Please update RELATIONSHIP_EN in format_hsx_trading_news.py with this term.")
-                has_warnings = True
-                
-        # Check for missing critical fields
-        for field in ("ticker", "company_vn", "summary_vn", "summary_en"):
-            if not item.get(field):
-                print(f"ERROR: Missing field '{field}' in item order {item.get('order')}")
-                has_warnings = True
-                
-    if not has_warnings:
-        print("All trading items passed verification successfully!")
-    print("=============================================\n")
-
-
-def run(input_path: Path, output_json: Path | None = None) -> Path:
-    records = json.loads(input_path.read_text(encoding="utf-8"))
-    items = format_records(records)
-    double_check_extracted_data(items)
-    default_json, en_txt, vn_txt = default_outputs(input_path)
-    output_json = output_json or default_json
-
+        # Ensure title fields exist
+        if "title_vn" not in item:
+            item["title_vn"] = f"{ticker}. ({company_vn}. {exchange})" if ticker and company_vn else f"{company_vn}. {exchange}"
+        if "title_en" not in item:
+            item["title_en"] = f"{ticker}. ({company_en}. {exchange})" if ticker and company_en else f"{company_en}. {exchange}"
+        
+        # Ensure source field exists for downstream
+        if "source" not in item:
+            item["source"] = exchange
+            
+        final_items.append(item)
+        
+    # Write final outputs
     payload = {
         "source_file": str(input_path),
         "category": "trading",
-        "item_count": len(items),
-        "items": items,
+        "item_count": len(final_items),
+        "items": final_items,
     }
-    output_json.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    en_txt.write_text("\n".join(item["summary_en"] for item in items), encoding="utf-8")
-    vn_txt.write_text("\n".join(item["summary_vn"] for item in items), encoding="utf-8")
-    return output_json
+    
+    stem = re.sub(r"_extracted$", "", input_path.stem)
+    json_out = input_path.with_name(f"{stem}_extracted_formatted.json")
+    en_txt = input_path.with_name(f"{stem}_extracted_EN.txt")
+    vn_txt = input_path.with_name(f"{stem}_extracted_VN.txt")
+    
+    json_out.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    en_txt.write_text("\n".join(item.get("summary_en", "") for item in final_items), encoding="utf-8")
+    vn_txt.write_text("\n".join(item.get("summary_vn", "") for item in final_items), encoding="utf-8")
+    
+    print(f"Formatted trading news saved to: {json_out}")
+    print(f"Saved text files: {en_txt.name}, {vn_txt.name}")
+
+
+def run_legacy_bypass(input_path: Path):
+    """
+    If no flags are provided, assume legacy behavior.
+    If the agent formatted file exists, merge it. Otherwise, print an error instructing
+    the user/agent to run --prepare.
+    """
+    agent_file = input_path.with_name(input_path.stem.replace("_extracted", "") + "_agent_formatted.json")
+    if agent_file.exists():
+        merge_agent_results(input_path)
+    else:
+        print("ERROR: Deterministic formatting has been removed.")
+        print(f"Run: python {Path(__file__).name} --prepare {input_path.name}")
+        print("Then have the agent format the data, and run again with --merge.")
+        sys.exit(1)
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Format HSX NLM extracted JSON into trading-news prose")
+    parser = argparse.ArgumentParser(description="Format HSX agent extraction JSON into trading-news prose")
     parser.add_argument("input", type=Path, help="Path to *_extracted.json")
-    parser.add_argument("--output", type=Path, default=None, help="Optional formatted JSON output path")
+    parser.add_argument("--prepare", action="store_true", help="Prepare deduplicated JSON for the agent")
+    parser.add_argument("--merge", action="store_true", help="Merge agent-formatted JSON into final outputs")
     args = parser.parse_args()
 
-    output = run(args.input, args.output)
-    print(f"Formatted trading news saved to: {output}")
+    if args.prepare:
+        prepare_for_agent(args.input)
+    elif args.merge:
+        merge_agent_results(args.input)
+    else:
+        run_legacy_bypass(args.input)
 
 
 if __name__ == "__main__":
