@@ -5,11 +5,22 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 ## Workflow
 
 1. Read `reports/{base}/source/{base}.md` — this file is produced by `/curate-news` (`node phases\02_curate\generate-report.js {SESSION}`). If it does not exist, stop and invoke `/curate-news` first.
-2. Summarize every selected article in Vietnamese first, then English.
-3. Classify feed articles into `corporate` or `economy_political_others`.
-4. Write summary JSON and bilingual markdown into `reports/{base}/data/` and `reports/{base}/summaries/`.
-5. After writing each JSON file, run the harness to validate output (see **Harness Validation** below).
-6. When all items pass (or retries are exhausted), automatically invoke the `/dedup-news` skill.
+2. **Morning sessions only — Read Macro + vin_bank tabs from Google Sheets:**
+   ```
+   node phases\02_curate\read-macro-sheet.js DD/MM/YYYY
+   ```
+   Replace `DD/MM/YYYY` with today's date (e.g. `16/06/2026`).
+   This saves `reports\{base}\data\macro_sheet_DD_MM_YYYY.json` with all items from the `Macro` tab and `vin_bank` tab that match today's date.
+   **If this file is missing or empty, stop and warn the user** — macro and vin_bank content will be absent from the report.
+   For afternoon sessions, skip this step (macro/vin_bank are morning-only inputs).
+3. Summarize every selected article in Vietnamese first, then English (TAKE articles from step 1 only — not macro/vin_bank items, which are verbatim).
+4. Classify feed articles into `corporate` or `economy_political_others`.
+5. Write summary JSON and bilingual markdown into `reports/{base}/data/` and `reports/{base}/summaries/`. Distribute `macro_sheet_*.json` items as follows:
+   - `source_tab = "macro"` → verbatim into `{base}_macro.json`
+   - `source_tab = "vin_bank"` + `news_category` is a known ticker → verbatim into `{base}_corporate.json` (correct sector)
+   - `source_tab = "vin_bank"` + `news_category` is non-ticker (e.g. Commodities, Macro) → verbatim into `{base}_economy_political_others.json` (correct subtype)
+6. After writing each JSON file, run the harness to validate output (see **Harness Validation** below).
+7. When all items pass (or retries are exhausted), automatically invoke the `/dedup-news` skill.
 
 ## Writing Rules
 
@@ -23,7 +34,8 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 - Do not mix Vietnamese and English inside the same section.
 
 ### Google Sheets verbatim content (macro, commodities/vin_bank)
-- **Do NOT rephrase.** Copy the provided VN and EN text exactly as supplied.
+- **Source**: `reports\{base}\data\macro_sheet_DD_MM_YYYY.json` — produced by step 2 above (`read-macro-sheet.js`).
+- **Do NOT rephrase.** Copy `body_vn` → `summary_vn` and `body_en` → `summary_en` exactly as-is.
 - Word count rules **do not apply** — harness skips enforcement for `category: macro` and `source: vin_bank`.
 - These items are written by analysts upstream; your only role is to place them in the JSON with correct field names.
 

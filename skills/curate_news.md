@@ -78,4 +78,6 @@ Automatically invoke the `/summarize-news` skill, passing `{base}` as the sessio
 - The Google Sheets URL is: `https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit`
 - Log is written to: `phases\02_curate\logs\upload.log`
 - `generate-report.js` reads the **current state** of the sheet at run time — run it only after all TAKE marks are final
-- Macro and trading items are sourced separately (not from TAKE rows) — they are added in `/summarize-news`
+- **TAKE values** live in the session tab (e.g. `mor_16_06_2026`), columns E (`news_corp_select`) and F (`news_poli_select`). Only those rows end up in the source `.md`.
+- **Macro tab + vin_bank tab** are read separately in `/summarize-news` step 2 via `read-macro-sheet.js`. Ensure the analyst has filled those tabs before invoking `/summarize-news`.
+- Trading items are sourced from `hsx_insider_trading_*_extracted_formatted.json` — not from TAKE rows.

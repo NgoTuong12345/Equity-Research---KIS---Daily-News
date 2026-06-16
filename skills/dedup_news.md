@@ -88,16 +88,23 @@ Show the current (post-dedup) numbered list and prompt:
 ```
 ✏️  Edit the list before publishing.
 Commands:
-  drop N        — remove item N
-  add <url>     — fetch and summarize a new article, append to the list
-  done          — finalize and publish
+  drop N            — remove item N
+  add <url>         — fetch and summarize a new article, append to the list
+  paste             — summarize raw text pasted directly into chat (no URL)
+  edit N            — rewrite the summary for item N inline
+  merge N M         — combine items N and M into one consolidated item
+  done              — finalize and publish
 
 >
 ```
 
 Accept multiple commands in sequence. Apply each immediately and confirm:
+
 - `drop 3` → "Dropped: [title]"
-- `add https://...` → fetch article, summarize it using the same KIS style rules, validate with harness, append to appropriate JSON file, show as new item
+- `add https://...` → fetch article, summarize using KIS style rules, validate with harness, append to JSON, show as new item
+- `paste` → prompt user to paste raw text; follow the `/paste-news` skill flow to classify, summarize, validate, and append
+- `edit N` → show the current `summary_vn` and `summary_en` for item N; accept user's corrected text or ask the LLM to rewrite based on user instructions; validate the edited item with harness; update the JSON in place
+- `merge N M` → show both items side by side; propose a merged bilingual summary combining the key facts from both; validate with harness; write merged item in place of item N; drop item M; re-number the list
 - `done` → proceed to Step 6
 
 ---

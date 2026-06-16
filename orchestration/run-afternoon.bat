@@ -5,6 +5,17 @@ REM PROJECT_ROOT is the parent of the orchestration/ folder
 set "PROJECT_ROOT=%~dp0.."
 set "LOG=%PROJECT_ROOT%\phases\02_curate\logs\run.log"
 
+REM Idempotency guard — derive YYYYMMDD via wmic (locale-independent)
+for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value 2^>nul') do set _DT=%%I
+set TODAY=%_DT:~0,8%
+set "DONE_FLAG=%PROJECT_ROOT%\phases\02_curate\logs\afternoon_%TODAY%.done"
+
+if exist "%DONE_FLAG%" (
+    echo [%DATE% %TIME%] SKIP: afternoon upload already completed today ^(sentinel: %DONE_FLAG%^). >> "%LOG%"
+    echo [%DATE% %TIME%] Delete the sentinel file to force a re-run. >> "%LOG%"
+    exit /b 0
+)
+
 echo [%DATE% %TIME%] === Afternoon Run Started === >> "%LOG%"
 
 REM Step 1: Run the Python news scraper
@@ -40,6 +51,9 @@ if errorlevel 1 (
     echo [%DATE% %TIME%] ERROR: Upload failed. >> "%LOG%"
     exit /b 1
 )
+
+REM Write sentinel so re-runs are blocked for the rest of the day
+echo done > "%DONE_FLAG%"
 
 echo [%DATE% %TIME%] === Afternoon Run Complete === >> "%LOG%"
 endlocal

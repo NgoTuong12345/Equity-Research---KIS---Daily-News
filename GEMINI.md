@@ -63,9 +63,23 @@ reports/{base}/             ← ALL generated output lives here (root-level repo
 
 1. Scheduled run: `phases\01_scrape\run.bat` scrapes news → CSV.
 2. `phases\02_curate\upload-to-sheets.js` uploads CSV to Google Sheets.
-3. `phases\02_curate\generate-report.js` reads TAKE rows → `reports/{base}/source/{base}.md`.
-4. Human marks `TAKE` rows and fills the Macro tab.
-5. Agent runs `/summarize-news` → `/dedup-news` → `/publish-news` (skills auto-chain).
+3. Human marks `TAKE` rows in the session tab AND fills the `Macro` + `vin_bank` tabs.
+4. `phases\02_curate\generate-report.js` reads TAKE rows → `reports/{base}/source/{base}.md`.
+5. `phases\02_curate\read-macro-sheet.js DD/MM/YYYY` reads `Macro` + `vin_bank` tabs → `reports/{base}/data/macro_sheet_DD_MM_YYYY.json` (morning only).
+6. Agent runs `/summarize-news` → `/dedup-news` → `/publish-news` (skills auto-chain; steps 4–5 are executed inside `/curate-news` and `/summarize-news` respectively).
+
+### ⛔ Upload idempotency — NEVER re-upload if today's session already ran
+
+Before running `upload-to-sheets.js` for any session, check for the sentinel file:
+
+```
+phases\02_curate\logs\morning_{YYYYMMDD}.done    ← morning session
+phases\02_curate\logs\afternoon_{YYYYMMDD}.done  ← afternoon session
+```
+
+**If the sentinel exists → stop. Do not run the upload.**
+
+Re-running `upload-to-sheets.js` when the sheet tab already exists will clear it and paste fresh CSV data, destroying all `TAKE` values the analyst has already marked. The sentinel is written by the bat files and by the `/scrape-and-upload` skill after a successful upload. To force a legitimate re-run, the user must manually delete the sentinel file first.
 
 ### Skills auto-chain
 
@@ -189,6 +203,7 @@ Extraction contract:
 
 ## Working Rules
 
+- **NEVER run `upload-to-sheets.js` if the sentinel file for today's session exists** (`phases\02_curate\logs\{morning|afternoon}_{YYYYMMDD}.done`). Re-uploading overwrites the sheet tab and destroys TAKE values. The user must delete the sentinel to force a re-run.
 - Always use `phases\01_scrape\venv\Scripts\python.exe` — never `python`, `py`, or another venv.
 - Route new output-producing code through the shared path helpers (`core_tools/paths/report_paths.py` / `report-paths.js`).
 - All report artifacts belong in `reports/{base}/` — never write them to project root, `phases/`, or any other location.

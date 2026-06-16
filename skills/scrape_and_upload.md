@@ -25,6 +25,40 @@ Set `{SESSION}` = `morning` or `afternoon`.
 
 ---
 
+## ⛔ Idempotency Guard — Check Before Running Anything
+
+**This step is mandatory. Do not skip it.**
+
+Derive today's sheet tab name:
+- Morning → `mor_DD_MM_YYYY` (e.g. `mor_16_06_2026`)
+- Afternoon → `after_DD_MM_YYYY` (e.g. `after_16_06_2026`)
+
+Check the sentinel file:
+
+```
+phases\02_curate\logs\{session}_{YYYYMMDD}.done
+```
+
+- **If the file exists** → the upload already ran successfully today for this session.
+
+  Stop immediately and show:
+  ```
+  ⛔ Upload already completed for {tab_name} today.
+     Sentinel: phases\02_curate\logs\{session}_{YYYYMMDD}.done
+
+  Re-running would overwrite the sheet tab and destroy any TAKE values
+  already marked by the analyst.
+
+  To force a re-run, the user must delete the sentinel file first:
+    del "phases\02_curate\logs\{session}_{YYYYMMDD}.done"
+  ```
+
+  Do NOT proceed to Step 1 under any circumstances unless the user explicitly confirms they deleted the sentinel and wants to re-run.
+
+- **If the file does not exist** → no upload has run yet. Proceed to Step 1.
+
+---
+
 ## Step 1 — Run the News Scraper
 
 ```
@@ -96,18 +130,25 @@ Log is written to: `phases\02_curate\logs\upload.log`
 
 ---
 
-## Step 4 — Confirm
+## Step 4 — Write Sentinel & Confirm
 
-Report the result:
+After the upload script exits successfully, write the sentinel file to prevent accidental re-runs:
+
+```
+echo done > "phases\02_curate\logs\{SESSION}_{YYYYMMDD}.done"
+```
+
+Then report:
 
 ```
 ✓ Scraper: {csv_filename}
 ✓ HSX insider: formatted (or: skipped — scraper failed)
 ✓ Sheets tab "{tab_name}" updated
   → https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit
+✓ Sentinel written: phases\02_curate\logs\{SESSION}_{YYYYMMDD}.done
 ```
 
-If upload fails, show the last 20 lines of `phases\02_curate\logs\upload.log` and ask the user how to proceed.
+If upload fails, do NOT write the sentinel. Show the last 20 lines of `phases\02_curate\logs\upload.log` and ask the user how to proceed.
 
 ---
 
