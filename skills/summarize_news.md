@@ -13,12 +13,28 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 
 ## Writing Rules
 
-- **35–45 words max per paragraph (must be strictly under 300 characters to avoid truncation)**
-- **Titles**: Generate objective, fact-based descriptive titles driven from the full content. Do not rely on the raw fetched title. Avoid question marks, personal opinions, quotes, or clickbait. Keep them concise (max 70 chars / 12 words) in VN and EN to avoid truncation.
+### LLM-generated summaries (corporate, economy_political_others non-vin_bank)
+- **Up to 60 words per summary paragraph (max cap enforced by harness — no minimum)**
 - **Start with date**: Vietnamese → `Ngày D/M,`  |  English → `On D Month,`
 - **Prioritize data/figures/numbers** from the source
 - Active voice. No contractions. Confident, institutional tone.
+- **Facts only.** Every sentence must be directly stated in the source. Do NOT add interpretation, implied significance, or editorial commentary not in the source.
+- Banned patterns: *"reflecting X"*, *"marking a milestone"*, *"strengthening X"*, *"aimed at improving X"*, *"amid a broader"*, *"supporting Vietnam's push to"*, *"raising concerns among"*, *"this proves"*, *"this shows that"*, *"this remarks"*. If the source does not state it, do not write it.
 - Do not mix Vietnamese and English inside the same section.
+
+### Google Sheets verbatim content (macro, commodities/vin_bank)
+- **Do NOT rephrase.** Copy the provided VN and EN text exactly as supplied.
+- Word count rules **do not apply** — harness skips enforcement for `category: macro` and `source: vin_bank`.
+- These items are written by analysts upstream; your only role is to place them in the JSON with correct field names.
+
+### Trading items (insider transactions)
+- **Concise facts only.** State: who, relationship, action (buy/sell), volume, post-trade holding, date range.
+- **No forced padding** — do not add filler sentences to hit a word floor.
+- Harness enforces only a 10-word minimum (each language) — no upper limit.
+- Keep EN and VN structurally parallel but not identical word-for-word.
+
+### All items
+- **Titles**: Objective, fact-based, derived from full content. Max 70 chars / 12 words. No question marks, quotes, or clickbait.
 
 ## Classification
 
@@ -78,8 +94,8 @@ phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\harness.py reports\
 
 The harness checks:
 1. Schema — `title`, `summary_vn`, `summary_en`, `source`, `category` all present
-2. Word count — both VN and EN must be 40–60 words
-3. Both languages — each ≥ 20 words, not identical
+2. Word count — max 60 words for LLM-generated items (corporate + economy_political_others with non-vin_bank source); 10-word floor only for trading; **skipped entirely** for macro and vin_bank-sourced items
+3. Both languages — each ≥ 20 words, not identical (skipped for macro/vin_bank/trading)
 4. Numbers preserved — key figures from source must appear in the summary
 
 ---

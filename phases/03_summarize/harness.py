@@ -16,10 +16,16 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-WORD_MIN = 40
 WORD_MAX = 60
 LANG_MIN_WORDS = 20
+FLEXIBLE_MIN = 10
 NUMBER_COVERAGE_MIN = 0.80
+
+# Verbatim Google Sheets content — skip word count entirely
+WORD_COUNT_EXEMPT_CATEGORIES = {"macro"}
+WORD_COUNT_EXEMPT_SOURCES = {"vin_bank"}
+# Concise facts/figures — enforce only a loose floor, no ceiling
+WORD_COUNT_FLEXIBLE_CATEGORIES = {"trading"}
 
 
 def _word_count(text: str) -> int:
@@ -52,23 +58,36 @@ def validate_item(item: dict, category: str = "", source_text: str = "") -> dict
     if errors:
         return {"valid": False, "errors": errors}
 
-    # 2. Word count
     vn_words = _word_count(vn)
     en_words = _word_count(en)
-    if not (WORD_MIN <= vn_words <= WORD_MAX):
-        errors.append(
-            f"summary_vn word count is {vn_words}, must be {WORD_MIN}-{WORD_MAX}"
-        )
-    if not (WORD_MIN <= en_words <= WORD_MAX):
-        errors.append(
-            f"summary_en word count is {en_words}, must be {WORD_MIN}-{WORD_MAX}"
-        )
+
+    # Determine word count mode based on category and source
+    skip_word_count = (
+        category in WORD_COUNT_EXEMPT_CATEGORIES
+        or src in WORD_COUNT_EXEMPT_SOURCES
+    )
+    flexible = not skip_word_count and category in WORD_COUNT_FLEXIBLE_CATEGORIES
+
+    # 2. Word count
+    if skip_word_count:
+        pass  # verbatim Google Sheets content — no word count enforced
+    elif flexible:
+        if vn_words < FLEXIBLE_MIN:
+            errors.append(f"summary_vn too short ({vn_words} words), minimum {FLEXIBLE_MIN}")
+        if en_words < FLEXIBLE_MIN:
+            errors.append(f"summary_en too short ({en_words} words), minimum {FLEXIBLE_MIN}")
+    else:
+        if vn_words > WORD_MAX:
+            errors.append(f"summary_vn word count is {vn_words}, must be ≤{WORD_MAX}")
+        if en_words > WORD_MAX:
+            errors.append(f"summary_en word count is {en_words}, must be ≤{WORD_MAX}")
 
     # 3. Both languages present and distinct
-    if vn_words < LANG_MIN_WORDS:
-        errors.append(f"summary_vn too short ({vn_words} words), minimum {LANG_MIN_WORDS}")
-    if en_words < LANG_MIN_WORDS:
-        errors.append(f"summary_en too short ({en_words} words), minimum {LANG_MIN_WORDS}")
+    if not skip_word_count and not flexible:
+        if vn_words < LANG_MIN_WORDS:
+            errors.append(f"summary_vn too short ({vn_words} words), minimum {LANG_MIN_WORDS}")
+        if en_words < LANG_MIN_WORDS:
+            errors.append(f"summary_en too short ({en_words} words), minimum {LANG_MIN_WORDS}")
     if vn.strip() == en.strip():
         errors.append("summary_vn and summary_en are identical - both languages required")
 
