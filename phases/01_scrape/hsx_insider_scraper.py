@@ -266,26 +266,34 @@ def run(hours: int = 24, scrape_pdfs: bool = True) -> str:
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="HSX insider trading scraper")
-    parser.add_argument("--hours", type=int, default=None, help="Lookback window in hours (overrides default/automated logic)")
+    parser.add_argument("--hours", type=int, default=None, help="Lookback window in hours (overrides all other logic)")
+    parser.add_argument("--session", choices=["morning", "afternoon"], default=None,
+                        help="Explicit session context for hour selection (morning=16h/60h Mon, afternoon=7h)")
     parser.add_argument("--no-pdfs", action="store_true", help="Skip PDF link scraping")
     args = parser.parse_args()
-    
+
     hours = args.hours
     if hours is None:
         tz = timezone(timedelta(hours=7))
         local_now = datetime.now(tz)
         is_monday = local_now.weekday() == 0
-        is_morning = local_now.hour < 12
-        if is_monday and is_morning:
-            hours = 60
-            logger.info("Monday morning detected. Setting default HSX lookback to 60 hours.")
-        elif is_morning:
-            hours = 16
-            logger.info("Setting default morning HSX lookback to 16 hours.")
+
+        session = args.session
+        if session is None:
+            session = "morning" if local_now.hour < 12 else "afternoon"
+            logger.info(f"No --session provided; inferred from clock: {session}")
+
+        if session == "morning":
+            if is_monday:
+                hours = 60
+                logger.info("Monday morning: setting HSX lookback to 60 hours.")
+            else:
+                hours = 16
+                logger.info("Morning session: setting HSX lookback to 16 hours.")
         else:
             hours = 7
-            logger.info("Setting default afternoon HSX lookback to 7 hours.")
+            logger.info("Afternoon session: setting HSX lookback to 7 hours.")
     else:
-        logger.info(f"Using command-line lookback hours: {hours}")
-            
+        logger.info(f"Using explicit --hours: {hours}")
+
     run(hours=hours, scrape_pdfs=not args.no_pdfs)

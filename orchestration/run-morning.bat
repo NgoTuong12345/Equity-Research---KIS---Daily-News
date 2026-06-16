@@ -32,7 +32,7 @@ REM Step 2: Run HSX insider trading collection for the morning report.
 REM Morning run at 7:55 covers the previous 16 hours, avoiding overlap with afternoon.
 echo [%DATE% %TIME%] Running HSX insider trading pipeline... >> "%LOG%"
 cd /d "%PROJECT_ROOT%\phases\01_scrape"
-venv\Scripts\python.exe hsx_insider_scraper.py >> "%LOG%" 2>&1
+venv\Scripts\python.exe hsx_insider_scraper.py --session morning >> "%LOG%" 2>&1
 if errorlevel 1 (
     echo [%DATE% %TIME%] WARNING: HSX insider scraper failed. Continuing news pipeline. >> "%LOG%"
 ) else (
