@@ -339,8 +339,16 @@ def main():
                 "published": item.get("published", date_str)
             })
         elif cat == "economy_political_others":
+            raw_sub_key = (item.get("subtype_key") or "others").strip()
+            if raw_sub_key in ("monetary_market", "industries_sectors"):
+                sub_key = "economies_investments"
+            elif raw_sub_key in SUBTYPE_TITLES:
+                sub_key = raw_sub_key
+            else:
+                sub_key = "others"
+                
             epo_items.append({
-                "subtype_key": item.get("subtype_key", "others"),
+                "subtype_key": sub_key,
                 "title_vn": item.get("title_vn", "").strip(),
                 "title_en": item.get("title_en", "").strip(),
                 "summary_vn": item.get("summary_vn", "").strip(),

@@ -132,17 +132,18 @@ def validate_item(item: dict, category: str = "", source_text: str = "") -> dict
 
 def _extract_items(data: dict) -> tuple[list[dict], str]:
     """Returns (flat list of items, category string) from any JSON structure."""
-    category = data.get("category", "")
+    category = data.get("category", "") if isinstance(data, dict) else ""
     items = []
 
-    if "sectors" in data:
-        for sector in data["sectors"]:
-            items.extend(sector.get("items", []))
-    elif "subtypes" in data:
-        for subtype in data["subtypes"]:
-            items.extend(subtype.get("items", []))
-    elif "items" in data:
-        items = data["items"]
+    if isinstance(data, dict):
+        if "sectors" in data:
+            for sector in data["sectors"]:
+                items.extend(sector.get("items", []))
+        elif "subtypes" in data:
+            for subtype in data["subtypes"]:
+                items.extend(subtype.get("items", []))
+        elif "items" in data:
+            items = data["items"]
     elif isinstance(data, list):
         items = data
 

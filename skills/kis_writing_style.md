@@ -27,8 +27,10 @@ Use this guide when writing, editing, or translating financial research content 
 
 | Convention | Correct | Incorrect |
 |---|---|---|
-| Forecast suffix | 2026F | 2026E |
-| Valuation format | 10x 2026F PE | 10x 2026E P/E |
+| Convention | Correct | Incorrect |
+|---|---|---|
+| Year format | 2026 (no F/E suffix) | 2026F, 2026E |
+| Valuation format | 10x 2026 PE | 10x 2026E P/E |
 | Approximate | ~12%, ~VND1,100tn | approx. 12% |
 | Ranges | KRW10bn–15bn, 2024–2026 | KRW10bn~15bn |
 | Billions/trillions | bn, tn | bln, trn, mln |
@@ -42,8 +44,8 @@ Use this guide when writing, editing, or translating financial research content 
 ### Additional EN-VN number conventions
 
 - `3Q24` → `3Q24`
-- `4Q24F` → `4Q24F`
-- `2025F` → `2025F`
+- `4Q24` → `4Q24`
+- `2025` → `2025`
 - `9M24` → `9T24`
 - `1H24` → `6T24`
 - `30 Oct 2019` → `30/10/2019`
@@ -205,7 +207,7 @@ Keep these abbreviations unchanged in Vietnamese reports unless a specific rule 
 
 - [ ] Active voice throughout
 - [ ] No contractions
-- [ ] Forecast suffix is `F`, never `E`
+- [ ] No forecast suffix (like 'F' or 'E') for years
 - [ ] Sentence case on all titles
 - [ ] Inline numbered clauses for multi-factor arguments
 - [ ] Ranges use hyphens; approximations use tilde
