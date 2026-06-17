@@ -6,10 +6,7 @@ set "PROJECT_ROOT=%~dp0.."
 set "LOG=%PROJECT_ROOT%\phases\02_curate\logs\run.log"
 
 REM Add Anaconda to PATH so scheduled tasks can resolve node and python
-where node >nul 2>&1
-if errorlevel 1 (
-    set "PATH=%PATH%;C:\Users\trainee.rs11\AppData\Local\anaconda3"
-)
+set "PATH=C:\Users\trainee.rs11\AppData\Local\anaconda3;C:\Users\trainee.rs11\AppData\Local\anaconda3\Scripts;C:\Users\trainee.rs11\AppData\Local\anaconda3\Library\bin;%PATH%"
 
 REM Idempotency guard — derive YYYYMMDD via wmic (locale-independent)
 for /f "tokens=2 delims==" %%I in ('wmic os get localdatetime /value 2^>nul') do set _DT=%%I
