@@ -145,12 +145,9 @@ phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\fetch_full_articles
 # Split into chunks for agent summarization
 phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\prepare_chunks.py {base}
 
-# Intra-session dedup check (run BEFORE summarization to catch duplicate TAKE articles)
-phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\dedup_source.py {base} --threshold 0.80
-# With auto-drop (keeps longer article, re-chunks automatically):
-phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\dedup_source.py {base} --threshold 0.80 --auto-drop
-# Agent review: read dedup_review.json, set decisions, then apply:
-phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\dedup_source.py {base} --apply-decisions
+# Intra-session dedup check: Removed/Deprecated to avoid pipeline bottlenecks and Hugging Face dependencies.
+# Clean chunks are summarized directly.
+
 
 # Combine agent chunk outputs + macro + trading → 4 category JSONs
 phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\combine_chunks.py {base}

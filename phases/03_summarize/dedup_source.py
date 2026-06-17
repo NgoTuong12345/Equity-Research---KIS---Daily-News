@@ -40,21 +40,36 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-import numpy as np
+import re
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
 
-MODEL_NAME = "paraphrase-multilingual-MiniLM-L12-v2"
-DEFAULT_THRESHOLD = 0.80
+DEFAULT_THRESHOLD = 0.30
 BODY_EXCERPT_LEN = 500  # chars of body to include in the review file
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
+STOPWORDS = {
+    # Vietnamese common stop words / grammatical particles
+    "và", "của", "các", "để", "là", "trong", "cho", "đã", "đang", "sẽ", "có", "một", "với", "như", "được", "bị", "từ", "ra", "vào",
+    # English common stop words
+    "the", "and", "of", "to", "in", "is", "for", "on", "with", "at", "by", "an", "be", "this", "that", "it", "from", "as", "are", "was"
+}
 
-def _load_model():
-    from sentence_transformers import SentenceTransformer
-    return SentenceTransformer(MODEL_NAME)
+
+def _tokenize(text: str) -> set[str]:
+    """Lowercase, remove punctuation, and extract set of words."""
+    cleaned = re.sub(r"[^\w\s]", " ", text.lower())
+    words = cleaned.split()
+    return {w for w in words if len(w) >= 2 and w not in STOPWORDS}
+
+
+def _jaccard_similarity(set_a: set[str], set_b: set[str]) -> float:
+    """Compute Jaccard similarity between two token sets."""
+    if not set_a or not set_b:
+        return 0.0
+    return len(set_a.intersection(set_b)) / len(set_a.union(set_b))
 
 
 def _article_text(article: dict) -> str:
@@ -66,33 +81,23 @@ def _article_text(article: dict) -> str:
     return " ".join(p for p in parts if p)
 
 
-def _normalize(vectors: np.ndarray) -> np.ndarray:
-    norms = np.linalg.norm(vectors, axis=1, keepdims=True)
-    norms = np.where(norms == 0, 1, norms)
-    return vectors / norms
-
-
 def find_intra_session_duplicates(
     articles: list[dict],
     threshold: float = DEFAULT_THRESHOLD,
 ) -> list[dict]:
     """
-    Compare all articles against each other within the same session.
+    Compare all articles against each other within the same session using Jaccard similarity.
     Returns a list of duplicate pairs with metadata.
     """
     if len(articles) < 2:
         return []
 
-    model = _load_model()
-    texts = [_article_text(a) for a in articles]
-    embeddings = _normalize(model.encode(texts, show_progress_bar=False))
-
-    similarity_matrix = embeddings @ embeddings.T
+    tokenized = [_tokenize(_article_text(a)) for a in articles]
 
     pairs = []
     for i in range(len(articles)):
         for j in range(i + 1, len(articles)):
-            score = float(similarity_matrix[i, j])
+            score = _jaccard_similarity(tokenized[i], tokenized[j])
             if score >= threshold:
                 pairs.append({
                     "i": i,
@@ -279,9 +284,17 @@ def main():
     with open(parsed_path, encoding="utf-8") as f:
         articles = json.load(f)
 
-    print(f"\nIntra-session dedup check: {len(articles)} articles (threshold={args.threshold})\n")
+    # Convert ST threshold to Jaccard threshold if it looks like ST range
+    if args.threshold >= 0.60:
+        jaccard_threshold = 0.30 + (args.threshold - 0.80) * 1.5
+        jaccard_threshold = max(0.10, min(0.95, jaccard_threshold))
+        print(f"  Note: Cosine threshold {args.threshold} mapped to Jaccard threshold {jaccard_threshold:.2f}")
+    else:
+        jaccard_threshold = args.threshold
 
-    pairs = find_intra_session_duplicates(articles, args.threshold)
+    print(f"\nIntra-session Jaccard dedup check: {len(articles)} articles (threshold={jaccard_threshold:.2f})\n")
+
+    pairs = find_intra_session_duplicates(articles, jaccard_threshold)
 
     if not pairs:
         print("  ✓ No intra-session duplicates found.\n")
@@ -295,7 +308,7 @@ def main():
         print()
 
     # Always write the review file for agent consumption
-    review = build_review_file(articles, pairs, args.base, args.threshold)
+    review = build_review_file(articles, pairs, args.base, jaccard_threshold)
     review_path = source_dir / "dedup_review.json"
     with open(review_path, "w", encoding="utf-8") as f:
         json.dump(review, f, ensure_ascii=False, indent=2)

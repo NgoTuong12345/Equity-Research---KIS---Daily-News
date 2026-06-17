@@ -291,7 +291,7 @@ def main():
     for item in chunk_items:
         cat = item.get("category", "")
         if cat == "corporate":
-            ticker = item.get("ticker", "").strip()
+            ticker = (item.get("ticker") or "").strip()
             
             if ticker.upper() == "TCBS":
                 ticker = "TCX"

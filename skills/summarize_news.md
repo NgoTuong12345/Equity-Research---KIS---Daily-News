@@ -13,9 +13,50 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
    This saves `reports\{base}\data\macro_sheet_DD_MM_YYYY.json` with all items from the `Macro` tab and `vin_bank` tab that match today's date.
    **If this file is missing or empty, stop and warn the user** — macro and vin_bank content will be absent from the report.
    For afternoon sessions, skip this step (macro/vin_bank are morning-only inputs).
+2b. **Extract and Format HSX Insider Trading disclosures:**
+   Since the downloader step runs automatically via Windows Scheduled Tasks, the latest raw JSON `phases\01_scrape\hsx_insider_trading_*.json` and its `*_manifest.json` will already be present in `phases\01_scrape\`.
+   
+   Identify the latest `hsx_insider_trading_{timestamp}.json` and its matching `*_manifest.json` for the current session.
+   
+   - **Case A: The manifest has 0 PDFs (empty list)**:
+     1. Write an empty JSON array `[]` directly to `phases\01_scrape\hsx_insider_trading_{timestamp}_extracted.json`.
+     2. Run preparation to generate an empty `*_to_format.json`:
+        ```powershell
+        phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\format_hsx_trading_news.py --prepare phases\01_scrape\hsx_insider_trading_{timestamp}_extracted.json
+        ```
+     3. Write an empty JSON array `[]` directly to `phases\01_scrape\hsx_insider_trading_{timestamp}_agent_formatted.json`.
+     4. Merge to write an empty `*_extracted_formatted.json`:
+        ```powershell
+        phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\format_hsx_trading_news.py --merge phases\01_scrape\hsx_insider_trading_{timestamp}_extracted.json
+        ```
+        
+   - **Case B: The manifest contains PDFs to extract**:
+     1. Read the rendered page PNGs in `phases\01_scrape\pdf_images\{article_id}\` using the agent's vision capabilities, or read the text layer in the manifest if `has_text_layer` is true.
+     2. Extract all transactions according to the **Extraction Contract** in `GEMINI.md` (capturing fields: `ticker`, `name`, `relationship`, `action`, `change_volume`, `after_volume`, `after_percentage`, `date_range`, `company_fullname`, `exchange`).
+     3. Save the results as a JSON mapping `article_id` to `{"transactions": [...]}` at `phases\01_scrape\hsx_insider_trading_{timestamp}_agent_results.json`.
+     4. Merge the extracted transactions into `_extracted.json`:
+        ```powershell
+        phases\01_scrape\venv\Scripts\python.exe llm_brain\extractors\hsx_agent_extractor.py --manifest phases\01_scrape\hsx_insider_trading_{timestamp}_manifest.json --results phases\01_scrape\hsx_insider_trading_{timestamp}_agent_results.json
+        ```
+     5. Prepare unique transactions for prose formatting:
+        ```powershell
+        phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\format_hsx_trading_news.py --prepare phases\01_scrape\hsx_insider_trading_{timestamp}_extracted.json
+        ```
+        This creates `phases\01_scrape\hsx_insider_trading_{timestamp}_to_format.json`.
+     6. Read `*_to_format.json` and translate/format each unique transaction into bilingual prose (`summary_vn` and `summary_en`) adhering to KIS trading writing rules.
+     7. Save these formatted transactions to `phases\01_scrape\hsx_insider_trading_{timestamp}_agent_formatted.json`.
+     8. Merge agent formatted output into final outputs:
+        ```powershell
+        phases\01_scrape\venv\Scripts\python.exe phases\01_scrape\format_hsx_trading_news.py --merge phases\01_scrape\hsx_insider_trading_{timestamp}_extracted.json
+        ```
+        This saves `phases\01_scrape\hsx_insider_trading_{timestamp}_extracted_formatted.json` which `combine_chunks.py` will read.
 3. Summarize every selected article in Vietnamese first, then English (TAKE articles from step 1 only — not macro/vin_bank items, which are verbatim).
 4. Classify feed articles into `corporate` or `economy_political_others`.
-5. Write summary JSON and bilingual markdown into `reports/{base}/data/` and `reports/{base}/summaries/`. Distribute `macro_sheet_*.json` items as follows:
+5. Run the combine script to compile summarized chunks, macro sheet items, and the formatted trading news into the final 4 category JSONs:
+   ```powershell
+   phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\combine_chunks.py {base}
+   ```
+   This writes the summary JSONs and bilingual markdown files into `reports/{base}/data/` and `reports/{base}/summaries/`. Items from `macro_sheet_*.json` are distributed as follows:
    - `source_tab = "macro"` → verbatim into `{base}_macro.json`
    - `source_tab = "vin_bank"` + `news_category` is a known ticker → verbatim into `{base}_corporate.json` (correct sector)
    - `source_tab = "vin_bank"` + `news_category` is non-ticker (e.g. Commodities, Macro) → verbatim into `{base}_economy_political_others.json` (correct subtype)

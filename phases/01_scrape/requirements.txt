@@ -6,3 +6,5 @@ selenium
 webdriver-manager
 pytz
 playwright
+pypdfium2
+pdfplumber
