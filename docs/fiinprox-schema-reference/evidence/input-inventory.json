@@ -1,0 +1,978 @@
+{
+  "captured_on": "2026-09-22",
+  "source": "Host-visible TypeScript bridge declarations, not raw MCP JSON Schema",
+  "tools": [
+    {
+      "name": "search_tool_candidates",
+      "fields": [
+        {
+          "name": "agent_id",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "financial_keywords",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "include_alternatives",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "original_query",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "refine_query",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "search_query",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "supplementary_mode",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "top_k",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "out": "open structured object"
+    },
+    {
+      "name": "get_tool_detail",
+      "fields": [
+        {
+          "name": "ServerName",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "agent_id",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "detail_level",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "func_name",
+          "optional": true,
+          "type": "string | Array<string> | null"
+        },
+        {
+          "name": "func_names",
+          "optional": true,
+          "type": "string | Array<string> | null"
+        },
+        {
+          "name": "toolAction",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "toolSummary",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "tool_id",
+          "optional": true,
+          "type": "string | Array<string> | null"
+        }
+      ],
+      "out": "open structured object"
+    },
+    {
+      "name": "execute_api",
+      "fields": [
+        {
+          "name": "agent_id",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "code",
+          "optional": false,
+          "type": "string"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "search_filters",
+      "fields": [
+        {
+          "name": "indicator_keyword",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "sector_keyword",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "sector_level",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "sector_top_k",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "top_k",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "execute_screening",
+      "fields": [
+        {
+          "name": "exchanges",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "export_limit",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "filter",
+          "optional": false,
+          "type": "Array<unknown>"
+        },
+        {
+          "name": "sectors",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "sort",
+          "optional": true,
+          "type": "Array<unknown> | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "search_fundamental_fields",
+      "fields": [
+        {
+          "name": "searching_keywords",
+          "optional": false,
+          "type": "string | Array<string>"
+        },
+        {
+          "name": "top_k",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_fundamental_data",
+      "fields": [
+        {
+          "name": "data_type",
+          "optional": false,
+          "type": "\"statement\" | \"ratios\""
+        },
+        {
+          "name": "fields",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "quarters",
+          "optional": true,
+          "type": "Array<number> | null"
+        },
+        {
+          "name": "report_type",
+          "optional": true,
+          "type": "\"consolidated\" | \"separate\""
+        },
+        {
+          "name": "statement",
+          "optional": true,
+          "type": "\"IncomeStatement\" | \"BalanceSheet\" | \"CashFlow\" | \"Note\" | \"BankCurrencyRisk\" | \"BankInterestRateRisk\" | \"BankLiquidityRisk\" | \"CapitalAdequacyReport\" | null"
+        },
+        {
+          "name": "tickers",
+          "optional": false,
+          "type": "Array<string>"
+        },
+        {
+          "name": "years",
+          "optional": false,
+          "type": "number | Array<number>"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "search_sector_code_by_name",
+      "fields": [
+        {
+          "name": "dense_weight",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "keyword",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "search_mode",
+          "optional": true,
+          "type": "\"bm25\" | \"dense\" | \"hybrid\""
+        },
+        {
+          "name": "sector_level",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "top_k",
+          "optional": true,
+          "type": "number"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_tickerlist",
+      "fields": [
+        {
+          "name": "tickers",
+          "optional": false,
+          "type": "Array<string>"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_equity_snapshot",
+      "fields": [
+        {
+          "name": "exchanges",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "fields",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": "Array<{ [key: string]: unknown; }> | null"
+        },
+        {
+          "name": "offset",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "screener_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "sectors",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "sort_by",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "sort_order",
+          "optional": true,
+          "type": "\"asc\" | \"desc\""
+        },
+        {
+          "name": "tickers",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "top",
+          "optional": true,
+          "type": "number | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "fetch_trading_data",
+      "fields": [
+        {
+          "name": "adjusted",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "by",
+          "optional": true,
+          "type": "\"1m\" | \"5m\" | \"15m\" | \"30m\" | \"1h\" | \"2h\" | \"4h\" | \"1d\""
+        },
+        {
+          "name": "fields",
+          "optional": false,
+          "type": "Array<string>"
+        },
+        {
+          "name": "from_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "include_unclosed",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "lasted",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "period",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "realtime",
+          "optional": false,
+          "type": "boolean"
+        },
+        {
+          "name": "tickers",
+          "optional": false,
+          "type": "Array<string>"
+        },
+        {
+          "name": "to_date",
+          "optional": true,
+          "type": "string | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_market_statistics",
+      "fields": [
+        {
+          "name": "from_date",
+          "optional": false,
+          "type": "string"
+        },
+        {
+          "name": "metric",
+          "optional": false,
+          "type": "\"freefloat\" | \"value_by_investor\" | \"overview\" | \"ceilingfloor\" | \"foreign\""
+        },
+        {
+          "name": "tickers",
+          "optional": false,
+          "type": "string | Array<string>"
+        },
+        {
+          "name": "time_filter",
+          "optional": true,
+          "type": "\"Daily\" | \"Weekly\" | \"Monthly\" | \"Quarterly\" | \"Yearly\" | null"
+        },
+        {
+          "name": "to_date",
+          "optional": true,
+          "type": "string | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_technical_indicator",
+      "fields": [
+        {
+          "name": "adjusted",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "by",
+          "optional": true,
+          "type": "\"1m\" | \"5m\" | \"15m\" | \"30m\" | \"1h\" | \"2h\" | \"4h\" | \"1d\""
+        },
+        {
+          "name": "df_fields",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "from_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "include_signals",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "indicators",
+          "optional": false,
+          "type": "Array<{ [key: string]: unknown; }>"
+        },
+        {
+          "name": "lasted",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "period",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "source_field",
+          "optional": true,
+          "type": "\"open\" | \"high\" | \"low\" | \"close\" | \"volume\" | \"value\" | \"bu\" | \"sd\" | \"fb\" | \"fs\" | \"fn\""
+        },
+        {
+          "name": "tickers",
+          "optional": false,
+          "type": "Array<string>"
+        },
+        {
+          "name": "to_date",
+          "optional": true,
+          "type": "string | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_bonds",
+      "fields": [
+        {
+          "name": "aggregate",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "bond_tickers",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "buy",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "clean_price",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "collateral",
+          "optional": true,
+          "type": "unknown | null"
+        },
+        {
+          "name": "coupon_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "date_check",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "dirty_price",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "fields",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": "Array<{ [key: string]: unknown; }> | null"
+        },
+        {
+          "name": "from_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "from_percentage",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "group_by",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "industries",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "issue_method",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "issuer",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "issuers",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "late_payment_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "method",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "method_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "metrics",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "month",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "offset",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "payment_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "quarter",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "related",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "release_method",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "remaining_duration_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "sort_by",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "sort_order",
+          "optional": true,
+          "type": "\"asc\" | \"desc\""
+        },
+        {
+          "name": "status",
+          "optional": true,
+          "type": "unknown | null"
+        },
+        {
+          "name": "time_frequency",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "time_range",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "to_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "to_percentage",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "top",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "total_value_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "trading",
+          "optional": true,
+          "type": "unknown | null"
+        },
+        {
+          "name": "trading_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "year",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "ytm",
+          "optional": true,
+          "type": "unknown | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_economy",
+      "fields": [
+        {
+          "name": "cpi_scope",
+          "optional": true,
+          "type": "\"inflation\" | \"contribution\" | \"all\" | null"
+        },
+        {
+          "name": "data_type",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "fdi_scope",
+          "optional": true,
+          "type": "\"all\" | \"provinces\" | \"industries\" | \"countries\" | \"structure\" | \"composition_by_country\" | \"composition_by_industry\" | \"composition_by_province\" | \"overview\" | \"registered_by_country\" | \"registered_by_industry\" | \"registered_by_province\" | null"
+        },
+        {
+          "name": "fields",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": "Array<{ [key: string]: unknown; }> | null"
+        },
+        {
+          "name": "from_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "is_nominal",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "is_value",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "location",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "metrics",
+          "optional": false,
+          "type": "Array<string>"
+        },
+        {
+          "name": "month",
+          "optional": true,
+          "type": "unknown | null"
+        },
+        {
+          "name": "most_recent",
+          "optional": true,
+          "type": "boolean"
+        },
+        {
+          "name": "offset",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "product",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "quarter",
+          "optional": true,
+          "type": "unknown | null"
+        },
+        {
+          "name": "sort_by",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "sort_order",
+          "optional": true,
+          "type": "\"asc\" | \"desc\""
+        },
+        {
+          "name": "to_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "top",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "topic",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "year",
+          "optional": true,
+          "type": "unknown | null"
+        },
+        {
+          "name": "ytd",
+          "optional": true,
+          "type": "boolean | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "get_funds",
+      "fields": [
+        {
+          "name": "absolute",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "allocation_type",
+          "optional": true,
+          "type": "\"asset\" | \"sector\" | null"
+        },
+        {
+          "name": "asset_tickers",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "big4_interest_rate",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "fields",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "filters",
+          "optional": true,
+          "type": "Array<{ [key: string]: unknown; }> | null"
+        },
+        {
+          "name": "frequency",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "from_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "fund_groups",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "fund_structures",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "fund_tickers",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "fund_types",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "holding_history_type",
+          "optional": true,
+          "type": "\"contribution\" | \"volume\" | null"
+        },
+        {
+          "name": "holding_type",
+          "optional": true,
+          "type": "\"current\" | \"history\" | \"stock_owners\" | \"fund_holders\" | null"
+        },
+        {
+          "name": "metrics",
+          "optional": true,
+          "type": "Array<string> | null"
+        },
+        {
+          "name": "month",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "months",
+          "optional": true,
+          "type": "Array<number> | null"
+        },
+        {
+          "name": "most_recent",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "offset",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "quarters",
+          "optional": true,
+          "type": "Array<number> | null"
+        },
+        {
+          "name": "sort_by",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "sort_order",
+          "optional": true,
+          "type": "\"asc\" | \"desc\""
+        },
+        {
+          "name": "statement",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "to_date",
+          "optional": true,
+          "type": "string | null"
+        },
+        {
+          "name": "top",
+          "optional": true,
+          "type": "number"
+        },
+        {
+          "name": "vn30",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "vnindex",
+          "optional": true,
+          "type": "boolean | null"
+        },
+        {
+          "name": "year",
+          "optional": true,
+          "type": "number | null"
+        },
+        {
+          "name": "years",
+          "optional": true,
+          "type": "Array<number> | null"
+        }
+      ],
+      "out": "{ result: string }"
+    },
+    {
+      "name": "report_mcp_bug",
+      "fields": [
+        {
+          "name": "code",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "error_message",
+          "optional": true,
+          "type": "string"
+        },
+        {
+          "name": "note",
+          "optional": true,
+          "type": "string"
+        }
+      ],
+      "out": "{ result: string }"
+    }
+  ]
+}

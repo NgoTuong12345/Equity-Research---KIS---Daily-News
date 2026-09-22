@@ -1,0 +1,22 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "search_filters",
+  "request": {
+    "indicator_keyword": [
+      "P/E"
+    ],
+    "top_k": 1
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"data\": {\n    \"count\": 1,\n    \"indicatorsByQuery\": [\n      {\n        \"query\": \"P/E\",\n        \"count\": 1,\n        \"results\": [\n          {\n            \"indicatorId\": \"8014\",\n            \"indicatorName\": \"P/E pha loãng\",\n            \"fullName\": \"Chỉ số định giá - Chỉ số hàng ngày - P/E pha loãng\",\n            \"industryType\": \"Chỉ số chung\",\n            \"unit\": \"Lần\",\n            \"multiplier\": 1.0,\n            \"periods\": {\n              \"interimCodes\": [\n                \"Daily\"\n              ],\n              \"defaultIndicatorInterimIdByCode\": {\n                \"Daily\": \"\"\n              },\n              \"additionalConditionOnly\": []\n            },\n            \"hasData\": true,\n            \"dataStatus\": \"has_data\",\n            \"score\": 0.994767,\n            \"path_mapping\": {\n              \"GENERAL\": 8014\n            }\n          }\n        ]\n      }\n    ],\n    \"sharedIndicators\": []\n  }\n}"
+      }
+    ],
+    "structuredContent": {
+      "result": "{\n  \"success\": true,\n  \"data\": {\n    \"count\": 1,\n    \"indicatorsByQuery\": [\n      {\n        \"query\": \"P/E\",\n        \"count\": 1,\n        \"results\": [\n          {\n            \"indicatorId\": \"8014\",\n            \"indicatorName\": \"P/E pha loãng\",\n            \"fullName\": \"Chỉ số định giá - Chỉ số hàng ngày - P/E pha loãng\",\n            \"industryType\": \"Chỉ số chung\",\n            \"unit\": \"Lần\",\n            \"multiplier\": 1.0,\n            \"periods\": {\n              \"interimCodes\": [\n                \"Daily\"\n              ],\n              \"defaultIndicatorInterimIdByCode\": {\n                \"Daily\": \"\"\n              },\n              \"additionalConditionOnly\": []\n            },\n            \"hasData\": true,\n            \"dataStatus\": \"has_data\",\n            \"score\": 0.994767,\n            \"path_mapping\": {\n              \"GENERAL\": 8014\n            }\n          }\n        ]\n      }\n    ],\n    \"sharedIndicators\": []\n  }\n}"
+    },
+    "isError": false
+  }
+}

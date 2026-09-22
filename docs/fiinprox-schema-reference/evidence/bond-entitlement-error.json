@@ -1,0 +1,30 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "get_bonds",
+  "request": {
+    "metrics": [
+      "list"
+    ],
+    "issuer": "VCB",
+    "fields": [
+      "bond_ticker",
+      "issuer",
+      "maturity_date",
+      "current_coupon_rate",
+      "outstanding_value"
+    ],
+    "top": 1
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": false,\n  \"data\": {\n    \"status\": \"ERROR\",\n    \"rows\": [],\n    \"errors\": [\n      \"Gói dữ liệu hiện tại của bạn chưa bao gồm quyền truy cập API này. Vui lòng liên hệ FiinGroup hoặc đội phụ trách để nâng cấp/kích hoạt quyền truy cập.\"\n    ],\n    \"warnings\": [],\n    \"metadata\": {\n      \"coverage\": {\n        \"has_gap\": true,\n        \"missing_fields\": [\n          \"bond_ticker\",\n          \"issuer\",\n          \"maturity_date\",\n          \"current_coupon_rate\",\n          \"outstanding_value\"\n        ],\n        \"returned_fields\": []\n      }\n    }\n  },\n  \"error\": \"Gói dữ liệu hiện tại của bạn chưa bao gồm quyền truy cập API này. Vui lòng liên hệ FiinGroup hoặc đội phụ trách để nâng cấp/kích hoạt quyền truy cập.\"\n}"
+      }
+    ],
+    "structuredContent": {
+      "result": "{\n  \"success\": false,\n  \"data\": {\n    \"status\": \"ERROR\",\n    \"rows\": [],\n    \"errors\": [\n      \"Gói dữ liệu hiện tại của bạn chưa bao gồm quyền truy cập API này. Vui lòng liên hệ FiinGroup hoặc đội phụ trách để nâng cấp/kích hoạt quyền truy cập.\"\n    ],\n    \"warnings\": [],\n    \"metadata\": {\n      \"coverage\": {\n        \"has_gap\": true,\n        \"missing_fields\": [\n          \"bond_ticker\",\n          \"issuer\",\n          \"maturity_date\",\n          \"current_coupon_rate\",\n          \"outstanding_value\"\n        ],\n        \"returned_fields\": []\n      }\n    }\n  },\n  \"error\": \"Gói dữ liệu hiện tại của bạn chưa bao gồm quyền truy cập API này. Vui lòng liên hệ FiinGroup hoặc đội phụ trách để nâng cấp/kích hoạt quyền truy cập.\"\n}"
+    },
+    "isError": false
+  }
+}

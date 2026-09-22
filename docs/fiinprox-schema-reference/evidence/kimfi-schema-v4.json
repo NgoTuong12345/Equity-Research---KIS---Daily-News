@@ -1,0 +1,1831 @@
+{
+  "version": 4,
+  "resourceUri": "kimfi://catalog/schema/v1",
+  "measures": [
+    "bonds",
+    "issuers",
+    "issued_amount",
+    "outstanding_amount",
+    "issued_amount_vnd",
+    "outstanding_amount_vnd",
+    "avg_coupon",
+    "avg_years_to_maturity",
+    "avg_term_years",
+    "share_of_outstanding",
+    "share_of_issued",
+    "avg_coupon_margin",
+    "avg_initial_rate",
+    "avg_fixed_coupon",
+    "waac"
+  ],
+  "dimensions": [
+    "market_segment",
+    "currency",
+    "tenor_bucket",
+    "coupon_bucket",
+    "circulation_status",
+    "trading_registration",
+    "trading_venue",
+    "issuer_name",
+    "issuer_name_en",
+    "industry",
+    "company_type",
+    "rating_agency",
+    "rating_result",
+    "issue_month",
+    "issue_quarter",
+    "issue_year",
+    "maturity_month",
+    "maturity_quarter",
+    "maturity_year",
+    "coupon_type"
+  ],
+  "filterFields": [
+    "market_segment",
+    "currency",
+    "circulation_status",
+    "trading_registration",
+    "trading_venue",
+    "tenor_bucket",
+    "coupon_bucket",
+    "industry",
+    "company_type",
+    "rating_agency",
+    "rating_result",
+    "has_profile",
+    "issuer_name",
+    "issuer_name_en",
+    "bond_code",
+    "issue_date",
+    "maturity_date",
+    "coupon_rate_clean",
+    "outstanding_amount",
+    "issued_amount",
+    "days_to_maturity",
+    "years_to_maturity",
+    "coupon_type",
+    "coupon_margin",
+    "issuance_rate_clean",
+    "fixed_coupon_rate_clean",
+    "reference_tenor_months",
+    "rate_floor_pct",
+    "rate_cap_pct"
+  ],
+  "filterOps": [
+    "eq",
+    "in",
+    "range",
+    "dateRange",
+    "contains",
+    "isNull",
+    "notNull"
+  ],
+  "universe": [
+    "live",
+    "all"
+  ],
+  "money": {
+    "additionalProperties": false,
+    "description": "Currency normalization: convert a native-currency measure to a target currency.",
+    "properties": {
+      "target_currency": {
+        "const": "VND",
+        "default": "VND",
+        "title": "Target Currency",
+        "type": "string"
+      }
+    },
+    "title": "MoneySpec",
+    "type": "object"
+  },
+  "time": {
+    "additionalProperties": false,
+    "properties": {
+      "axis": {
+        "enum": [
+          "issue_date",
+          "maturity_date"
+        ],
+        "title": "Axis",
+        "type": "string"
+      },
+      "grain": {
+        "enum": [
+          "month",
+          "quarter",
+          "year"
+        ],
+        "title": "Grain",
+        "type": "string"
+      }
+    },
+    "required": [
+      "axis",
+      "grain"
+    ],
+    "title": "TimeSpec",
+    "type": "object"
+  },
+  "ranking": {
+    "additionalProperties": false,
+    "properties": {
+      "by": {
+        "enum": [
+          "bonds",
+          "issuers",
+          "issued_amount",
+          "outstanding_amount",
+          "issued_amount_vnd",
+          "outstanding_amount_vnd",
+          "avg_coupon",
+          "avg_years_to_maturity",
+          "avg_term_years",
+          "share_of_outstanding",
+          "share_of_issued",
+          "avg_coupon_margin",
+          "avg_initial_rate",
+          "avg_fixed_coupon",
+          "waac"
+        ],
+        "title": "By",
+        "type": "string"
+      },
+      "order": {
+        "default": "descending",
+        "enum": [
+          "ascending",
+          "descending"
+        ],
+        "title": "Order",
+        "type": "string"
+      },
+      "nulls": {
+        "default": "last",
+        "enum": [
+          "first",
+          "last"
+        ],
+        "title": "Nulls",
+        "type": "string"
+      },
+      "top_n": {
+        "maximum": 100,
+        "minimum": 1,
+        "title": "Top N",
+        "type": "integer"
+      },
+      "partition_by": {
+        "items": {
+          "enum": [
+            "market_segment",
+            "currency",
+            "tenor_bucket",
+            "coupon_bucket",
+            "circulation_status",
+            "trading_registration",
+            "trading_venue",
+            "issuer_name",
+            "issuer_name_en",
+            "industry",
+            "company_type",
+            "rating_agency",
+            "rating_result",
+            "issue_month",
+            "issue_quarter",
+            "issue_year",
+            "maturity_month",
+            "maturity_quarter",
+            "maturity_year",
+            "coupon_type"
+          ],
+          "type": "string"
+        },
+        "maxItems": 2,
+        "title": "Partition By",
+        "type": "array"
+      }
+    },
+    "required": [
+      "by",
+      "top_n"
+    ],
+    "title": "RankingSpec",
+    "type": "object"
+  },
+  "corporateIdentifiers": [
+    {
+      "name": "bond_code",
+      "description": "CBIS issuance identifier."
+    },
+    {
+      "name": "trading_code",
+      "description": "The VSD depository code, not a CBIS-internal trading identifier."
+    },
+    {
+      "name": "isin",
+      "description": "ISIN, shared across a bond's CBIS records."
+    },
+    {
+      "name": "vsd_id",
+      "description": "VSD's own /s-detail/{id} surrogate key, not itself a bond identifier."
+    }
+  ],
+  "buybackMeasures": [
+    "buyback_value",
+    "buyback_value_vnd",
+    "events",
+    "bonds",
+    "issuers"
+  ],
+  "buybackDimensions": [
+    "issuer_name",
+    "bond_code",
+    "currency",
+    "market",
+    "buyback_month",
+    "buyback_quarter",
+    "buyback_year",
+    "disclosure_status"
+  ],
+  "buybackFilterFields": [
+    "buyback_exec_date",
+    "issuer_name",
+    "bond_code",
+    "currency",
+    "market"
+  ],
+  "buybackFilterOps": [
+    "eq",
+    "in",
+    "dateRange",
+    "contains"
+  ],
+  "buybackRecordScope": [
+    "effective",
+    "expired",
+    "all"
+  ],
+  "domains": {
+    "cbond": {
+      "queryTool": "kimfi_analyze",
+      "querySchema": {
+        "$defs": {
+          "AnalyticsFilterSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "enum": [
+                  "market_segment",
+                  "currency",
+                  "circulation_status",
+                  "trading_registration",
+                  "trading_venue",
+                  "tenor_bucket",
+                  "coupon_bucket",
+                  "industry",
+                  "company_type",
+                  "rating_agency",
+                  "rating_result",
+                  "has_profile",
+                  "issuer_name",
+                  "issuer_name_en",
+                  "bond_code",
+                  "issue_date",
+                  "maturity_date",
+                  "coupon_rate_clean",
+                  "outstanding_amount",
+                  "issued_amount",
+                  "days_to_maturity",
+                  "years_to_maturity",
+                  "coupon_type",
+                  "coupon_margin",
+                  "issuance_rate_clean",
+                  "fixed_coupon_rate_clean",
+                  "reference_tenor_months",
+                  "rate_floor_pct",
+                  "rate_cap_pct"
+                ],
+                "title": "Field",
+                "type": "string"
+              },
+              "op": {
+                "description": "Filter operator. For dateRange, the lower bound is inclusive and the upper bound is exclusive (half-open interval) -- unlike this surface's _after/_before-style params, which are inclusive on both ends.",
+                "enum": [
+                  "eq",
+                  "in",
+                  "range",
+                  "dateRange",
+                  "contains",
+                  "isNull",
+                  "notNull"
+                ],
+                "title": "Op",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "description": "JSON string of at most 1024 UTF-8 bytes.",
+                    "maxLength": 1024,
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "values": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "anyOf": [
+                        {
+                          "description": "JSON string of at most 1024 UTF-8 bytes.",
+                          "maxLength": 1024,
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "maxItems": 100,
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Values"
+              },
+              "lower": {
+                "anyOf": [
+                  {
+                    "description": "JSON string of at most 1024 UTF-8 bytes.",
+                    "maxLength": 1024,
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Lower"
+              },
+              "upper": {
+                "anyOf": [
+                  {
+                    "description": "JSON string of at most 1024 UTF-8 bytes.",
+                    "maxLength": 1024,
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Upper"
+              }
+            },
+            "required": [
+              "field",
+              "op"
+            ],
+            "title": "AnalyticsFilterSpec",
+            "type": "object"
+          },
+          "MoneySpec": {
+            "additionalProperties": false,
+            "description": "Currency normalization: convert a native-currency measure to a target currency.",
+            "properties": {
+              "target_currency": {
+                "const": "VND",
+                "default": "VND",
+                "title": "Target Currency",
+                "type": "string"
+              }
+            },
+            "title": "MoneySpec",
+            "type": "object"
+          },
+          "RankingSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "by": {
+                "enum": [
+                  "bonds",
+                  "issuers",
+                  "issued_amount",
+                  "outstanding_amount",
+                  "issued_amount_vnd",
+                  "outstanding_amount_vnd",
+                  "avg_coupon",
+                  "avg_years_to_maturity",
+                  "avg_term_years",
+                  "share_of_outstanding",
+                  "share_of_issued",
+                  "avg_coupon_margin",
+                  "avg_initial_rate",
+                  "avg_fixed_coupon",
+                  "waac"
+                ],
+                "title": "By",
+                "type": "string"
+              },
+              "order": {
+                "default": "descending",
+                "enum": [
+                  "ascending",
+                  "descending"
+                ],
+                "title": "Order",
+                "type": "string"
+              },
+              "nulls": {
+                "default": "last",
+                "enum": [
+                  "first",
+                  "last"
+                ],
+                "title": "Nulls",
+                "type": "string"
+              },
+              "top_n": {
+                "maximum": 100,
+                "minimum": 1,
+                "title": "Top N",
+                "type": "integer"
+              },
+              "partition_by": {
+                "items": {
+                  "enum": [
+                    "market_segment",
+                    "currency",
+                    "tenor_bucket",
+                    "coupon_bucket",
+                    "circulation_status",
+                    "trading_registration",
+                    "trading_venue",
+                    "issuer_name",
+                    "issuer_name_en",
+                    "industry",
+                    "company_type",
+                    "rating_agency",
+                    "rating_result",
+                    "issue_month",
+                    "issue_quarter",
+                    "issue_year",
+                    "maturity_month",
+                    "maturity_quarter",
+                    "maturity_year",
+                    "coupon_type"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 2,
+                "title": "Partition By",
+                "type": "array"
+              }
+            },
+            "required": [
+              "by",
+              "top_n"
+            ],
+            "title": "RankingSpec",
+            "type": "object"
+          },
+          "SortSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "by": {
+                "enum": [
+                  "bonds",
+                  "issuers",
+                  "issued_amount",
+                  "outstanding_amount",
+                  "issued_amount_vnd",
+                  "outstanding_amount_vnd",
+                  "avg_coupon",
+                  "avg_years_to_maturity",
+                  "avg_term_years",
+                  "share_of_outstanding",
+                  "share_of_issued",
+                  "avg_coupon_margin",
+                  "avg_initial_rate",
+                  "avg_fixed_coupon",
+                  "waac"
+                ],
+                "title": "By",
+                "type": "string"
+              },
+              "order": {
+                "default": "descending",
+                "enum": [
+                  "ascending",
+                  "descending"
+                ],
+                "title": "Order",
+                "type": "string"
+              },
+              "nulls": {
+                "default": "last",
+                "enum": [
+                  "first",
+                  "last"
+                ],
+                "title": "Nulls",
+                "type": "string"
+              }
+            },
+            "required": [
+              "by"
+            ],
+            "title": "SortSpec",
+            "type": "object"
+          },
+          "TimeSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "axis": {
+                "enum": [
+                  "issue_date",
+                  "maturity_date"
+                ],
+                "title": "Axis",
+                "type": "string"
+              },
+              "grain": {
+                "enum": [
+                  "month",
+                  "quarter",
+                  "year"
+                ],
+                "title": "Grain",
+                "type": "string"
+              }
+            },
+            "required": [
+              "axis",
+              "grain"
+            ],
+            "title": "TimeSpec",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Corporate-bond analytics request: measures, dimensions, filters, sort,\nmoney/time handling, and ranking, plus the `domain` tag.",
+        "properties": {
+          "domain": {
+            "const": "cbond",
+            "title": "Domain",
+            "type": "string"
+          },
+          "measures": {
+            "description": "1-15 measures to compute.",
+            "items": {
+              "enum": [
+                "bonds",
+                "issuers",
+                "issued_amount",
+                "outstanding_amount",
+                "issued_amount_vnd",
+                "outstanding_amount_vnd",
+                "avg_coupon",
+                "avg_years_to_maturity",
+                "avg_term_years",
+                "share_of_outstanding",
+                "share_of_issued",
+                "avg_coupon_margin",
+                "avg_initial_rate",
+                "avg_fixed_coupon",
+                "waac"
+              ],
+              "type": "string"
+            },
+            "maxItems": 15,
+            "minItems": 1,
+            "title": "Measures",
+            "type": "array"
+          },
+          "universe": {
+            "description": "Population scope: 'live' = bonds still in circulation, 'all' = including matured or redeemed. Required; scope is not expressible as a filter.",
+            "enum": [
+              "live",
+              "all"
+            ],
+            "title": "Universe",
+            "type": "string"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    "market_segment",
+                    "currency",
+                    "tenor_bucket",
+                    "coupon_bucket",
+                    "circulation_status",
+                    "trading_registration",
+                    "trading_venue",
+                    "issuer_name",
+                    "issuer_name_en",
+                    "industry",
+                    "company_type",
+                    "rating_agency",
+                    "rating_result",
+                    "issue_month",
+                    "issue_quarter",
+                    "issue_year",
+                    "maturity_month",
+                    "maturity_quarter",
+                    "maturity_year",
+                    "coupon_type"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 3,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "0-3 grouping dimensions. Omit or empty means one grand-total row.",
+            "title": "Dimensions"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/AnalyticsFilterSpec"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Filters: {field, op, value|values|lower|upper}.",
+            "title": "Filters"
+          },
+          "sort": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/SortSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "{by: <one of measures>, order, nulls}."
+          },
+          "money": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/MoneySpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "{target_currency: 'VND'} to normalize a native-currency measure to VND, reproducing the *_vnd measure's own figure."
+          },
+          "time": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/TimeSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "{axis: issue_date|maturity_date, grain: month|quarter|year} grouping, equivalent to the issue_*/maturity_* bucket dimensions."
+          },
+          "ranking": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/RankingSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "{by, top_n, partition_by} bounded top-N selection after aggregation. Mutually exclusive with sort."
+          },
+          "limit": {
+            "default": 100,
+            "description": "Result groups to return, 1-500.",
+            "maximum": 500,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "domain",
+          "measures",
+          "universe"
+        ],
+        "title": "CbondQuery",
+        "type": "object"
+      },
+      "resultSchema": {
+        "$defs": {
+          "CbondQueryContext": {
+            "additionalProperties": false,
+            "description": "Scope and circulation-basis metadata attached to a search, detail, or\nanalytics result.",
+            "properties": {
+              "market_segments": {
+                "description": "Resolved requested scope, in private_placement-then-public order when both apply; empty only for an unresolved/ambiguous detail lookup.",
+                "items": {
+                  "enum": [
+                    "private_placement",
+                    "public"
+                  ],
+                  "type": "string"
+                },
+                "title": "Market Segments",
+                "type": "array"
+              },
+              "status_bases": {
+                "additionalProperties": {
+                  "type": "string"
+                },
+                "description": "Per included market_segment, which field decides circulation (circulation_status or registration_status). Keys are market_segments' own literal values; empty alongside an empty market_segments.",
+                "title": "Status Bases",
+                "type": "object"
+              },
+              "evaluation_timezone": {
+                "const": "Asia/Ho_Chi_Minh",
+                "default": "Asia/Ho_Chi_Minh",
+                "description": "Timezone the captured as_of evaluation date is anchored to.",
+                "title": "Evaluation Timezone",
+                "type": "string"
+              }
+            },
+            "required": [
+              "market_segments",
+              "status_bases"
+            ],
+            "title": "CbondQueryContext",
+            "type": "object"
+          },
+          "Diagnostic": {
+            "additionalProperties": false,
+            "properties": {
+              "level": {
+                "enum": [
+                  "error",
+                  "warning"
+                ],
+                "title": "Level",
+                "type": "string"
+              },
+              "code": {
+                "title": "Code",
+                "type": "string"
+              },
+              "path": {
+                "title": "Path",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              },
+              "fix": {
+                "title": "Fix",
+                "type": "string"
+              }
+            },
+            "required": [
+              "level",
+              "code",
+              "path",
+              "message",
+              "fix"
+            ],
+            "title": "Diagnostic",
+            "type": "object"
+          },
+          "JsonValue": {},
+          "NextStep": {
+            "additionalProperties": false,
+            "description": "A bounded follow-up tool hint.",
+            "properties": {
+              "tool": {
+                "description": "Follow-up tool this hint points at.",
+                "title": "Tool",
+                "type": "string"
+              },
+              "why": {
+                "description": "Why this follow-up may help.",
+                "maxLength": 120,
+                "title": "Why",
+                "type": "string"
+              },
+              "args_hint": {
+                "anyOf": [
+                  {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "One resolved identifier per argument, when available. For a closed-action tool, may also carry an `action` key naming which action to call next -- a partial hint, never a complete request.",
+                "title": "Args Hint"
+              }
+            },
+            "required": [
+              "tool",
+              "why"
+            ],
+            "title": "NextStep",
+            "type": "object"
+          },
+          "SourceRefSummary": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "maxLength": 96,
+                "pattern": "^source:[a-z0-9_]+$",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "maxLength": 160,
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "maxLength": 2048,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "source_key": {
+                "enum": [
+                  "cbond_trading_registry",
+                  "cbond_issuer_registry",
+                  "cbond_bond_details",
+                  "cbond_disclosures",
+                  "cbond_issuance_disclosures",
+                  "cbond_issuers",
+                  "cbond_issuer_ratings",
+                  "cbond_trading_stats",
+                  "gbond_outright_trades",
+                  "gbond_repo_trades",
+                  "gbond_auction_results",
+                  "vsd_bond_registry",
+                  "vsd_bond_details",
+                  "vsd_issuers",
+                  "sbv_fx_central",
+                  "sbv_interbank_bulletins",
+                  "hsx_bond_news",
+                  "bank_deposit_rates_simplize_history",
+                  "bank_deposit_rates_direct",
+                  "vcb_fx_rates",
+                  "ssc_public_offerings",
+                  "ssc_sanctions",
+                  "vendor_biz_info",
+                  "fiinratings",
+                  "saigonratings",
+                  "visrating",
+                  "sniratings",
+                  "tmr"
+                ],
+                "title": "Source Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "source_key"
+            ],
+            "title": "SourceRefSummary",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source_refs": {
+            "description": "Unique KimFI source pointers, deterministic order.",
+            "items": {
+              "$ref": "#/$defs/SourceRefSummary"
+            },
+            "maxItems": 8,
+            "title": "Source Refs",
+            "type": "array"
+          },
+          "diagnostics": {
+            "items": {
+              "$ref": "#/$defs/Diagnostic"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+          },
+          "next_steps": {
+            "description": "Bounded follow-up tool hints.",
+            "items": {
+              "$ref": "#/$defs/NextStep"
+            },
+            "maxItems": 3,
+            "title": "Next Steps",
+            "type": "array"
+          },
+          "trust_status": {
+            "default": "ok",
+            "description": "Uniform trust verdict for this response: ok, partial, or error.",
+            "enum": [
+              "ok",
+              "partial",
+              "error"
+            ],
+            "title": "Trust Status",
+            "type": "string"
+          },
+          "as_of": {
+            "description": "Vietnam query date (Asia/Ho_Chi_Minh); not source-data freshness.",
+            "title": "As Of",
+            "type": "string"
+          },
+          "query_context": {
+            "$ref": "#/$defs/CbondQueryContext",
+            "description": "Resolved market_segment scope and status basis for this aggregate."
+          },
+          "source_dependencies": {
+            "description": "Complete, deduplicated computation-dependency source keys (may exceed the bounded source_refs cap; see source_refs_omitted).",
+            "items": {
+              "enum": [
+                "cbond_trading_registry",
+                "cbond_issuer_registry",
+                "cbond_bond_details",
+                "cbond_disclosures",
+                "cbond_issuance_disclosures",
+                "cbond_issuers",
+                "cbond_issuer_ratings",
+                "cbond_trading_stats",
+                "gbond_outright_trades",
+                "gbond_repo_trades",
+                "gbond_auction_results",
+                "vsd_bond_registry",
+                "vsd_bond_details",
+                "vsd_issuers",
+                "sbv_fx_central",
+                "sbv_interbank_bulletins",
+                "hsx_bond_news",
+                "bank_deposit_rates_simplize_history",
+                "bank_deposit_rates_direct",
+                "vcb_fx_rates",
+                "ssc_public_offerings",
+                "ssc_sanctions",
+                "vendor_biz_info",
+                "fiinratings",
+                "saigonratings",
+                "visrating",
+                "sniratings",
+                "tmr"
+              ],
+              "type": "string"
+            },
+            "maxItems": 28,
+            "title": "Source Dependencies",
+            "type": "array"
+          },
+          "source_refs_omitted": {
+            "default": 0,
+            "description": "Count of source_dependencies not represented in the capped source_refs list.",
+            "minimum": 0,
+            "title": "Source Refs Omitted",
+            "type": "integer"
+          },
+          "applied": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "description": "Resolved spec actually executed, including any auto-added dimensions and the clamped limit.",
+            "title": "Applied",
+            "type": "object"
+          },
+          "total_groups": {
+            "description": "Total result groups before limit/truncation.",
+            "title": "Total Groups",
+            "type": "integer"
+          },
+          "returned": {
+            "description": "Groups included in this response.",
+            "title": "Returned",
+            "type": "integer"
+          },
+          "rows": {
+            "description": "One row per group; keys vary with the requested dimensions and measures -- see the tool description for the key contract.",
+            "items": {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            "title": "Rows",
+            "type": "array"
+          },
+          "domain": {
+            "const": "cbond",
+            "title": "Domain",
+            "type": "string"
+          }
+        },
+        "required": [
+          "as_of",
+          "query_context",
+          "applied",
+          "total_groups",
+          "returned",
+          "rows",
+          "domain"
+        ],
+        "title": "CbondResult",
+        "type": "object"
+      }
+    },
+    "cbond_buybacks": {
+      "queryTool": "kimfi_analyze",
+      "querySchema": {
+        "$defs": {
+          "BuybackFilterSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "enum": [
+                  "buyback_exec_date",
+                  "issuer_name",
+                  "bond_code",
+                  "currency",
+                  "market"
+                ],
+                "title": "Field",
+                "type": "string"
+              },
+              "op": {
+                "description": "Filter operator. For dateRange, the lower bound is inclusive and the upper bound is exclusive (half-open interval) -- unlike this surface's _after/_before-style params, which are inclusive on both ends.",
+                "enum": [
+                  "eq",
+                  "in",
+                  "dateRange",
+                  "contains"
+                ],
+                "title": "Op",
+                "type": "string"
+              },
+              "value": {
+                "anyOf": [
+                  {
+                    "description": "JSON string of at most 1024 UTF-8 bytes.",
+                    "maxLength": 1024,
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Value"
+              },
+              "values": {
+                "anyOf": [
+                  {
+                    "items": {
+                      "anyOf": [
+                        {
+                          "description": "JSON string of at most 1024 UTF-8 bytes.",
+                          "maxLength": 1024,
+                          "type": "string"
+                        },
+                        {
+                          "type": "integer"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "boolean"
+                        }
+                      ]
+                    },
+                    "maxItems": 100,
+                    "type": "array"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Values"
+              },
+              "lower": {
+                "anyOf": [
+                  {
+                    "description": "JSON string of at most 1024 UTF-8 bytes.",
+                    "maxLength": 1024,
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Lower"
+              },
+              "upper": {
+                "anyOf": [
+                  {
+                    "description": "JSON string of at most 1024 UTF-8 bytes.",
+                    "maxLength": 1024,
+                    "type": "string"
+                  },
+                  {
+                    "type": "integer"
+                  },
+                  {
+                    "type": "number"
+                  },
+                  {
+                    "type": "boolean"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Upper"
+              }
+            },
+            "required": [
+              "field",
+              "op"
+            ],
+            "title": "BuybackFilterSpec",
+            "type": "object"
+          },
+          "BuybackRankingSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "by": {
+                "enum": [
+                  "buyback_value",
+                  "buyback_value_vnd",
+                  "events",
+                  "bonds",
+                  "issuers"
+                ],
+                "title": "By",
+                "type": "string"
+              },
+              "order": {
+                "default": "descending",
+                "enum": [
+                  "ascending",
+                  "descending"
+                ],
+                "title": "Order",
+                "type": "string"
+              },
+              "nulls": {
+                "default": "last",
+                "enum": [
+                  "first",
+                  "last"
+                ],
+                "title": "Nulls",
+                "type": "string"
+              },
+              "top_n": {
+                "maximum": 100,
+                "minimum": 1,
+                "title": "Top N",
+                "type": "integer"
+              },
+              "partition_by": {
+                "items": {
+                  "enum": [
+                    "issuer_name",
+                    "bond_code",
+                    "currency",
+                    "market",
+                    "buyback_month",
+                    "buyback_quarter",
+                    "buyback_year",
+                    "disclosure_status"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 2,
+                "title": "Partition By",
+                "type": "array"
+              }
+            },
+            "required": [
+              "by",
+              "top_n"
+            ],
+            "title": "BuybackRankingSpec",
+            "type": "object"
+          },
+          "BuybackSortSpec": {
+            "additionalProperties": false,
+            "properties": {
+              "by": {
+                "enum": [
+                  "buyback_value",
+                  "buyback_value_vnd",
+                  "events",
+                  "bonds",
+                  "issuers"
+                ],
+                "title": "By",
+                "type": "string"
+              },
+              "order": {
+                "default": "descending",
+                "enum": [
+                  "ascending",
+                  "descending"
+                ],
+                "title": "Order",
+                "type": "string"
+              },
+              "nulls": {
+                "default": "last",
+                "enum": [
+                  "first",
+                  "last"
+                ],
+                "title": "Nulls",
+                "type": "string"
+              }
+            },
+            "required": [
+              "by"
+            ],
+            "title": "BuybackSortSpec",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "description": "Bond buyback/early-redemption analytics request: measures, dimensions,\nfilters, sort, and ranking, plus the `domain` tag.",
+        "properties": {
+          "domain": {
+            "const": "cbond_buybacks",
+            "title": "Domain",
+            "type": "string"
+          },
+          "measures": {
+            "description": "1-4 measures to compute.",
+            "items": {
+              "enum": [
+                "buyback_value",
+                "buyback_value_vnd",
+                "events",
+                "bonds",
+                "issuers"
+              ],
+              "type": "string"
+            },
+            "maxItems": 4,
+            "minItems": 1,
+            "title": "Measures",
+            "type": "array"
+          },
+          "dimensions": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    "issuer_name",
+                    "bond_code",
+                    "currency",
+                    "market",
+                    "buyback_month",
+                    "buyback_quarter",
+                    "buyback_year",
+                    "disclosure_status"
+                  ],
+                  "type": "string"
+                },
+                "maxItems": 4,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "0-4 grouping dimensions.",
+            "title": "Dimensions"
+          },
+          "filters": {
+            "anyOf": [
+              {
+                "items": {
+                  "$ref": "#/$defs/BuybackFilterSpec"
+                },
+                "maxItems": 20,
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Strict buyback-event filters.",
+            "title": "Filters"
+          },
+          "record_scope": {
+            "default": "effective",
+            "description": "effective (default), expired, or all disclosures.",
+            "enum": [
+              "effective",
+              "expired",
+              "all"
+            ],
+            "title": "Record Scope",
+            "type": "string"
+          },
+          "sort": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuybackSortSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Ordinary group sorting; mutually exclusive with ranking."
+          },
+          "ranking": {
+            "anyOf": [
+              {
+                "$ref": "#/$defs/BuybackRankingSpec"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Bounded top-N ranking, optionally partitioned."
+          },
+          "limit": {
+            "default": 100,
+            "description": "Ordinary result groups, 1-500.",
+            "maximum": 500,
+            "minimum": 1,
+            "title": "Limit",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "domain",
+          "measures"
+        ],
+        "title": "CbondBuybacksQuery",
+        "type": "object"
+      },
+      "resultSchema": {
+        "$defs": {
+          "Diagnostic": {
+            "additionalProperties": false,
+            "properties": {
+              "level": {
+                "enum": [
+                  "error",
+                  "warning"
+                ],
+                "title": "Level",
+                "type": "string"
+              },
+              "code": {
+                "title": "Code",
+                "type": "string"
+              },
+              "path": {
+                "title": "Path",
+                "type": "string"
+              },
+              "message": {
+                "title": "Message",
+                "type": "string"
+              },
+              "fix": {
+                "title": "Fix",
+                "type": "string"
+              }
+            },
+            "required": [
+              "level",
+              "code",
+              "path",
+              "message",
+              "fix"
+            ],
+            "title": "Diagnostic",
+            "type": "object"
+          },
+          "JsonValue": {},
+          "NextStep": {
+            "additionalProperties": false,
+            "description": "A bounded follow-up tool hint.",
+            "properties": {
+              "tool": {
+                "description": "Follow-up tool this hint points at.",
+                "title": "Tool",
+                "type": "string"
+              },
+              "why": {
+                "description": "Why this follow-up may help.",
+                "maxLength": 120,
+                "title": "Why",
+                "type": "string"
+              },
+              "args_hint": {
+                "anyOf": [
+                  {
+                    "additionalProperties": {
+                      "type": "string"
+                    },
+                    "type": "object"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "description": "One resolved identifier per argument, when available. For a closed-action tool, may also carry an `action` key naming which action to call next -- a partial hint, never a complete request.",
+                "title": "Args Hint"
+              }
+            },
+            "required": [
+              "tool",
+              "why"
+            ],
+            "title": "NextStep",
+            "type": "object"
+          },
+          "SourceRefSummary": {
+            "additionalProperties": false,
+            "properties": {
+              "id": {
+                "maxLength": 96,
+                "pattern": "^source:[a-z0-9_]+$",
+                "title": "Id",
+                "type": "string"
+              },
+              "title": {
+                "maxLength": 160,
+                "minLength": 1,
+                "title": "Title",
+                "type": "string"
+              },
+              "url": {
+                "anyOf": [
+                  {
+                    "maxLength": 2048,
+                    "type": "string"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "default": null,
+                "title": "Url"
+              },
+              "source_key": {
+                "enum": [
+                  "cbond_trading_registry",
+                  "cbond_issuer_registry",
+                  "cbond_bond_details",
+                  "cbond_disclosures",
+                  "cbond_issuance_disclosures",
+                  "cbond_issuers",
+                  "cbond_issuer_ratings",
+                  "cbond_trading_stats",
+                  "gbond_outright_trades",
+                  "gbond_repo_trades",
+                  "gbond_auction_results",
+                  "vsd_bond_registry",
+                  "vsd_bond_details",
+                  "vsd_issuers",
+                  "sbv_fx_central",
+                  "sbv_interbank_bulletins",
+                  "hsx_bond_news",
+                  "bank_deposit_rates_simplize_history",
+                  "bank_deposit_rates_direct",
+                  "vcb_fx_rates",
+                  "ssc_public_offerings",
+                  "ssc_sanctions",
+                  "vendor_biz_info",
+                  "fiinratings",
+                  "saigonratings",
+                  "visrating",
+                  "sniratings",
+                  "tmr"
+                ],
+                "title": "Source Key",
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "title",
+              "source_key"
+            ],
+            "title": "SourceRefSummary",
+            "type": "object"
+          }
+        },
+        "additionalProperties": false,
+        "properties": {
+          "source_refs": {
+            "description": "Unique KimFI source pointers, deterministic order.",
+            "items": {
+              "$ref": "#/$defs/SourceRefSummary"
+            },
+            "maxItems": 8,
+            "title": "Source Refs",
+            "type": "array"
+          },
+          "diagnostics": {
+            "items": {
+              "$ref": "#/$defs/Diagnostic"
+            },
+            "title": "Diagnostics",
+            "type": "array"
+          },
+          "next_steps": {
+            "description": "Bounded follow-up tool hints.",
+            "items": {
+              "$ref": "#/$defs/NextStep"
+            },
+            "maxItems": 3,
+            "title": "Next Steps",
+            "type": "array"
+          },
+          "trust_status": {
+            "default": "ok",
+            "description": "Uniform trust verdict for this response: ok, partial, or error.",
+            "enum": [
+              "ok",
+              "partial",
+              "error"
+            ],
+            "title": "Trust Status",
+            "type": "string"
+          },
+          "as_of": {
+            "description": "Vietnam query date (Asia/Ho_Chi_Minh); not source-data freshness.",
+            "title": "As Of",
+            "type": "string"
+          },
+          "applied": {
+            "additionalProperties": {
+              "$ref": "#/$defs/JsonValue"
+            },
+            "description": "Resolved spec actually executed, including any auto-added dimensions and the clamped limit.",
+            "title": "Applied",
+            "type": "object"
+          },
+          "total_groups": {
+            "description": "Total result groups before limit/truncation.",
+            "minimum": 0,
+            "title": "Total Groups",
+            "type": "integer"
+          },
+          "returned": {
+            "description": "Groups included in this response.",
+            "maximum": 500,
+            "minimum": 0,
+            "title": "Returned",
+            "type": "integer"
+          },
+          "rows": {
+            "description": "One row per group of buyback aggregates; keys vary with the requested dimensions and measures -- see the tool description for the key contract.",
+            "items": {
+              "additionalProperties": {
+                "$ref": "#/$defs/JsonValue"
+              },
+              "type": "object"
+            },
+            "maxItems": 500,
+            "title": "Rows",
+            "type": "array"
+          },
+          "domain": {
+            "const": "cbond_buybacks",
+            "title": "Domain",
+            "type": "string"
+          }
+        },
+        "required": [
+          "as_of",
+          "applied",
+          "total_groups",
+          "returned",
+          "rows",
+          "domain"
+        ],
+        "title": "CbondBuybacksResult",
+        "type": "object"
+      }
+    }
+  },
+  "canonicalMeasures": [
+    "bonds",
+    "issuers",
+    "issue_size",
+    "amount_outstanding",
+    "issue_size_vnd",
+    "amount_outstanding_vnd",
+    "avg_coupon_rate_at_issue",
+    "avg_fixed_coupon_rate",
+    "avg_remaining_term_years",
+    "avg_issue_to_maturity_years",
+    "avg_coupon_spread_bps",
+    "avg_initial_coupon_rate",
+    "weighted_avg_coupon_rate_at_issue",
+    "share_of_outstanding",
+    "share_of_issued"
+  ],
+  "canonicalDimensions": [
+    "market_segment",
+    "currency",
+    "remaining_term_bucket",
+    "coupon_bucket",
+    "circulation_status",
+    "registration_status",
+    "trading_registration_status",
+    "trading_venue",
+    "issuer_name",
+    "issuer_name_en",
+    "industry",
+    "company_type",
+    "rating_agency",
+    "rating_result",
+    "issue_month",
+    "issue_quarter",
+    "issue_year",
+    "maturity_month",
+    "maturity_quarter",
+    "maturity_year",
+    "coupon_type"
+  ],
+  "canonicalFilterFields": [
+    "market_segment",
+    "currency",
+    "circulation_status",
+    "registration_status",
+    "trading_registration_status",
+    "trading_venue",
+    "remaining_term_bucket",
+    "coupon_bucket",
+    "industry",
+    "company_type",
+    "rating_agency",
+    "rating_result",
+    "has_profile",
+    "issuer_name",
+    "issuer_name_en",
+    "bond_code",
+    "issue_date",
+    "maturity_date",
+    "fixed_coupon_rate",
+    "amount_outstanding",
+    "issued_amount",
+    "days_to_maturity",
+    "remaining_term_years",
+    "coupon_type",
+    "coupon_spread_bps",
+    "coupon_rate_at_issue",
+    "reference_tenor_months",
+    "coupon_floor_rate",
+    "coupon_cap_rate"
+  ],
+  "canonicalBuybackMeasures": [
+    "repurchase_principal_amount",
+    "repurchase_principal_amount_vnd",
+    "repurchase_disclosures",
+    "bonds",
+    "issuers"
+  ],
+  "canonicalBuybackDimensions": [
+    "issuer_name",
+    "bond_code",
+    "currency",
+    "market",
+    "repurchase_month",
+    "repurchase_quarter",
+    "repurchase_year",
+    "disclosure_status"
+  ],
+  "canonicalBuybackFilterFields": [
+    "repurchase_date",
+    "issuer_name",
+    "bond_code",
+    "currency",
+    "market"
+  ],
+  "cbondAnalyticsActions": [
+    "aggregate_bonds",
+    "rank_bonds",
+    "aggregate_repurchase_disclosures",
+    "rank_repurchase_disclosures"
+  ],
+  "cbondQueryActions": [
+    "discover_bonds",
+    "screen_bonds",
+    "discover_documents",
+    "resolve_bond",
+    "retrieve_bond",
+    "retrieve_trades",
+    "retrieve_repurchase_disclosures"
+  ],
+  "cbondReadActions": [
+    "navigate",
+    "read_text",
+    "read_page_images"
+  ]
+}

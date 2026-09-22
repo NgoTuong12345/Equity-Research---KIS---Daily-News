@@ -1,0 +1,156 @@
+{
+  "schema_version": 1,
+  "version": 5,
+  "kind": "vocabulary",
+  "entries": [
+    {
+      "term_vi": "giá trị đang lưu hành",
+      "term_en": "outstanding value",
+      "maps_to": [
+        "outstanding_amount",
+        "outstanding_amount_vnd"
+      ],
+      "note": "Stock, end-of-period; never sum across periods, only compare period-to-period. kimfi_analyze/kimfi_query canonical name: amount_outstanding[_vnd]."
+    },
+    {
+      "term_vi": "giá trị phát hành",
+      "term_en": "issuance value",
+      "maps_to": [
+        "issued_amount",
+        "issued_amount_vnd"
+      ],
+      "note": "Flow, at issuance; not a proxy for what's still outstanding -- see the stock_over_flow_window diagnostic before summing across an issuance window. kimfi_analyze canonical name: issue_size[_vnd], private_placement scope-pinned only."
+    },
+    {
+      "term_vi": "trái phiếu đáo hạn",
+      "term_en": "maturing bonds, maturity wall",
+      "maps_to": [
+        "maturity_month",
+        "maturity_quarter",
+        "maturity_year"
+      ],
+      "note": "Principal-only view; no coupon-cashflow amounts behind it yet."
+    },
+    {
+      "term_vi": "lãi suất coupon",
+      "term_en": "coupon rate",
+      "maps_to": [
+        "avg_coupon",
+        "avg_fixed_coupon",
+        "coupon_rate_clean",
+        "coupon_bucket"
+      ],
+      "note": "avg_coupon is the all-inclusive issuance rate (published or verified-zero, honest about unresolved/invalid via issuance_rate_basis/_reason); avg_fixed_coupon is fixed-structure bonds only. Neither is a computed yield -- no YTM exists."
+    },
+    {
+      "term_vi": "lãi suất ban đầu",
+      "term_en": "initial disclosed rate",
+      "maps_to": [
+        "avg_initial_rate"
+      ],
+      "note": "Initial Year-1 coupon across fixed and hybrid bonds; LLM-extracted for VSD hybrid bonds."
+    },
+    {
+      "term_vi": "lãi suất bình quân gia quyền",
+      "term_en": "WAAC",
+      "maps_to": [
+        "waac"
+      ],
+      "note": "Volume-weighted average coupon weighted by issued_amount_vnd."
+    },
+    {
+      "term_vi": "biên lãi suất thả nổi",
+      "term_en": "floating margin",
+      "maps_to": [
+        "coupon_margin",
+        "avg_coupon_margin"
+      ],
+      "note": "Public segment only; structurally NULL on private_placement."
+    },
+    {
+      "term_vi": "kỳ hạn tham chiếu",
+      "term_en": "reference tenor",
+      "maps_to": [
+        "reference_tenor_months"
+      ],
+      "note": "Public segment only."
+    },
+    {
+      "term_vi": "sàn/trần lãi suất",
+      "term_en": "rate floor / cap",
+      "maps_to": [
+        "rate_floor_pct",
+        "rate_cap_pct"
+      ],
+      "note": "Public segment only."
+    },
+    {
+      "term_vi": "còn lưu hành",
+      "term_en": "in circulation",
+      "maps_to": [
+        "live"
+      ],
+      "note": "The only population-scope control (universe:'live'); asymmetric meaning across segments -- circulation for private, registration status for public."
+    },
+    {
+      "term_vi": "hết lưu hành",
+      "term_en": null,
+      "maps_to": [
+        "all"
+      ],
+      "note": "Population scope is set by universe:'all', not by a filter -- filter circulation_status yourself afterward."
+    },
+    {
+      "term_vi": "xếp hạng tín nhiệm",
+      "term_en": "credit rating",
+      "maps_to": [
+        "rating_agency",
+        "rating_result"
+      ],
+      "note": "Never compare rating_result across agencies; the tool auto-groups by rating_agency."
+    },
+    {
+      "term_vi": "ngành",
+      "term_en": "industry, sector",
+      "maps_to": [
+        "industry"
+      ],
+      "note": "NULL on the public segment -- not every CBIS issuer has a profile."
+    },
+    {
+      "term_vi": "thanh toán gốc/lãi",
+      "term_en": "principal/interest payment",
+      "maps_to": null,
+      "note": "The underlying extraction table exists but no MCP tool reads it yet."
+    },
+    {
+      "term_vi": "mua lại trước hạn",
+      "term_en": "early buyback, redemption",
+      "maps_to": [
+        "kimfi_query",
+        "kimfi_analyze"
+      ],
+      "note": "action='retrieve_repurchase_disclosures' (kimfi_query domain='cbond') resolves via the CBIS issuance bond_code, not trading_code; action='aggregate_repurchase_disclosures'/'rank_repurchase_disclosures' (kimfi_analyze) is the market-wide aggregate route. Stage 2 retired the standalone cbond_buybacks/cbond_buyback_analytics/kimfi_analytics tool names; the 2026-09-18 legacy-tool retirement retired those query and analytics facade names themselves."
+    },
+    {
+      "term_vi": "giao dịch trái phiếu",
+      "term_en": "bond trades",
+      "maps_to": [
+        "kimfi_query"
+      ],
+      "note": "Two disjoint bond_code namespaces; never cross-referenced -- and kimfi_query is the one tool serving BOTH, so its domain='cbond' vs domain='gbond' selector is what keeps them apart (action='retrieve_trades' exists under each). Stage 2 retired the standalone cbond_trades tool name; the 2026-09-18 legacy-tool retirement retired the single-market cbond_query/gbond_trades routes."
+    },
+    {
+      "term_vi": "đấu thầu trái phiếu chính phủ",
+      "term_en": "government bond auction",
+      "maps_to": null,
+      "note": "gbond_auction_results is crawled but no MCP tool reads it yet."
+    },
+    {
+      "term_vi": "ngày đăng ký cuối cùng",
+      "term_en": "rights record date",
+      "maps_to": null,
+      "note": "vsd_bond_rights has real payment dates but no MCP tool reads it yet."
+    }
+  ]
+}

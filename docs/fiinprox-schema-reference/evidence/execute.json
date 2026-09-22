@@ -1,0 +1,19 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "execute_api",
+  "request": {
+    "code": "result = client.bond.issuers.list_issuance_info(tickers=['VCB'], related=False)\nprint(result.head(2).to_json(orient='records', force_ascii=False))"
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "Success: False\nStdout:\n\nStderr:\nTài khoản của bạn chưa có quyền truy cập hoặc gói dịch vụ đã hết hạn. Vui lòng liên hệ FiinGroup hoặc đội phụ trách để gia hạn/kích hoạt quyền truy cập."
+      }
+    ],
+    "structuredContent": {
+      "result": "Success: False\nStdout:\n\nStderr:\nTài khoản của bạn chưa có quyền truy cập hoặc gói dịch vụ đã hết hạn. Vui lòng liên hệ FiinGroup hoặc đội phụ trách để gia hạn/kích hoạt quyền truy cập."
+    },
+    "isError": false
+  }
+}

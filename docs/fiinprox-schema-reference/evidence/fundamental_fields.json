@@ -1,0 +1,20 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "search_fundamental_fields",
+  "request": {
+    "searching_keywords": "ROE",
+    "top_k": 1
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"data\": {\n    \"ROE\": [\n      {\n        \"id\": \"field_2283\",\n        \"path_mapping\": {\n          \"SECURITIES\": \"4_profitability_ratio.roe\",\n          \"COMPANY\": \"4_profitability_ratio.roe\",\n          \"INSURANCE\": \"4_profitability_ratio.roe\"\n        },\n        \"keyword_en\": \"ROE\",\n        \"description\": \"Chỉ tiêu 'ROE' trên 'Ratio', path: 4. Khả năng sinh lợi - ROE\",\n        \"statement_type\": \"Ratio\",\n        \"data_type\": \"ratios\",\n        \"_score\": 1.6\n      }\n    ]\n  }\n}"
+      }
+    ],
+    "structuredContent": {
+      "result": "{\n  \"success\": true,\n  \"data\": {\n    \"ROE\": [\n      {\n        \"id\": \"field_2283\",\n        \"path_mapping\": {\n          \"SECURITIES\": \"4_profitability_ratio.roe\",\n          \"COMPANY\": \"4_profitability_ratio.roe\",\n          \"INSURANCE\": \"4_profitability_ratio.roe\"\n        },\n        \"keyword_en\": \"ROE\",\n        \"description\": \"Chỉ tiêu 'ROE' trên 'Ratio', path: 4. Khả năng sinh lợi - ROE\",\n        \"statement_type\": \"Ratio\",\n        \"data_type\": \"ratios\",\n        \"_score\": 1.6\n      }\n    ]\n  }\n}"
+    },
+    "isError": false
+  }
+}

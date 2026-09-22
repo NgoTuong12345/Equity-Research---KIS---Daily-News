@@ -1,0 +1,111 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "get_tool_detail",
+  "request": {
+    "func_name": "client.bond.issuers.list_issuance_info",
+    "detail_level": "full"
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"detail_level\":\"full\",\"tools\":[{\"id\":\"client.bond.issuers.list_issuance_info\",\"short_desc\":\"Thông tin trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thanh toán, Lãi suất coupon\\nDanh sách trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thánh toán, Lãi suất coupon\",\"parameters\":\"1. tickers (bắt buộc, kiểu: array)\\n   - Mô tả: Mã chứng khoán tổ chức phát hành. VD: 'MSN' hoặc ['MSN', 'VNM']\\n2. status (tùy chọn, kiểu: array)\\n   - Giá trị mặc định: [15, 22] - Lấy những trái phiếu có tình trạng Bình thường hoặc Đáo hạn nhưng chưa thanh toán toàn bộ\\n   - Mô tả: Tình trạng tái phiếu (15: Bình thường, 16: Hủy do đáo hạn, 17: Hủy do mua lại, 22: Đáo hạn nhưng chưa thanh toán toàn bộ).\\n3. collateral (tùy chọn, kiểu: string)\\n   - Giá trị mặc định: 'All' - Lấy cả TP có TSĐB lẫn không có TSĐB\\n   - Mô tả: Có TSĐB hay không (là 1 trong 3 giá trị: 'All' - Lấy cả TP có TSĐB lẫn không có TSĐB, \\\"Yes\\\" - Có TSĐB, \\\"No\\\" - Không có TSĐB).\\n4. related (tùy chọn, kiểu: boolean)\\n   - Giá trị mặc định: True\\n   - Mô tả: Lấy cả trái phiếu của được phát hành bởi các công ty liên quan hay không (True - có, False - không).\",\"output_desc\":{\"type\":\"table\",\"description\":\"Bảng danh sách thông tin trái phiếu phát hành (bao gồm cả đáo hạn, chưa thanh toán...) của một hoặc nhiều tổ chức phát hành dưới dạng DataFrame.\",\"columns\":{\"ticker\":{\"type\":\"string\",\"description\":\"Mã chứng khoán của doanh nghiệp phát hành trái phiếu\"},\"bond_ticker\":{\"type\":\"string\",\"description\":\"Mã trái phiếu\"},\"issuer\":{\"type\":\"string\",\"description\":\"Tên viết tắt của tổ chức phát hành tương ứng\"},\"issue_method\":{\"type\":\"string\",\"description\":\"Phương thức phát hành trái phiếu (ví dụ: 'Phát hành riêng lẻ', 'Công chúng'...)\"},\"next_interest_payment_date\":{\"type\":\"string\",\"description\":\"Ngày trả lãi tiếp theo dưới dạng chuỗi có định dạng đầy đủ 'YYYY-MM-DD HH:MM' (ví dụ: '2025-12-01 00:00').\"},\"issue_date\":{\"type\":\"string\",\"description\":\"Ngày phát hành dưới dạng chuỗi có định dạng đầy đủ 'YYYY-MM-DD HH:MM' (ví dụ: '2021-07-23 00:00').\"},\"maturity_date\":{\"type\":\"string\",\"description\":\"Ngày đáo hạn dưới dạng chuỗi có định dạng đầy đủ 'YYYY-MM-DD HH:MM' (ví dụ: '2023-07-23 00:00').\"},\"coupon_rate\":{\"type\":\"number\",\"description\":\"Lãi suất coupon (đơn vị: %, đã nhân 100 sẵn, ví dụ: 10.96 tương ứng với 10.96%).\"},\"issue_value\":{\"type\":\"number\",\"description\":\"Giá trị phát hành (đơn vị: VNĐ)\"},\"outstanding_value\":{\"type\":\"number\",\"description\":\"Giá trị lưu hành tại thời điểm hiện tại (đơn vị: VNĐ)\"},\"duration\":{\"type\":\"number\",\"description\":\"Kỳ hạn của trái phiếu (Đơn vị: Tháng)\"},\"status\":{\"type\":\"string\",\"description\":\"Tình trạng hoạt động của trái phiếu (ví dụ: 'Bình thường', 'Chưa thanh toán sau đáo hạn'...)\"},\"collateral_type\":{\"type\":\"string\",\"description\":\"Loại tài sản đảm bảo (ví dụ: 'Chứng khoán', 'Bất động sản'...)\"}},\"logic_constraints\":[\"Đơn vị tiền tệ: Các cột `issue_value` và `outstanding_value` trả về trực tiếp đơn vị VNĐ. Không cần nhân thêm hệ số nào.\",\"Tỷ lệ lãi suất: Cột `coupon_rate` trả ra trực tiếp dạng phần trăm % (đã được thư viện tự động nhân 100 sẵn). Không cần nhân thêm 100 trong code khi tính toán hoặc hiển thị tỉ lệ phần trăm.\",\"Định dạng ngày tháng: Các cột ngày tháng trả ra ở định dạng chuỗi 'YYYY-MM-DD HH:MM'. Khi chuyển đổi sang datetime bằng `pd.to_datetime()`, sử dụng format='%Y-%m-%d %H:%M' hoặc để trống tham số format.\",\"Xử lý giá trị rỗng (NaN): Các cột `coupon_rate`, `issue_value`, `outstanding_value`, `duration` có thể chứa giá trị rỗng (NaN). Cần dùng `.fillna(0)` trước khi tính toán tổng hoặc trung bình.\"]},\"usage_instruction\":\"\",\"happy_cases\":[],\"execution_rules\":[\"BẠN PHẢI TỰ VIẾT MÃ NGUỒN PYTHON rồi truyền vào tham số `code` của execute_api. TUYỆT ĐỐI không truyền func_name hay params vào execute_api.\",\"Sau khi đọc schema, gọi `execute_api` với `code`; server tự duy trì trace context.\",\"TUYỆT ĐỐI ƯU TIÊN dùng hàm có sẵn của hệ thống cho mọi bài toán tính toán. CHỈ KHI không có hàm, mới tự lấy dữ liệu thô và tự tính.\",\"Dùng đúng tên tham số trong `parameters`; không tự tạo alias như `fund_code` trừ khi metadata hiển thị rõ alias đó.\",\"Truyền đầy đủ các tham số bắt buộc nhìn thấy trong metadata trước khi gọi `execute_api`.\",\"Dùng đối tượng `client` toàn cục đã có sẵn trong sandbox.\",\"Không import `fiinclient`, `bond_api`, và không tạo `FiinClient` mới.\",\"Không giả định mọi method đều trả về cùng một kiểu Python object. Hãy in ra kết quả thực tế một cách rõ ràng và tóm tắt output dạng bảng một cách ngắn gọn.\",\"In ra kết quả theo hướng phục vụ trả lời, không cần in toàn bộ dữ liệu nếu chỉ một phần là liên quan.\"]}],\"ready_to_answer\":false,\"do_not_answer_from_this_result\":true,\"required_next_tool\":\"execute_api\",\"required_next_arguments\":{\"code\":\"# Write Python code that calls the selected tool/wrapper using the schema above, then print(result).\"},\"NEXT_ACTION_REQUIRED\":\"BẮT BUỘC gọi `execute_api` tiếp theo nếu có tool/detail usable. Viết Python code dùng đúng tham số/wrapper trong `tools` rồi print kết quả; server tự duy trì trace context.\"}"
+      }
+    ],
+    "structuredContent": {
+      "detail_level": "full",
+      "tools": [
+        {
+          "id": "client.bond.issuers.list_issuance_info",
+          "short_desc": "Thông tin trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thanh toán, Lãi suất coupon\nDanh sách trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thánh toán, Lãi suất coupon",
+          "parameters": "1. tickers (bắt buộc, kiểu: array)\n   - Mô tả: Mã chứng khoán tổ chức phát hành. VD: 'MSN' hoặc ['MSN', 'VNM']\n2. status (tùy chọn, kiểu: array)\n   - Giá trị mặc định: [15, 22] - Lấy những trái phiếu có tình trạng Bình thường hoặc Đáo hạn nhưng chưa thanh toán toàn bộ\n   - Mô tả: Tình trạng tái phiếu (15: Bình thường, 16: Hủy do đáo hạn, 17: Hủy do mua lại, 22: Đáo hạn nhưng chưa thanh toán toàn bộ).\n3. collateral (tùy chọn, kiểu: string)\n   - Giá trị mặc định: 'All' - Lấy cả TP có TSĐB lẫn không có TSĐB\n   - Mô tả: Có TSĐB hay không (là 1 trong 3 giá trị: 'All' - Lấy cả TP có TSĐB lẫn không có TSĐB, \"Yes\" - Có TSĐB, \"No\" - Không có TSĐB).\n4. related (tùy chọn, kiểu: boolean)\n   - Giá trị mặc định: True\n   - Mô tả: Lấy cả trái phiếu của được phát hành bởi các công ty liên quan hay không (True - có, False - không).",
+          "output_desc": {
+            "type": "table",
+            "description": "Bảng danh sách thông tin trái phiếu phát hành (bao gồm cả đáo hạn, chưa thanh toán...) của một hoặc nhiều tổ chức phát hành dưới dạng DataFrame.",
+            "columns": {
+              "ticker": {
+                "type": "string",
+                "description": "Mã chứng khoán của doanh nghiệp phát hành trái phiếu"
+              },
+              "bond_ticker": {
+                "type": "string",
+                "description": "Mã trái phiếu"
+              },
+              "issuer": {
+                "type": "string",
+                "description": "Tên viết tắt của tổ chức phát hành tương ứng"
+              },
+              "issue_method": {
+                "type": "string",
+                "description": "Phương thức phát hành trái phiếu (ví dụ: 'Phát hành riêng lẻ', 'Công chúng'...)"
+              },
+              "next_interest_payment_date": {
+                "type": "string",
+                "description": "Ngày trả lãi tiếp theo dưới dạng chuỗi có định dạng đầy đủ 'YYYY-MM-DD HH:MM' (ví dụ: '2025-12-01 00:00')."
+              },
+              "issue_date": {
+                "type": "string",
+                "description": "Ngày phát hành dưới dạng chuỗi có định dạng đầy đủ 'YYYY-MM-DD HH:MM' (ví dụ: '2021-07-23 00:00')."
+              },
+              "maturity_date": {
+                "type": "string",
+                "description": "Ngày đáo hạn dưới dạng chuỗi có định dạng đầy đủ 'YYYY-MM-DD HH:MM' (ví dụ: '2023-07-23 00:00')."
+              },
+              "coupon_rate": {
+                "type": "number",
+                "description": "Lãi suất coupon (đơn vị: %, đã nhân 100 sẵn, ví dụ: 10.96 tương ứng với 10.96%)."
+              },
+              "issue_value": {
+                "type": "number",
+                "description": "Giá trị phát hành (đơn vị: VNĐ)"
+              },
+              "outstanding_value": {
+                "type": "number",
+                "description": "Giá trị lưu hành tại thời điểm hiện tại (đơn vị: VNĐ)"
+              },
+              "duration": {
+                "type": "number",
+                "description": "Kỳ hạn của trái phiếu (Đơn vị: Tháng)"
+              },
+              "status": {
+                "type": "string",
+                "description": "Tình trạng hoạt động của trái phiếu (ví dụ: 'Bình thường', 'Chưa thanh toán sau đáo hạn'...)"
+              },
+              "collateral_type": {
+                "type": "string",
+                "description": "Loại tài sản đảm bảo (ví dụ: 'Chứng khoán', 'Bất động sản'...)"
+              }
+            },
+            "logic_constraints": [
+              "Đơn vị tiền tệ: Các cột `issue_value` và `outstanding_value` trả về trực tiếp đơn vị VNĐ. Không cần nhân thêm hệ số nào.",
+              "Tỷ lệ lãi suất: Cột `coupon_rate` trả ra trực tiếp dạng phần trăm % (đã được thư viện tự động nhân 100 sẵn). Không cần nhân thêm 100 trong code khi tính toán hoặc hiển thị tỉ lệ phần trăm.",
+              "Định dạng ngày tháng: Các cột ngày tháng trả ra ở định dạng chuỗi 'YYYY-MM-DD HH:MM'. Khi chuyển đổi sang datetime bằng `pd.to_datetime()`, sử dụng format='%Y-%m-%d %H:%M' hoặc để trống tham số format.",
+              "Xử lý giá trị rỗng (NaN): Các cột `coupon_rate`, `issue_value`, `outstanding_value`, `duration` có thể chứa giá trị rỗng (NaN). Cần dùng `.fillna(0)` trước khi tính toán tổng hoặc trung bình."
+            ]
+          },
+          "usage_instruction": "",
+          "happy_cases": [],
+          "execution_rules": [
+            "BẠN PHẢI TỰ VIẾT MÃ NGUỒN PYTHON rồi truyền vào tham số `code` của execute_api. TUYỆT ĐỐI không truyền func_name hay params vào execute_api.",
+            "Sau khi đọc schema, gọi `execute_api` với `code`; server tự duy trì trace context.",
+            "TUYỆT ĐỐI ƯU TIÊN dùng hàm có sẵn của hệ thống cho mọi bài toán tính toán. CHỈ KHI không có hàm, mới tự lấy dữ liệu thô và tự tính.",
+            "Dùng đúng tên tham số trong `parameters`; không tự tạo alias như `fund_code` trừ khi metadata hiển thị rõ alias đó.",
+            "Truyền đầy đủ các tham số bắt buộc nhìn thấy trong metadata trước khi gọi `execute_api`.",
+            "Dùng đối tượng `client` toàn cục đã có sẵn trong sandbox.",
+            "Không import `fiinclient`, `bond_api`, và không tạo `FiinClient` mới.",
+            "Không giả định mọi method đều trả về cùng một kiểu Python object. Hãy in ra kết quả thực tế một cách rõ ràng và tóm tắt output dạng bảng một cách ngắn gọn.",
+            "In ra kết quả theo hướng phục vụ trả lời, không cần in toàn bộ dữ liệu nếu chỉ một phần là liên quan."
+          ]
+        }
+      ],
+      "ready_to_answer": false,
+      "do_not_answer_from_this_result": true,
+      "required_next_tool": "execute_api",
+      "required_next_arguments": {
+        "code": "# Write Python code that calls the selected tool/wrapper using the schema above, then print(result)."
+      },
+      "NEXT_ACTION_REQUIRED": "BẮT BUỘC gọi `execute_api` tiếp theo nếu có tool/detail usable. Viết Python code dùng đúng tham số/wrapper trong `tools` rồi print kết quả; server tự duy trì trace context."
+    },
+    "isError": false
+  }
+}

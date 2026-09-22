@@ -1,0 +1,21 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "search_sector_code_by_name",
+  "request": {
+    "keyword": "ngân hàng",
+    "sector_level": 2,
+    "top_k": 1
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\n  \"success\": true,\n  \"data\": {\n    \"status\": \"OK\",\n    \"query\": \"ngân hàng\",\n    \"rows\": [\n      {\n        \"industryName\": \"Ngân hàng L2\",\n        \"industryCode\": \"BANKS_L2\",\n        \"icbCode\": \"8300\",\n        \"level\": 2,\n        \"score\": 1.0\n      }\n    ],\n    \"warnings\": [],\n    \"metadata\": {\n      \"search_mode\": \"hybrid\",\n      \"dense_weight\": 0.8,\n      \"returned_rows\": 1,\n      \"sector_level\": 2\n    }\n  }\n}"
+      }
+    ],
+    "structuredContent": {
+      "result": "{\n  \"success\": true,\n  \"data\": {\n    \"status\": \"OK\",\n    \"query\": \"ngân hàng\",\n    \"rows\": [\n      {\n        \"industryName\": \"Ngân hàng L2\",\n        \"industryCode\": \"BANKS_L2\",\n        \"icbCode\": \"8300\",\n        \"level\": 2,\n        \"score\": 1.0\n      }\n    ],\n    \"warnings\": [],\n    \"metadata\": {\n      \"search_mode\": \"hybrid\",\n      \"dense_weight\": 0.8,\n      \"returned_rows\": 1,\n      \"sector_level\": 2\n    }\n  }\n}"
+    },
+    "isError": false
+  }
+}

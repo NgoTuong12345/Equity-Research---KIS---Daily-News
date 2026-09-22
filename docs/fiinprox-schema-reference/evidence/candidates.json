@@ -1,0 +1,75 @@
+{
+  "captured_on": "2026-09-22",
+  "tool": "search_tool_candidates",
+  "request": {
+    "search_query": "Danh sách trái phiếu doanh nghiệp mã trái phiếu tổ chức phát hành dư nợ coupon",
+    "financial_keywords": [
+      "trái phiếu doanh nghiệp",
+      "danh mục",
+      "dư nợ"
+    ],
+    "include_alternatives": true,
+    "top_k": 2
+  },
+  "response": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"search_query\":\"Danh sách trái phiếu doanh nghiệp mã trái phiếu tổ chức phát hành dư nợ coupon\",\"core_tools\":[{\"func_name\":\"client.Fetch_Trading_Data\",\"purpose\":\"Lấy dữ liệu giá/khối lượng giao dịch mở cửa,đóng cửa,High,Low,thanh khoản, giá trị giao dịch, khối lượng mua chủ động, khối lượng bán chủ động, giá trị NĐTNN mua vào, giá trị NĐTNN bán ra, giá trị NĐTNN mua/bán ròng của cổ phiếu, chỉ số, phái sinh, ngành, chứng quyền theo thời gian.\",\"display_label\":\"Fetch_Trading_Data\"},{\"func_name\":\"client.TickerList()\",\"purpose\":\"Danh sách các mã cổ phiếu nằm trong một rổ chỉ số, ngành cụ thể\\nDanh sách các rổ chỉ số, tên phân ngành, mã phái sinh,mã chứng quyền (CW), mã quỹ hiện có\",\"use_when\":[\"hỏi danh sách mã thuộc VN30, VN100, VNINDEX\",\"hỏi các mã thuộc ngành như BANKS_L2, REAL_ESTATE_L2\"],\"do_not_use_when\":[\"user đã đưa mã cổ phiếu cụ thể như VNM, HPG, VCB\",\"câu hỏi cần giá, NAV, hoặc BCTC của một mã cụ thể\"],\"display_label\":\"TickerList\"}],\"cache_candidates\":[],\"function_candidates\":[{\"func_name\":\"client.sector_fa.bank_asset_quality.list_bond_portfolio_values\",\"short_desc\":\"Giá trị danh mục trái phiếu chính phủ\\nGiá trị danh mục trái phiếu tổ chức tín dụng\\nGiá trị danh mục trái phiếu doanh nghiệp\\nTăng trưởng giá trị danh mục trái phiếu\\nSố doanh nghiệp đưa vào tính toán\\ncủa các phân ngành ngân hàng\"},{\"func_name\":\"client.bond.issuers.list_issuance_info\",\"short_desc\":\"Thông tin trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thanh toán, Lãi suất coupon\\nDanh sách trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thánh toán, Lãi suất coupon\"}],\"ticker_entities\":[{\"ticker\":\"DFF\",\"full_name\":\"CTCP Tập đoàn Đua Fat\"},{\"ticker\":\"FID\",\"full_name\":\"CTCP Đầu tư và Phát triển Doanh nghiệp Việt Nam\"}],\"ready_to_answer\":false,\"do_not_answer_from_this_result\":true,\"required_next_tool\":\"get_tool_detail\",\"required_next_arguments\":{\"detail_level\":\"execution\",\"func_name\":\"client.sector_fa.bank_asset_quality.list_bond_portfolio_values\"},\"NEXT_ACTION_REQUIRED\":\"QUY TRÌNH BẮT BUỘC: BƯỚC 1 - Đối chiếu `cache_candidates` và `function_candidates` với intent của user. Nếu có cache cùng bản chất/logic, gọi `get_tool_detail` bằng `tool_id`; nếu không, gọi `get_tool_detail` bằng `func_name` của function phù hợp nhất. BƯỚC 2 - Nếu chưa thấy candidate phù hợp, search lại tối đa 1 lần bằng cụm từ mô tả data rộng hơn và tăng top_k. BƯỚC 3 - Chỉ sau khi discovery không trả candidate usable hoặc get_tool_detail xác nhận không có schema phù hợp mới được nói thiếu coverage. BƯỚC 4 - Nếu có tool/detail usable, viết code Python và gọi `execute_api`; server tự duy trì execution context.\"}"
+      }
+    ],
+    "structuredContent": {
+      "search_query": "Danh sách trái phiếu doanh nghiệp mã trái phiếu tổ chức phát hành dư nợ coupon",
+      "core_tools": [
+        {
+          "func_name": "client.Fetch_Trading_Data",
+          "purpose": "Lấy dữ liệu giá/khối lượng giao dịch mở cửa,đóng cửa,High,Low,thanh khoản, giá trị giao dịch, khối lượng mua chủ động, khối lượng bán chủ động, giá trị NĐTNN mua vào, giá trị NĐTNN bán ra, giá trị NĐTNN mua/bán ròng của cổ phiếu, chỉ số, phái sinh, ngành, chứng quyền theo thời gian.",
+          "display_label": "Fetch_Trading_Data"
+        },
+        {
+          "func_name": "client.TickerList()",
+          "purpose": "Danh sách các mã cổ phiếu nằm trong một rổ chỉ số, ngành cụ thể\nDanh sách các rổ chỉ số, tên phân ngành, mã phái sinh,mã chứng quyền (CW), mã quỹ hiện có",
+          "use_when": [
+            "hỏi danh sách mã thuộc VN30, VN100, VNINDEX",
+            "hỏi các mã thuộc ngành như BANKS_L2, REAL_ESTATE_L2"
+          ],
+          "do_not_use_when": [
+            "user đã đưa mã cổ phiếu cụ thể như VNM, HPG, VCB",
+            "câu hỏi cần giá, NAV, hoặc BCTC của một mã cụ thể"
+          ],
+          "display_label": "TickerList"
+        }
+      ],
+      "cache_candidates": [],
+      "function_candidates": [
+        {
+          "func_name": "client.sector_fa.bank_asset_quality.list_bond_portfolio_values",
+          "short_desc": "Giá trị danh mục trái phiếu chính phủ\nGiá trị danh mục trái phiếu tổ chức tín dụng\nGiá trị danh mục trái phiếu doanh nghiệp\nTăng trưởng giá trị danh mục trái phiếu\nSố doanh nghiệp đưa vào tính toán\ncủa các phân ngành ngân hàng"
+        },
+        {
+          "func_name": "client.bond.issuers.list_issuance_info",
+          "short_desc": "Thông tin trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thanh toán, Lãi suất coupon\nDanh sách trái phiếu doanh nghiệp phát hành như đáo hạn, chưa thánh toán, Lãi suất coupon"
+        }
+      ],
+      "ticker_entities": [
+        {
+          "ticker": "DFF",
+          "full_name": "CTCP Tập đoàn Đua Fat"
+        },
+        {
+          "ticker": "FID",
+          "full_name": "CTCP Đầu tư và Phát triển Doanh nghiệp Việt Nam"
+        }
+      ],
+      "ready_to_answer": false,
+      "do_not_answer_from_this_result": true,
+      "required_next_tool": "get_tool_detail",
+      "required_next_arguments": {
+        "detail_level": "execution",
+        "func_name": "client.sector_fa.bank_asset_quality.list_bond_portfolio_values"
+      },
+      "NEXT_ACTION_REQUIRED": "QUY TRÌNH BẮT BUỘC: BƯỚC 1 - Đối chiếu `cache_candidates` và `function_candidates` với intent của user. Nếu có cache cùng bản chất/logic, gọi `get_tool_detail` bằng `tool_id`; nếu không, gọi `get_tool_detail` bằng `func_name` của function phù hợp nhất. BƯỚC 2 - Nếu chưa thấy candidate phù hợp, search lại tối đa 1 lần bằng cụm từ mô tả data rộng hơn và tăng top_k. BƯỚC 3 - Chỉ sau khi discovery không trả candidate usable hoặc get_tool_detail xác nhận không có schema phù hợp mới được nói thiếu coverage. BƯỚC 4 - Nếu có tool/detail usable, viết code Python và gọi `execute_api`; server tự duy trì execution context."
+    },
+    "isError": false
+  }
+}

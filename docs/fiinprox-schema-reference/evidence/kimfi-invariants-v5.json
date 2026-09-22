@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "version": 5,
+  "kind": "invariants",
+  "entries": [
+    {
+      "id": "trap-02",
+      "rule": "cbond_* and gbond_* bond_code are different namespaces. Never join or filter by code prefix across them; provenance is which tool a row came from, not the code's shape.",
+      "applies_to": [
+        "kimfi_analyze",
+        "kimfi_query"
+      ],
+      "diagnostic": null
+    },
+    {
+      "id": "trap-04",
+      "rule": "Liveness is circulation_status (or, for the public segment, VSD registration status), never a maturity-date predicate -- surfaces as universe:'live'. A naive maturity-date filter overstates the market.",
+      "applies_to": [
+        "kimfi_analyze",
+        "kimfi_query"
+      ],
+      "diagnostic": null
+    },
+    {
+      "id": "trap-05",
+      "rule": "Aggregate money, not bond counts: face_value * outstanding_vol. outstanding_vol alone sums counts across unequal denominations.",
+      "applies_to": [
+        "kimfi_analyze"
+      ],
+      "diagnostic": null
+    },
+    {
+      "id": "trap-06",
+      "rule": "Never sum across currency -- USD rows merge invisibly into a VND total otherwise.",
+      "applies_to": [
+        "kimfi_analyze",
+        "kimfi_query"
+      ],
+      "diagnostic": "currency_split"
+    },
+    {
+      "id": "trap-07",
+      "rule": "Trading-registration status and issuance-circulation status are different axes. Never merged.",
+      "applies_to": [
+        "kimfi_analyze",
+        "kimfi_query"
+      ],
+      "diagnostic": null
+    },
+    {
+      "id": "trap-10",
+      "rule": "outstanding_amount is a current stock, not issued_amount's flow. Summing stock over a historical issuance window can substantially understate issuance (one measured year: 93%; see the stock_over_flow_window diagnostic).",
+      "applies_to": [
+        "kimfi_analyze"
+      ],
+      "diagnostic": "stock_over_flow_window"
+    },
+    {
+      "id": "trap-12",
+      "rule": "cbond_* tables are private-placement only. The public segment has a different population-scope axis (VSD registration status) and no outstanding-stock figure.",
+      "applies_to": [
+        "kimfi_analyze",
+        "kimfi_query"
+      ],
+      "diagnostic": "segment_semantics"
+    },
+    {
+      "id": "trap-13",
+      "rule": "Ratings are not comparable across agencies. Always group by rating_agency before ranking or averaging rating_result.",
+      "applies_to": [
+        "kimfi_analyze"
+      ],
+      "diagnostic": "rating_agency_autogrouped"
+    },
+    {
+      "id": "trap-14",
+      "rule": "An all-NULL avg_coupon group is never a genuine zero-coupon bond -- a verified zero always contributes 0, not NULL. It merges an unresolved classification ('zero_or_floating'), an invalid source value, or missing source data instead. coupon_type and avg_coupon_basis_counts disambiguate them.",
+      "applies_to": [
+        "kimfi_analyze"
+      ],
+      "diagnostic": "coupon_null_heterogeneous"
+    },
+    {
+      "id": "trap-17",
+      "rule": "Analytics' foreign-currency conversion (kimfi_analyze) prefers the VCB-quoted transfer-buy rate over the central-bank rate; the central-bank rate is only the fallback for dates before VCB's feed starts.",
+      "applies_to": [
+        "kimfi_analyze"
+      ],
+      "diagnostic": "fx_rate_applied"
+    },
+    {
+      "id": "guard-empty-result",
+      "rule": "A zero-row result reflects the requested scope (market_segment, universe, filters) and current source state, not a global claim the bond or group cannot exist -- qualify by resolved population and identity linkage before concluding absence, and check freshness (kimfi_context action='freshness') rather than retrying the same call shape hoping for a different answer. Exception: a zero-match discover_bonds result (kimfi_query) with a non-empty suggestions field exists to guide one specific, different retry.",
+      "applies_to": [
+        "kimfi_analyze",
+        "kimfi_query"
+      ],
+      "diagnostic": "empty_is_an_answer"
+    }
+  ]
+}
