@@ -39,7 +39,7 @@ except ImportError:
 
 # Execution Settings
 MAX_WORKERS = 10  # Number of parallel threads
-OUTDIR = "./"
+OUTDIR = os.path.abspath(os.path.dirname(__file__))
 FILENAME = "vietnam_financial_news_combined"
 HOURS_LOOKBACK = 24
 
@@ -359,9 +359,87 @@ def parse_fireant_time(text: str) -> Optional[dt.datetime]:
     except: pass
     return None
 
+def slugify_fireant_title(text: str) -> str:
+    if not text:
+        return "tin-tuc"
+    text = text.strip()
+    text = re.sub(r'[đĐ]', 'd', text)
+    text = text.lower()
+    text = re.sub(r'[àáạảãâầấậẩẫăằắặẳẵ]', 'a', text)
+    text = re.sub(r'[èéẹẻẽêềếệểễ]', 'e', text)
+    text = re.sub(r'[ìíịỉĩ]', 'i', text)
+    text = re.sub(r'[òóọỏõôồốộổỗơờớợởỡ]', 'o', text)
+    text = re.sub(r'[ùúụủũưừứựửữ]', 'u', text)
+    text = re.sub(r'[ỳýỵỷỹ]', 'y', text)
+    text = re.sub(r'[^a-z0-9\s-]', '', text)
+    text = re.sub(r'[\s-]+', '-', text)
+    slug = text.strip('-')
+    return slug if slug else "tin-tuc"
+
+def fetch_fireant_api(hours_lookback: int) -> List[Dict]:
+    """Fetches FireAnt news via REST API using dynamic token extraction, with Selenium fallback."""
+    logger.info(">>> [Method 3] Starting FireAnt API Scraper...")
+    collected_articles = []
+    
+    try:
+        fireant_url = "https://fireant.vn/bai-viet"
+        resp = requests.get(fireant_url, headers=HEADERS, timeout=10)
+        token = None
+        if resp.status_code == 200:
+            match = re.search(r'"accessToken":"([^"]+)"', resp.text)
+            if match:
+                token = match.group(1)
+        
+        if token:
+            api_url = f"https://betarest.fireant.vn/posts?type=1&offset=0&limit=50"
+            api_headers = {
+                "User-Agent": HEADERS.get("User-Agent", "Mozilla/5.0"),
+                "Authorization": f"Bearer {token}",
+                "Accept": "application/json"
+            }
+            api_resp = requests.get(api_url, headers=api_headers, timeout=10)
+            if api_resp.status_code == 200:
+                items = api_resp.json()
+                cutoff_time = dt.datetime.now() - dt.timedelta(hours=hours_lookback)
+                
+                for item in items:
+                    post_id = item.get("postID")
+                    heading = item.get("title")
+                    date_str = item.get("date")
+                    
+                    if not heading or not post_id or not date_str:
+                        continue
+                    
+                    try:
+                        dt_obj = dt.datetime.fromisoformat(date_str).replace(tzinfo=None)
+                    except Exception:
+                        dt_obj = None
+                        
+                    if dt_obj and dt_obj < cutoff_time:
+                        continue
+                        
+                    slug = slugify_fireant_title(heading)
+                    link = f"https://fireant.vn/bai-viet/{slug}/{post_id}"
+                    collected_articles.append({
+                        "title": heading,
+                        "link": link,
+                        "published_at": dt_obj,
+                        "feed_url": fireant_url,
+                        "source": "FireAnt",
+                        "category": categorizer.categorize(heading, link, fireant_url)
+                    })
+                
+                logger.info(f"✓ FireAnt API: {len(collected_articles)} items collected.")
+                if collected_articles:
+                    return collected_articles
+    except Exception as e:
+        logger.warning(f"⚠️ FireAnt API Error: {e}. Falling back to Selenium...")
+        
+    return fetch_fireant_selenium(hours_lookback)
+
 def fetch_fireant_selenium(hours_lookback: int) -> List[Dict]:
     """Fetches FireAnt news using Selenium with improved Time detection."""
-    logger.info(">>> [Method 3] Starting FireAnt Selenium Scraper (Fixed)...")
+    logger.info(">>> [Method 3 Fallback] Starting FireAnt Selenium Scraper...")
     
     chrome_options = Options()
     chrome_options.add_argument("--headless") 
@@ -637,8 +715,8 @@ def main():
     baodautu_data = fetch_baodautu_multi_category(BAODAUTU_URLS, HOURS_LOOKBACK)
     all_articles.extend(baodautu_data)
 
-    # 4. FireAnt (Selenium)
-    fireant_data = fetch_fireant_selenium(HOURS_LOOKBACK)
+    # 4. FireAnt (API with Selenium Fallback)
+    fireant_data = fetch_fireant_api(HOURS_LOOKBACK)
     all_articles.extend(fireant_data)
 
     # 5. Process

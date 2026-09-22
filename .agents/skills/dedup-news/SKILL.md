@@ -1,3 +1,8 @@
+---
+name: dedup-news
+description: Perform agentic review and deduplication on news items, prompt human review/editing, and auto-chain to publish-news.
+---
+
 # Dedup & Edit News — Agentic Post-Summarization Review
 
 Use this skill after `/summarize-news` completes, OR when the user runs `/dedup-news` directly.

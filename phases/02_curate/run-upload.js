@@ -6,9 +6,11 @@ const { execSync } = require('child_process');
 const { getTestingDir } = require('./report-paths');
 
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
-  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+].find(p => fs.existsSync(p)) || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const args = process.argv.slice(2);
 const PDF_PATH = args[0] || 'C:\\Users\\Administrator\\Playwright-Daily-News\\reports\\after_04_06_2026\\exports\\pdf\\after_04_06_2026_report_en.pdf';
 let TARGET_TITLE = args[1];

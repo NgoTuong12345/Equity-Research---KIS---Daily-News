@@ -121,25 +121,40 @@ def main():
     # 2. Load chunk files
     chunk_items = []
     source_dir = BASE_DIR / "reports" / base / "source"
+    summaries_dir = BASE_DIR / "reports" / base / "summaries"
     
-    # Check both reports/{base}/source/ and root folder for chunks
-    chunk_patterns = [
-        source_dir / f"chunk_*.json",
-        source_dir / f"{session[:3]}_chunk_*.json",
-        source_dir / f"after_chunk_*.json",
-        source_dir / f"mor_chunk_*.json",
-        BASE_DIR / f"chunk_*.json",
-        BASE_DIR / f"{session[:3]}_chunk_*.json",
-        BASE_DIR / f"after_chunk_*.json",
-        BASE_DIR / f"mor_chunk_*.json"
+    summary_patterns = [
+        summaries_dir / f"chunk_*_summary.json",
+        summaries_dir / f"{session[:3]}_chunk_*_summary.json",
+        summaries_dir / f"after_chunk_*_summary.json",
+        summaries_dir / f"mor_chunk_*_summary.json",
     ]
     
     found_chunk_files = []
-    for pattern in chunk_patterns:
-        matches = sorted(pattern.parent.glob(pattern.name))
-        for m in matches:
-            if m not in found_chunk_files:
-                found_chunk_files.append(m)
+    for pattern in summary_patterns:
+        if pattern.parent.exists():
+            matches = sorted(pattern.parent.glob(pattern.name))
+            for m in matches:
+                if m not in found_chunk_files:
+                    found_chunk_files.append(m)
+                    
+    if not found_chunk_files:
+        fallback_patterns = [
+            source_dir / f"chunk_*.json",
+            source_dir / f"{session[:3]}_chunk_*.json",
+            source_dir / f"after_chunk_*.json",
+            source_dir / f"mor_chunk_*.json",
+            BASE_DIR / f"chunk_*.json",
+            BASE_DIR / f"{session[:3]}_chunk_*.json",
+            BASE_DIR / f"after_chunk_*.json",
+            BASE_DIR / f"mor_chunk_*.json"
+        ]
+        for pattern in fallback_patterns:
+            if pattern.parent.exists():
+                matches = sorted(pattern.parent.glob(pattern.name))
+                for m in matches:
+                    if m not in found_chunk_files:
+                        found_chunk_files.append(m)
                 
     if not found_chunk_files:
         print("WARNING: No chunk files found. Only combining macro/trading if available.")
@@ -183,7 +198,12 @@ def main():
         print(f"Loading trading items from: {latest_trading_file}")
         with open(latest_trading_file, "r", encoding="utf-8") as f:
             trading_data = json.load(f)
-            raw_trading_items = trading_data.get("items", [])
+            if isinstance(trading_data, dict):
+                raw_trading_items = trading_data.get("items", [])
+            elif isinstance(trading_data, list):
+                raw_trading_items = trading_data
+            else:
+                raw_trading_items = []
             
         # Get recent trading items for deduplication
         recent_trading = get_recent_trading_items(BASE_DIR, base, count=3)
@@ -216,7 +236,19 @@ def main():
                     is_dup = True
                     break
             if not is_dup:
-                trading_items.append(item)
+                formatted_item = dict(item)
+                formatted_item["order"] = len(trading_items) + 1
+                formatted_item["published"] = item.get("published") or item.get("disclosure_date") or date_str
+                formatted_item["source"] = item.get("source") or "HSX"
+                formatted_item["url"] = item.get("url") or f"https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet/{item.get('article_id', '')}"
+                ticker = item.get("ticker", "")
+                exchange = item.get("exchange", "HSX")
+                issuer_name = item.get("issuer_name", "")
+                if not formatted_item.get("title_vn"):
+                    formatted_item["title_vn"] = f"{ticker}. ({issuer_name}. {exchange})"
+                if not formatted_item.get("title_en"):
+                    formatted_item["title_en"] = f"{ticker}. ({issuer_name}. {exchange})"
+                trading_items.append(formatted_item)
     else:
         print("WARNING: No formatted trading files found.")
         
@@ -238,8 +270,20 @@ def main():
             news_cat = item.get("news_category", "").strip()
             if news_cat.upper() == "TCBS":
                 news_cat = "TCX"
+            if news_cat.upper() in ("PCB", "PVCOMBANK", "PVCOM"):
+                news_cat = "PVcomBank"
             # Check if news_cat is a listed ticker
             if news_cat in tickers_dict:
+                # If ticker is already in chunk_items (from txt file), prefer chunk item as source of truth
+                chunk_tickers = {
+                    (it.get("ticker") or "").strip().upper()
+                    for it in chunk_items
+                    if it.get("category") == "corporate"
+                }
+                if news_cat.upper() in chunk_tickers:
+                    print(f"Skipping vin_bank item for {news_cat} as it is present in chunk items (txt file source of truth)")
+                    continue
+
                 ticker_info = tickers_dict[news_cat]
                 co_vn = ticker_info.get("company_vn", "")
                 co_en = ticker_info.get("company_en", "")
@@ -262,8 +306,8 @@ def main():
                     "sector_key": sec_key,
                     "title_vn": title_vn,
                     "title_en": title_en,
-                    "summary_vn": item.get("body_vn", "").strip(),
-                    "summary_en": item.get("body_en", "").strip(),
+                    "summary_vn": item.get("body_vn", "").strip() or item.get("body_en", "").strip(),
+                    "summary_en": item.get("body_en", "").strip() or item.get("body_vn", "").strip(),
                     "source": item.get("source", "vin_bank").strip() or "vin_bank",
                     "url": "",
                     "published": item.get("news_date", date_str)
@@ -278,10 +322,10 @@ def main():
                     
                 epo_items.append({
                     "subtype_key": subtype_key,
-                    "title_vn": item.get("title_vn", "").strip(),
-                    "title_en": item.get("title_en", "").strip(),
-                    "summary_vn": item.get("body_vn", "").strip(),
-                    "summary_en": item.get("body_en", "").strip(),
+                    "title_vn": item.get("title_vn", "").strip() or item.get("title", "").strip(),
+                    "title_en": item.get("title_en", "").strip() or item.get("title", "").strip(),
+                    "summary_vn": item.get("body_vn", "").strip() or item.get("body_en", "").strip(),
+                    "summary_en": item.get("body_en", "").strip() or item.get("body_vn", "").strip(),
                     "source": item.get("source", "vin_bank").strip() or "vin_bank",
                     "url": "",
                     "published": item.get("news_date", date_str)
@@ -305,24 +349,34 @@ def main():
                 item["sector_key"] = "real_estate"
                 
             ticker_info = tickers_dict.get(ticker, {})
-            co_vn = ticker_info.get("company_vn", "") or item.get("company_vn", "")
-            co_en = ticker_info.get("company_en", "") or item.get("company_en", "")
-            exch = ticker_info.get("exchange", "") or item.get("exchange", "")
-            sec_key = ticker_info.get("sector_key", "") or item.get("sector_key", "")
-            
-            # Normalize exchange name spelling
-            if exch.upper() == "UPCOM":
-                exch = "UPCoM"
+            co_vn = item.get("company_vn", "").strip() or ticker_info.get("company_vn", "")
+            co_en = item.get("company_en", "").strip() or ticker_info.get("company_en", "")
+            exch = item.get("exchange", "").strip() or ticker_info.get("exchange", "")
+            sec_key = item.get("sector_key", "").strip() or item.get("sector", "").strip() or ticker_info.get("sector_key", "")
+            sec_map = {
+                "technology": "technologies",
+                "tech": "technologies",
+                "bank": "banking",
+                "financial": "financials",
+                "finance": "financials",
+                "consumer": "consumers",
+                "industrial": "industrials",
+                "material": "materials",
+                "realestate": "real_estate",
+                "real estate": "real_estate",
+                "pharmaceuticals": "pharma",
+                "pharmaceutical": "pharma",
+                "utility": "utilities",
+                "oil and gas": "oil_gas",
+                "oil & gas": "oil_gas",
+                "oilgas": "oil_gas",
+            }
+            sec_key = sec_map.get(sec_key.lower(), sec_key)
+            if sec_key not in SECTOR_TITLES:
+                sec_key = "financials"
                 
-            # Fallback exchange mapping rule for unlisted/private companies
-            if ticker not in tickers_dict or ticker in ("VPL", "Vinpearl") or exch.upper() in ("UNLISTED", "OTC"):
-                exch = "Unlisted"
-                
-            if not sec_key:
-                sec_key = "financials"  # generic fallback
-                
-            title_vn = item.get("title_vn", "").strip()
-            title_en = item.get("title_en", "").strip()
+            title_vn = item.get("title_vn", "").strip() or item.get("title", "").strip() or f"{ticker}. ({co_vn}. {exch})"
+            title_en = item.get("title_en", "").strip() or item.get("title", "").strip() or f"{ticker}. ({co_en}. {exch})"
             
             corporate_items.append({
                 "ticker": ticker,
@@ -342,15 +396,25 @@ def main():
             raw_sub_key = (item.get("subtype_key") or "others").strip()
             if raw_sub_key in ("monetary_market", "industries_sectors"):
                 sub_key = "economies_investments"
-            elif raw_sub_key in SUBTYPE_TITLES:
+            elif raw_sub_key in ("politics_laws", "policy", "law", "politics"):
+                sub_key = "political"
+            elif raw_sub_key in SUBTYPE_TITLES and raw_sub_key != "others":
                 sub_key = raw_sub_key
             else:
-                sub_key = "others"
+                # Reclassify 'others' items into proper categories (political vs economies_investments)
+                t_en = item.get("title_en", "") or item.get("title", "")
+                s_en = item.get("summary_en", "") or item.get("body_en", "")
+                text = (t_en + " " + s_en).lower()
+                pol_kw = ['diplomatic', 'conference', 'civil defense', 'steering committee', 'enforcement agency', 'land database', 'hội nghị', 'phòng thủ dân sự', 'thi hành án']
+                if any(k in text for k in pol_kw):
+                    sub_key = "political"
+                else:
+                    sub_key = "economies_investments"
                 
             epo_items.append({
                 "subtype_key": sub_key,
-                "title_vn": item.get("title_vn", "").strip(),
-                "title_en": item.get("title_en", "").strip(),
+                "title_vn": item.get("title_vn", "").strip() or item.get("title", "").strip(),
+                "title_en": item.get("title_en", "").strip() or item.get("title", "").strip(),
                 "summary_vn": item.get("summary_vn", "").strip(),
                 "summary_en": item.get("summary_en", "").strip(),
                 "source": item.get("source", "").strip(),
@@ -358,7 +422,35 @@ def main():
                 "published": item.get("published", date_str)
             })
             
-    # 7. Group corporate by sector_key
+    # 7. Deduplicate corporate items by ticker (txt file / 1H26 Earnings Release source of truth overrides feed duplicates)
+    corp_dict = {}
+    for item in corporate_items:
+        t = item["ticker"].upper()
+        if t not in corp_dict:
+            corp_dict[t] = item
+        else:
+            if item.get("source") == "1H26 Earnings Release":
+                corp_dict[t] = item
+    corporate_items = list(corp_dict.values())
+
+    # 7b. Cross-report deduplication: filter out items already published in morning report
+    if session == "afternoon":
+        date_file_str = date_str.replace("/", "_")
+        mor_corp_path = BASE_DIR / "reports" / f"mor_{date_file_str}" / "data" / f"mor_{date_file_str}_corporate.json"
+        if mor_corp_path.exists():
+            with open(mor_corp_path, "r", encoding="utf-8") as f:
+                mor_corp_data = json.load(f)
+            mor_tickers = {
+                it.get("ticker", "").strip().upper()
+                for sec in mor_corp_data.get("sectors", [])
+                for it in sec.get("items", [])
+                if it.get("ticker")
+            }
+            before_cnt = len(corporate_items)
+            corporate_items = [it for it in corporate_items if it.get("ticker", "").strip().upper() not in mor_tickers]
+            print(f"Cross-report dedup (morning -> afternoon): Removed {before_cnt - len(corporate_items)} duplicate tickers already published in morning report.")
+
+    # 7c. Group corporate by sector_key
     corp_by_sector = defaultdict(list)
     for idx, item in enumerate(corporate_items):
         sec_key = item["sector_key"]
@@ -402,6 +494,8 @@ def main():
             final_epo_subtypes.append({
                 "subtype": sub_key,
                 "subtype_key": sub_key,
+                "subtype_title_vn": SUBTYPE_TITLES[sub_key]["vn"],
+                "subtype_title_en": SUBTYPE_TITLES[sub_key]["en"],
                 "section_title_vn": SUBTYPE_TITLES[sub_key]["vn"],
                 "section_title_en": SUBTYPE_TITLES[sub_key]["en"],
                 "items": items_list

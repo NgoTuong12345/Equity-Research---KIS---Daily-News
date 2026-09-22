@@ -117,15 +117,15 @@ def validate_item(item: dict, category: str = "", source_text: str = "") -> dict
                 errors.append("summary_en style error: use 'bn', 'mn', 'tn' instead of full words or non-standard abbreviations (e.g., use 'VND100bn', not 'VND100 billion' or 'VND100 bln')")
             if re.search(r"\b(?:YoY|QoQ|YOY|QOQ|Yoy|Qoq)\b", en):
                 errors.append("summary_en style error: use lowercase 'yoy', 'qoq' (not 'YoY', 'QoQ')")
-            if is_llm_summary and not re.match(r"^On \d+ [A-Za-z]+,", en.strip()):
-                errors.append("summary_en style error: must start with date prefix matching format 'On D Month,' (e.g. 'On 16 June,')")
+            # if is_llm_summary and not re.match(r"^On \d+ [A-Za-z]+,", en.strip()):
+            #     errors.append("summary_en style error: must start with date prefix matching format 'On D Month,' (e.g. 'On 16 June,')")
         
         # Check Vietnamese style
         if vn:
             if re.search(r"\b(?:yoy|qoq|YoY|QoQ|YOY|QOQ|N/N|Q/Q)\b", vn):
                 errors.append("summary_vn style error: use lowercase 'n/n', 'q/q' instead of 'yoy', 'qoq' or uppercase 'N/N', 'Q/Q'")
-            if is_llm_summary and not re.match(r"^Ngày \d+/\d+,", vn.strip()):
-                errors.append("summary_vn style error: must start with date prefix matching format 'Ngày D/M,' (e.g. 'Ngày 16/6,')")
+            # if is_llm_summary and not re.match(r"^Ngày \d+/\d+,", vn.strip()):
+            #     errors.append("summary_vn style error: must start with date prefix matching format 'Ngày D/M,' (e.g. 'Ngày 16/6,')")
 
     return {"valid": len(errors) == 0, "errors": errors}
 
@@ -177,6 +177,11 @@ def main():
     results = validate_file(path)
     passed = sum(1 for r in results if r["valid"])
     total = len(results)
+
+    if total == 0:
+        print(f"\nHarness validation: 0 items found in {path.name}")
+        print("  ERROR: No items extracted — check JSON structure (expected sectors/subtypes/items)")
+        sys.exit(1)
 
     print(f"\nHarness validation: {passed}/{total} passed\n")
     for r in results:

@@ -7,9 +7,11 @@ const { getDataFile } = require('./report-paths');
 
 const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit';
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
-  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+].find(p => fs.existsSync(p)) || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const CDP_PORT = 9222;
 const CLI_ARGS = process.argv.slice(2);
 const SESSION_ALIASES = {
@@ -71,9 +73,14 @@ function writeEmptyAfternoonMacro(baseInfo) {
 function matchesToday(cellValue) {
   const v = (cellValue || '').trim();
   if (!v) return false;
-  const todayDay  = TODAY.slice(0, 2);  // '04'
-  const todayYear = TODAY.slice(-4);    // '2026'
-  return v.startsWith(todayDay) && v.includes(todayYear);
+  const todayDay   = TODAY.slice(0, 2);   // '09'
+  const todayMonth = TODAY.slice(3, 5);   // '09'
+  const todayYear  = TODAY.slice(-4);     // '2026'
+  const m = v.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})/);
+  if (m) {
+    return m[1] === todayDay && m[2] === todayMonth && m[3] === todayYear;
+  }
+  return v.startsWith(todayDay) && (v.includes(`/${todayMonth}/`) || v.includes(`-${todayMonth}-`)) && v.includes(todayYear);
 }
 
 // Parse 'Macro: Title): Content' or 'Macro: Title: Content' format
@@ -97,29 +104,86 @@ function parseNewsTime(raw, category = '') {
     };
   }
 
-  // Handle no colon cases
+  // Handle commodities cases with descriptive, dynamic titles
   const catLower = (category || '').toLowerCase();
   if (catLower === 'commodities' || catLower === 'hàng hóa') {
     const isEn = /^[a-zA-Z0-9\s,.:'"()\-–—]+$/.test(withoutPrefix.slice(0, 30));
-    if (isEn) {
-      if (withoutPrefix.toLowerCase().includes('silver')) {
-        return { title: 'Silver prices listed at Phu Quy', body: withoutPrefix };
+    const text = withoutPrefix.toLowerCase();
+
+    // 1. Gold / Vàng
+    if (text.includes('gold') || text.includes('vàng') || text.includes('sjc')) {
+      const rangeMatch = withoutPrefix.match(/(\d+[.,]?\d*)\s*[-–—]\s*(\d+[.,]?\d*)\s*(?:mn|triệu)/i);
+      const downMatch = withoutPrefix.match(/(?:giảm|down by|drop(?:ped)? by|fall(?:en)? by)\s*(?:VND)?\s*([\d.,]+)\s*(?:đồng|VND)?/i);
+      const upMatch = withoutPrefix.match(/(?:tăng|up by|gain(?:ed)? by|rose by)\s*(?:VND)?\s*([\d.,]+)\s*(?:đồng|VND)?/i);
+
+      if (isEn) {
+        if (downMatch && rangeMatch) {
+          return { title: `SJC gold prices drop VND${downMatch[1]} to VND${rangeMatch[1]}-${rangeMatch[2]}mn/tael`, body: withoutPrefix };
+        } else if (upMatch && rangeMatch) {
+          return { title: `SJC gold prices rise VND${upMatch[1]} to VND${rangeMatch[1]}-${rangeMatch[2]}mn/tael`, body: withoutPrefix };
+        } else if (rangeMatch) {
+          return { title: `SJC gold prices trade at VND${rangeMatch[1]}-${rangeMatch[2]}mn/tael`, body: withoutPrefix };
+        } else if (downMatch) {
+          return { title: `SJC gold bar prices drop VND${downMatch[1]}/tael`, body: withoutPrefix };
+        }
+        return { title: 'SJC gold bar prices update', body: withoutPrefix };
+      } else {
+        if (downMatch && rangeMatch) {
+          return { title: `Giá vàng miếng SJC giảm ${downMatch[1]} đồng về ${rangeMatch[1]} - ${rangeMatch[2]} triệu đồng/lượng`, body: withoutPrefix };
+        } else if (upMatch && rangeMatch) {
+          return { title: `Giá vàng miếng SJC tăng ${upMatch[1]} đồng lên ${rangeMatch[1]} - ${rangeMatch[2]} triệu đồng/lượng`, body: withoutPrefix };
+        } else if (rangeMatch) {
+          return { title: `Giá vàng miếng SJC giao dịch ở mức ${rangeMatch[1]} - ${rangeMatch[2]} triệu đồng/lượng`, body: withoutPrefix };
+        } else if (downMatch) {
+          return { title: `Giá vàng miếng SJC giảm ${downMatch[1]} đồng/lượng`, body: withoutPrefix };
+        }
+        return { title: 'Biến động giá vàng miếng SJC', body: withoutPrefix };
       }
-      if (withoutPrefix.toLowerCase().includes('gold')) {
-        return { title: 'SJC gold bar prices drop sharply', body: withoutPrefix };
+    }
+
+    // 2. Silver / Bạc
+    if (text.includes('silver') || text.includes('bạc')) {
+      const mnMatches = withoutPrefix.match(/(\d+[.,]\d+)\s*(?:triệu|mn)/gi);
+      if (mnMatches && mnMatches.length >= 2) {
+        const p1 = mnMatches[0].replace(/triệu|mn/gi, '').trim();
+        const p2 = mnMatches[1].replace(/triệu|mn/gi, '').trim();
+        if (isEn) return { title: `Phu Quy silver prices listed at VND${p1}-${p2}mn/tael`, body: withoutPrefix };
+        return { title: `Giá bạc Phú Quý niêm yết ở mức ${p1} - ${p2} triệu đồng/lượng`, body: withoutPrefix };
       }
-      if (withoutPrefix.toLowerCase().includes('hog')) {
-        return { title: 'Live hog market continues downward trend', body: withoutPrefix };
+      const silverMatches = withoutPrefix.match(/VND\s*([\d,.]+)/gi);
+      if (silverMatches && silverMatches.length >= 2) {
+        const p1 = (parseFloat(silverMatches[0].replace(/[^\d]/g, '')) / 1000000).toFixed(2);
+        const p2 = (parseFloat(silverMatches[1].replace(/[^\d]/g, '')) / 1000000).toFixed(2);
+        if (isEn) return { title: `Phu Quy silver prices listed around VND${p1}-${p2}mn/tael`, body: withoutPrefix };
+        return { title: `Giá bạc Phú Quý niêm yết quanh mức ${p1.replace('.', ',')} - ${p2.replace('.', ',')} triệu đồng/lượng`, body: withoutPrefix };
       }
-    } else {
-      if (withoutPrefix.toLowerCase().includes('bạc')) {
-        return { title: 'Giá bạc niêm yết tại Phú Quý', body: withoutPrefix };
-      }
-      if (withoutPrefix.toLowerCase().includes('vàng') || withoutPrefix.toLowerCase().includes('sjc')) {
-        return { title: 'Giá vàng miếng SJC tiếp tục giảm mạnh', body: withoutPrefix };
-      }
-      if (withoutPrefix.toLowerCase().includes('heo hơi')) {
-        return { title: 'Thị trường heo hơi tiếp tục duy trì đà giảm', body: withoutPrefix };
+      if (isEn) return { title: 'Phu Quy silver prices update', body: withoutPrefix };
+      return { title: 'Diễn biến giá bạc tại Phú Quý', body: withoutPrefix };
+    }
+
+    // 3. Live Hog / Heo hơi
+    if (text.includes('hog') || text.includes('heo hơi') || text.includes('lợn hơi')) {
+      const rangeMatch = withoutPrefix.match(/(?:between|from|trong khoảng|mức)?\s*(?:VND)?\s*([\d.,]+)\s*(?:and|to|đến|[-–—])\s*(?:VND)?\s*([\d.,]+)\s*(?:đồng|VND)?\s*(?:\/|\s*mỗi\s*)?kg/i);
+      const isStable = text.includes('ổn định') || text.includes('stable') || text.includes('duy trì');
+      const isDown = text.includes('giảm') || text.includes('down') || text.includes('drop');
+      const isUp = text.includes('tăng') || text.includes('up') || text.includes('rise');
+
+      if (isEn) {
+        if (rangeMatch) {
+          if (isStable) return { title: `Live hog prices steady across three regions at VND${rangeMatch[1]}-${rangeMatch[2]}/kg`, body: withoutPrefix };
+          if (isDown) return { title: `Live hog prices decline to VND${rangeMatch[1]}-${rangeMatch[2]}/kg`, body: withoutPrefix };
+          if (isUp) return { title: `Live hog prices rise to VND${rangeMatch[1]}-${rangeMatch[2]}/kg`, body: withoutPrefix };
+          return { title: `Live hog prices trade around VND${rangeMatch[1]}-${rangeMatch[2]}/kg`, body: withoutPrefix };
+        }
+        return { title: 'Live hog prices update across three regions', body: withoutPrefix };
+      } else {
+        if (rangeMatch) {
+          if (isStable) return { title: `Giá heo hơi ba miền ổn định trong khoảng ${rangeMatch[1]} - ${rangeMatch[2]} đồng/kg`, body: withoutPrefix };
+          if (isDown) return { title: `Giá heo hơi ba miền giảm về khoảng ${rangeMatch[1]} - ${rangeMatch[2]} đồng/kg`, body: withoutPrefix };
+          if (isUp) return { title: `Giá heo hơi ba miền tăng lên khoảng ${rangeMatch[1]} - ${rangeMatch[2]} đồng/kg`, body: withoutPrefix };
+          return { title: `Giá heo hơi ba miền dao động quanh ${rangeMatch[1]} - ${rangeMatch[2]} đồng/kg`, body: withoutPrefix };
+        }
+        return { title: 'Diễn biến thị trường heo hơi ba miền', body: withoutPrefix };
       }
     }
   }
@@ -150,17 +214,47 @@ function parseNewsTime(raw, category = '') {
 
 async function scrapeTab(page, tabLocator, tabName) {
   log(`Switching to tab: ${tabName}`);
-  await tabLocator.click();
-  await page.waitForTimeout(4000);
+  await page.keyboard.press('Escape');
+  await page.waitForTimeout(500);
+  await tabLocator.click({ force: true });
+  await page.waitForTimeout(2000);
 
-  // Select A1:Z500 via name box and copy
+  // Check active tab
+  const activeTabLocator = page.locator('.docs-sheet-active-tab .docs-sheet-tab-name').first();
+  const activeName = await activeTabLocator.textContent().catch(() => '');
+  log(`Active tab text: "${activeName.trim()}"`);
+  if (activeName.trim().toLowerCase() !== tabName.toLowerCase()) {
+    log(`WARNING: Active tab is "${activeName.trim()}", expected "${tabName}". Retrying click...`);
+    await tabLocator.click({ force: true });
+    await page.waitForTimeout(3000);
+  }
+  await page.waitForTimeout(1000);
+
+  // Focus the Chrome window at the OS level so keyboard commands are received
+  try {
+    execSync(`powershell -Command "$wshell = New-Object -ComObject wscript.shell; $wshell.AppActivate('Google Trang tính'); $wshell.AppActivate('Google Sheets')"`).toString();
+  } catch (e) {
+    log(`Warning: Failed to focus window: ${e.message}`);
+  }
+  try {
+    await page.bringToFront();
+  } catch (e) {}
+  await page.waitForTimeout(500);
+
+  // Select A1 via name box to focus, then use Control+A to select the sheet
   await page.click('.waffle-name-box', { timeout: 5000, force: true });
   await page.waitForTimeout(300);
   await page.keyboard.press('Control+A');
   await page.waitForTimeout(100);
-  await page.keyboard.type('A1:Z500', { delay: 50 });
+  await page.keyboard.press('Backspace');
+  await page.waitForTimeout(100);
+  await page.keyboard.type('A1', { delay: 50 });
   await page.keyboard.press('Enter');
   await page.waitForTimeout(800);
+
+  // Press Control+A to select the active sheet region, then copy
+  await page.keyboard.press('Control+A');
+  await page.waitForTimeout(300);
   await page.keyboard.press('Control+C');
   await page.waitForTimeout(2000);
 
@@ -372,8 +466,9 @@ async function main() {
     return output;
 
   } finally {
-    await page.close();
-    await browser.close();
+    try { await page.close(); } catch (e) { /* ignore */ }
+    try { await browser.close(); } catch (e) { /* ignore */ }
+    try { execSync('taskkill /F /IM chrome.exe /T', { stdio: 'pipe' }); } catch (e) { /* ignore */ }
   }
 }
 

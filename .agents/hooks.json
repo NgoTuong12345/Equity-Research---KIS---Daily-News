@@ -1,0 +1,23 @@
+{
+  "opus-orchestrator-subagents": {
+    "PreToolUse": [
+      {
+        "matcher": "invoke_subagent",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python hooks/orchestrator_subagent_hook.py --pre-tool",
+            "timeout": 15
+          }
+        ]
+      }
+    ],
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "python hooks/orchestrator_subagent_hook.py --pre-invocation",
+        "timeout": 15
+      }
+    ]
+  }
+}

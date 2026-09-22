@@ -28,7 +28,7 @@ DEFAULT_HTML = [
     BASE_DIR / "reports" / "after_04_06_2026" / "exports" / "html" / "after_04_06_2026_report_vn.html",
     BASE_DIR / "reports" / "after_04_06_2026" / "exports" / "html" / "after_04_06_2026_report_en.html",
 ]
-PLAYWRIGHT_REQUIRE = BASE_DIR / "google-sheets-uploader" / "node_modules" / "playwright"
+PLAYWRIGHT_REQUIRE = BASE_DIR / "phases" / "02_curate" / "node_modules" / "playwright"
 
 
 @dataclass

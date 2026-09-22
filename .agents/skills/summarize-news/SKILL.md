@@ -1,3 +1,8 @@
+---
+name: summarize-news
+description: Fetch article text, summarize news in KIS style, validate outputs via harness, and auto-chain to dedup-news.
+---
+
 # Summarize News Articles - KIS Style
 
 Use this skill when the user asks to summarize a selected batch of Vietnamese financial news.
@@ -6,7 +11,7 @@ Use this skill when the user asks to summarize a selected batch of Vietnamese fi
 
 1. Read `reports/{base}/source/{base}.md` — this file is produced by `/curate-news` (`node phases\02_curate\generate-report.js {SESSION}`). If it does not exist, stop and invoke `/curate-news` first.
 2. **Morning sessions only — Read Macro + vin_bank tabs from Google Sheets:**
-   ```
+   ```powershell
    node phases\02_curate\read-macro-sheet.js DD/MM/YYYY
    ```
    Replace `DD/MM/YYYY` with today's date (e.g. `16/06/2026`).
@@ -142,7 +147,7 @@ The exact category keys, section titles, subtype names, sector names, required f
 
 After writing each JSON file to `reports/{base}/data/`, run:
 
-```
+```powershell
 phases\01_scrape\venv\Scripts\python.exe phases\03_summarize\harness.py reports\{base}\data\{filename}.json
 ```
 

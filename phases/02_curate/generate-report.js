@@ -9,9 +9,11 @@ const { getSourceFile } = require('./report-paths');
 const SESSION = process.argv[2] || 'morning'; // 'morning' or 'afternoon'
 const SHEETS_URL = 'https://docs.google.com/spreadsheets/d/1PPjukC3surCnTBPAjfotk_gSckeWQY24UJCWwFuEVtw/edit';
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
-  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+].find(p => fs.existsSync(p)) || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const LOG_FILE = path.join(__dirname, 'logs', 'upload.log');
 
 function log(msg) {
@@ -46,22 +48,19 @@ function readClipboard() {
 // Robust TSV parser that handles Google Sheets format
 // Google Sheets uses \t between cells and \r\n between rows
 // Cells containing \n, \t, or " are enclosed in double-quotes (RFC 4180 style)
+// Robust TSV parser using Python's standard csv.reader module
 function parseTsv(text) {
-  const lines = text.split(/\r?\n/);
-  const rows = [];
-  for (const line of lines) {
-    if (!line.trim()) continue;
-    const cells = line.split('\t').map(cell => {
-      let cleaned = cell.trim();
-      if (cleaned.startsWith('"') && cleaned.endsWith('"')) {
-        cleaned = cleaned.slice(1, -1);
-      }
-      cleaned = cleaned.replace(/""/g, '"');
-      return cleaned;
-    });
-    rows.push(cells);
+  const tmpFile = path.join(__dirname, 'logs', 'clipboard_dump.tsv');
+  fs.writeFileSync(tmpFile, text, 'utf8');
+  const pyExe = path.join(__dirname, '..', '01_scrape', 'venv', 'Scripts', 'python.exe');
+  const pyCmd = `"${pyExe}" -c "import csv, json, sys; sys.stdout.reconfigure(encoding='utf-8'); print(json.dumps(list(csv.reader(open(sys.argv[1], 'r', encoding='utf-8'), delimiter='\\t'))))" "${tmpFile}"`;
+  try {
+    const jsonStr = execSync(pyCmd, { encoding: 'utf8', maxBuffer: 20 * 1024 * 1024 });
+    return JSON.parse(jsonStr);
+  } catch (err) {
+    log(`Warning: Python TSV parser failed, falling back to line split: ${err.message}`);
+    return text.split(/\r?\n/).map(line => line.split('\t').map(c => c.trim().replace(/^"(.*)"$/, '$1')));
   }
-  return rows;
 }
 
 function buildMarkdown(sheetName, rows) {
@@ -80,14 +79,9 @@ function buildMarkdown(sheetName, rows) {
   //          I=corp_url, J=poli_url
   const dataRows = rows.slice(1); // skip header
 
-  const corpRows    = dataRows.filter(r => (r[8] || '').trim()); // col I non-empty
-  const poliRows    = dataRows.filter(r => (r[9] || '').trim()); // col J non-empty
-  // Rows marked TAKE in col E or F but where the formula produced no URL
-  const takenRows   = dataRows.filter(r =>
-    ((r[4] || '').trim().toUpperCase() === 'TAKE' ||
-     (r[5] || '').trim().toUpperCase() === 'TAKE') &&
-    !(r[8] || '').trim() && !(r[9] || '').trim()
-  );
+  const corpRows    = dataRows.filter(r => (r[4] || '').trim().toUpperCase() === 'TAKE');
+  const poliRows    = dataRows.filter(r => (r[5] || '').trim().toUpperCase() === 'TAKE');
+  const takenRows   = []; // since we no longer drop any TAKEs, this is empty
 
   const lines = [
     `# News Report — ${sheetName}`,
@@ -103,7 +97,8 @@ function buildMarkdown(sheetName, rows) {
   } else {
     for (const r of corpRows) {
       const title = (r[6] || '').trim();  // col G
-      const url   = (r[8] || '').trim();  // col I
+      let url     = (r[8] || '').trim();  // col I
+      if (!url.startsWith('http')) url = (r[7] || '').trim(); // fall back to col H
       const src   = (r[2] || '').trim();  // col C
       const cat   = (r[3] || '').trim();  // col D
       lines.push(`### ${title}`);
@@ -121,7 +116,8 @@ function buildMarkdown(sheetName, rows) {
   } else {
     for (const r of poliRows) {
       const title = (r[6] || '').trim();  // col G
-      const url   = (r[9] || '').trim();  // col J
+      let url     = (r[9] || '').trim();  // col J
+      if (!url.startsWith('http')) url = (r[7] || '').trim(); // fall back to col H
       const src   = (r[2] || '').trim();  // col C
       const cat   = (r[3] || '').trim();  // col D
       lines.push(`### ${title}`);
@@ -226,28 +222,67 @@ async function main() {
 
     log(`Activating tab "${match}"...`);
     await page.locator('.docs-sheet-tab-name', { hasText: match }).first().click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
-    // Find last row with data by pressing Ctrl+End
-    await navigateToCell(page, 'A1');
-    await page.keyboard.press('Control+End');
+    // Focus Chrome window at OS level
+    try {
+      execSync(`powershell -Command "$wshell = New-Object -ComObject wscript.shell; $wshell.AppActivate('Google Trang tính'); $wshell.AppActivate('Google Sheets')"`).toString();
+    } catch (e) {
+      log(`Warning: Failed to focus window: ${e.message}`);
+    }
+    try { await page.bringToFront(); } catch (e) {}
     await page.waitForTimeout(500);
 
-    // Read the current cell address from the name box to know last row
-    const lastCell = await page.inputValue('.waffle-name-box').catch(() => 'J100');
-    const lastRowMatch = lastCell.match(/(\d+)$/);
-    const lastRow = lastRowMatch ? parseInt(lastRowMatch[1]) : 100;
-    log(`Last row detected: ${lastRow}`);
+    // Clear clipboard before copy
+    try { execSync('powershell -Command "Set-Clipboard -Value $null"', { stdio: 'pipe' }); } catch (e) {}
 
-    // Select A1:J{lastRow} and copy to clipboard
-    await navigateToCell(page, `A1:J${lastRow}`);
-    await page.keyboard.press('Control+C');
-    await page.waitForTimeout(1000);
+    // Select A1 via name box to focus sheet canvas
+    await page.click('.waffle-name-box', { timeout: 5000, force: true });
+    await page.waitForTimeout(300);
+    await page.keyboard.press('Control+A');
+    await page.waitForTimeout(100);
+    await page.keyboard.press('Backspace');
+    await page.waitForTimeout(100);
+    await page.keyboard.type('A1', { delay: 50 });
+    await page.keyboard.press('Enter');
+    await page.waitForTimeout(800);
 
-    // Read clipboard content
-    log('Reading clipboard...');
-    const clipboardText = readClipboard();
+    let clipboardText = '';
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      log(`Copy attempt ${attempt}...`);
+      // Focus window again before keyboard copy
+      try {
+        execSync(`powershell -Command "$wshell = New-Object -ComObject wscript.shell; $wshell.AppActivate('Google Trang tính'); $wshell.AppActivate('Google Sheets')"`).toString();
+      } catch (e) {}
+      try { await page.bringToFront(); } catch (e) {}
+
+      // Press Control+A to select sheet content, then Control+C to copy
+      await page.keyboard.press('Control+A');
+      await page.waitForTimeout(500);
+      await page.keyboard.press('Control+C');
+      await page.waitForTimeout(2000);
+
+      clipboardText = readClipboard();
+      log(`Clipboard bytes: ${clipboardText.length}`);
+      if (clipboardText.length > 500 && clipboardText.includes('news_')) {
+        break;
+      }
+      log(`Attempt ${attempt} insufficient clipboard content. Retrying...`);
+      await page.waitForTimeout(1000);
+    }
+
     fs.writeFileSync(path.join(__dirname, 'logs', 'clipboard_dump.tsv'), clipboardText, 'utf8');
+    
+    // Save screenshot for debugging
+    try {
+      const screenshotDir = path.join(__dirname, '..', '..', 'reports', sheetName, 'testing');
+      fs.mkdirSync(screenshotDir, { recursive: true });
+      await page.screenshot({ path: path.join(screenshotDir, 'sheet_page.png') });
+      log(`Screenshot saved to ${path.join(screenshotDir, 'sheet_page.png')}`);
+    } catch (screenshotErr) {
+      log(`Warning: Failed to take screenshot: ${screenshotErr.message}`);
+    }
+
     const rows = parseTsv(clipboardText);
     log(`Parsed ${rows.length - 1} data rows`);
 

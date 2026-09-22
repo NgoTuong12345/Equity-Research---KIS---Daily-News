@@ -46,9 +46,12 @@ OUTDIR = Path(__file__).resolve().parent
 def download_pdf(url: str, dest: Path) -> bool:
     """Download PDF from staticfile.hsx.vn and verify signature."""
     try:
-        resp = requests.get(url, headers=HEADERS, timeout=30)
+        import urllib.parse
+        parsed = urllib.parse.urlsplit(url)
+        encoded_url = urllib.parse.urlunsplit((parsed.scheme, parsed.netloc, urllib.parse.quote(parsed.path), parsed.query, parsed.fragment))
+        resp = requests.get(encoded_url, headers=HEADERS, timeout=30)
         if resp.status_code != 200:
-            log.error(f"HTTP {resp.status_code} downloading {url}")
+            log.error(f"HTTP {resp.status_code} downloading {encoded_url}")
             return False
         if b"%PDF" not in resp.content[:1024]:
             log.error(f"Not a valid PDF: {url}")
@@ -87,29 +90,41 @@ def render_pdf_to_images(pdf_path: Path, output_dir: Path, scale: float = 2.0) -
 
 
 def extract_text_if_available(pdf_path: Path) -> str:
-    """Try to extract text from PDF. Returns text or empty string."""
-    import pdfplumber
-
+    """Try to extract text from PDF using pdfplumber and fitz fallback."""
+    text_plumber = ""
     try:
+        import pdfplumber
         pdf = pdfplumber.open(str(pdf_path))
-        texts = []
-        for page in pdf.pages:
-            text = page.extract_text()
-            if text:
-                texts.append(text)
+        texts = [p.extract_text() for p in pdf.pages if p.extract_text()]
         pdf.close()
-        return "\n\n".join(texts)
+        text_plumber = "\n\n".join(texts).strip()
     except Exception:
-        return ""
+        pass
+
+    text_fitz = ""
+    try:
+        import fitz
+        doc = fitz.open(str(pdf_path))
+        texts = [p.get_text() for p in doc if p.get_text()]
+        text_fitz = "\n\n".join(texts).strip()
+    except Exception:
+        pass
+
+    return text_plumber if len(text_plumber) >= len(text_fitz) else text_fitz
+
+
+import re
 
 
 def find_latest_json() -> Optional[Path]:
-    """Find the latest hsx_insider_trading_*.json (excluding extracted/formatted)."""
-    matches = [
-        p for p in sorted(glob.glob(str(OUTDIR / "hsx_insider_trading_*.json")))
-        if not p.endswith("_extracted.json") and not p.endswith("_formatted.json")
-    ]
-    return Path(matches[-1]) if matches else None
+    """Find the latest hsx_insider_trading_*.json matching YYYYMMDD_HHMM.json exactly."""
+    pattern = re.compile(r"^hsx_insider_trading_\d{8}_\d{4}\.json$")
+    matches = []
+    for p in OUTDIR.glob("hsx_insider_trading_*.json"):
+        if pattern.match(p.name):
+            matches.append(p)
+    matches.sort(key=lambda x: x.name)
+    return matches[-1] if matches else None
 
 
 def run(json_path: Optional[Path] = None, dry_run: bool = False, scale: float = 2.0):

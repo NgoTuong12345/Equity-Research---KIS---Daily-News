@@ -17,6 +17,13 @@
   },
   "item_count": 3267,
   "tickers": {
+    "ARGB": {
+      "company_en": "Agribank",
+      "company_vn": "Ngân hàng Nông nghiệp và Phát triển Nông thôn Việt Nam",
+      "sector_icb": "Banks",
+      "sector_key": "banking",
+      "exchange": "OTC"
+    },
     "AAA": {
       "company_en": "An Phat Bioplastics",
       "company_vn": "An Phát Bioplastics",
@@ -2874,11 +2881,11 @@
       "exchange": "HSX"
     },
     "VSC": {
-      "company_en": "Viet Securities",
-      "company_vn": "VICONSHIP",
-      "sector_icb": "Financials",
-      "sector_key": "financials",
-      "exchange": "OTC"
+      "company_en": "Vietnam Container Shipping",
+      "company_vn": "Container Việt Nam",
+      "sector_icb": "Industrials",
+      "sector_key": "industrials",
+      "exchange": "HSX"
     },
     "VSH": {
       "company_en": "Vinh Son - Song Hinh Hydropower",
@@ -16822,7 +16829,7 @@
       "company_vn": "Ngân hàng Bản Việt - BVBank",
       "sector_icb": "Banks",
       "sector_key": "banking",
-      "exchange": "UPCOM"
+      "exchange": "HSX"
     },
     "BVG": {
       "company_en": "BVG Group",
@@ -22720,10 +22727,10 @@
     },
     "DMX": {
       "company_en": "Dien May Xanh Investment JSC",
-      "company_vn": "#N/A",
+      "company_vn": "Đầu tư Điện Máy Xanh",
       "sector_icb": "Consumer Services",
       "sector_key": "consumers",
-      "exchange": "Unlisted"
+      "exchange": "HSX"
     },
     "HPA": {
       "company_en": "Hoa Phat Agriculture Development Joint Stock Company",
@@ -22886,5 +22893,26 @@
       "sector_key": "oil_gas",
       "exchange": ""
     }
+  },
+  "SMC": {
+    "company_en": "SMC Trading Investment",
+    "company_vn": "Đầu tư Thương mại SMC",
+    "sector_icb": "Basic Materials",
+    "sector_key": "materials",
+    "exchange": "HSX"
+  },
+  "VNS": {
+    "company_en": "Anh Duong Vietnam",
+    "company_vn": "Ánh Dương Việt Nam",
+    "sector_icb": "Industrials",
+    "sector_key": "industrials",
+    "exchange": "HSX"
+  },
+  "SHBVN": {
+    "company_en": "Shinhan Bank Vietnam",
+    "company_vn": "Shinhan Bank Việt Nam",
+    "sector_icb": "Banks",
+    "sector_key": "banking",
+    "exchange": "Unlisted"
   }
 }

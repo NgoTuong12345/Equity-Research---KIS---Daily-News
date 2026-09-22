@@ -13,7 +13,10 @@ def convert_html_to_pdf(html_path: Path, pdf_path: Path):
     print(f"Loading {html_path.name} in Playwright...")
     with sync_playwright() as p:
         # Launch headless browser
-        browser = p.chromium.launch(headless=True)
+        try:
+            browser = p.chromium.launch(channel="msedge", headless=True)
+        except Exception:
+            browser = p.chromium.launch(headless=True)
         page = browser.new_page()
         
         # Open local HTML file using absolute file URL

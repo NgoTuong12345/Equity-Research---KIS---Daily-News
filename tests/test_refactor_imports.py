@@ -74,8 +74,11 @@ class Step6PhasesTests(unittest.TestCase):
     def test_combine_chunks_in_phase_03(self):
         self.assertTrue((ROOT / 'phases' / '03_summarize' / 'combine_chunks.py').is_file())
 
-    def test_deduplicate_in_phase_03(self):
-        self.assertTrue((ROOT / 'phases' / '03_summarize' / 'deduplicate_reports.py').is_file())
+    def test_harness_in_phase_03(self):
+        self.assertTrue((ROOT / 'phases' / '03_summarize' / 'harness.py').is_file())
+
+    def test_deduplicate_archived(self):
+        self.assertTrue((ROOT / 'archive' / 'deprecated_dedup' / 'deduplicate_reports.py').is_file())
 
     def test_fetch_full_articles_in_phase_03(self):
         self.assertTrue((ROOT / 'phases' / '03_summarize' / 'fetch_full_articles.py').is_file())

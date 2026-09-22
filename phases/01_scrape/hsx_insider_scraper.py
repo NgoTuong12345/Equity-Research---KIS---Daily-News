@@ -35,11 +35,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# ── Config ────────────────────────────────────────────────────────────────────
+from pathlib import Path
+
 BASE_API = "https://api.hsx.vn"
 HSX_ARTICLE_BASE = "https://www.hsx.vn/vi/tin-tuc/tin-to-chuc-niem-yet"
 PAGE_SIZE = 100
-OUTDIR = "./"
+OUTDIR = Path(__file__).resolve().parent / ""
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
@@ -256,9 +257,8 @@ def run(hours: int = 24, scrape_pdfs: bool = True) -> str:
 
     vn_now = _vn_now()
     filename = f"hsx_insider_trading_{vn_now.strftime('%Y%m%d_%H%M')}.json"
-    out_path = OUTDIR + filename
-    with open(out_path, "w", encoding="utf-8") as f:
-        json.dump(records, f, ensure_ascii=False, indent=2)
+    out_path = OUTDIR / filename
+    out_path.write_text(json.dumps(records, ensure_ascii=False, indent=2), encoding="utf-8")
 
     logger.info(f"Saved {len(records)} records to {out_path}")
     return out_path

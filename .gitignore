@@ -49,10 +49,15 @@ Thumbs.db
 
 # Local scratch files
 scratch/
+tmp/
 articles_summary.txt
 google_2fa_screenshot.png
 scratch_classified.json
 scratch_parsed.json
 urls_to_summarize.tsv
 tickers_finnpro.xlsx
+*.xlsx
+~$*.xlsx
+phases/01_scrape/pdf_text_*.txt
+docs/fiinprox-schema-reference/declared/
 

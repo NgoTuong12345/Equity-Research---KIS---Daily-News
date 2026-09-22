@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-generate_html_report.py — Vietnam Financial News Bulletin HTML generator.
+generate_html_report_standard.py — Vietnam Financial News Bulletin HTML generator (Production Standard).
 
 Reads 4 JSON category files and produces TWO branded, print-ready A4 HTML
 reports: one Vietnamese (`*_report_vn.html`) and one English (`*_report_en.html`).
@@ -9,12 +9,14 @@ Layout rules:
   - A4 fixed canvas, white background on every page.
   - Max 4 news items per content page (2 columns x 2 rows).
   - Each content page carries a footer with the company logo.
-  - Title + body use Arial at 20px.
+  - Title + body use Arial at 15px.
+  - Cover header and session titles use Segoe UI Black (font-weight: 900) for full diacritic support.
+  - Standardized Outro back-cover formatting.
   - No source attribution, no per-item date shown.
 
 Usage:
-    python scripts/generate_html_report.py after_04_06_2026
-    python scripts/generate_html_report.py          # auto-detect latest
+    python phases/04_publish/generate_html_report_standard.py after_20_08_2026
+    python phases/04_publish/generate_html_report_standard.py          # auto-detect latest
 """
 import html as html_mod
 import json
@@ -26,6 +28,7 @@ sys.path.insert(0, str(BASE_DIR / "core_tools" / "paths"))
 sys.path.insert(0, str(BASE_DIR / "llm_brain" / "prompts_and_rules"))
 from report_paths import export_file, find_data_file, find_latest_base
 from news_title_rules import normalized_item_title, ticker_company_exchange_title
+from coversheet import get_coversheet_config
 
 ASSET_ROOT = "../../../../core_tools/templates"
 IMG_BASE = f"{ASSET_ROOT}/image_library"
@@ -59,12 +62,16 @@ SECTION_IMAGE: dict[str, str] = {
 
 SESSION_CONFIG: dict[str, dict] = {
     "mor":   {
-        "label_en": "MARKET ESPRESSO", "label_vn": "CAFE BUỔI SÁNG",
+        "header_en": "Morning News", "header_vn": "Bản tin buổi sáng",
+        "session_title_en": "Market Espresso", "session_title_vn": "Cafe Chứng Khoán",
+        "label_en": "Morning News", "label_vn": "Bản tin buổi sáng",
         "cover_bg": "background/mor_intro_background.jpg",
         "outro_bg": "background/mor_outro_background.jpg",
     },
     "after": {
-        "label_en": "THE POST-MARKET TEA", "label_vn": "TRÀ CHIỀU CHỨNG KHOÁN",
+        "header_en": "Afternoon News", "header_vn": "Bản tin buổi chiều",
+        "session_title_en": "THE POST-MARKET TEA", "session_title_vn": "TRÀ CHIỀU CHỨNG KHOÁN",
+        "label_en": "Afternoon News", "label_vn": "Bản tin buổi chiều",
         "cover_bg": "background/after_intro_background.jpg",
         "outro_bg": "background/after_outro_background.jpg",
     },
@@ -80,12 +87,26 @@ MONTHS_EN = ["January", "February", "March", "April", "May", "June",
              "July", "August", "September", "October", "November", "December"]
 
 UI = {
-    "vn": {"toc": "Trong báo cáo này", "cont": "(tiếp theo)", "thanks": "Trân Trọng Cảm Ơn",
-           "tagline": "Trung tâm Phân Tích - Bản Tin Tổng Hợp",
-           "cover_note": "Bản tin này được thực hiện bởi Bộ phận Phân tích và Nghiên cứu của Công ty Cổ phần Chứng khoán KIS Việt Nam (\"KIS\"), với sự hỗ trợ của các công cụ trí tuệ nhân tạo (AI) trong việc tổng hợp, phân tích và biên soạn nội dung. KIS không đưa ra bất kỳ khuyến nghị đầu tư, tuyên bố hay bảo đảm nào, dù rõ ràng hay ngụ ý, về tính chính xác, công bằng, đầy đủ hoặc kịp thời của các thông tin được cung cấp ở trên. Người đọc được khuyến nghị nên độc lập xác minh và đánh giá thông tin trước khi dựa vào hoặc sử dụng."},
-    "en": {"toc": "In this report", "cont": "(cont.)", "thanks": "Thank You",
-           "tagline": "Research Division - Comprehensive Bulletin",
-           "cover_note": "This bulletin is prepared by the Research Department of KIS Vietnam Securities Corporation (\"KIS\"), with the assistance of artificial intelligence (AI) tools in synthesizing, analyzing, and compiling content. KIS makes no investment recommendation, representation, or warranty, whether express or implied, regarding the accuracy, fairness, completeness, or timeliness of the information provided above. Readers are advised to independently verify and evaluate the information before relying upon or using it."},
+    "vn": {
+        "toc": "Trong báo cáo này",
+        "cont": "(tiếp theo)",
+        "thanks": "Trân Trọng Cảm Ơn",
+        "tagline": "Trung tâm Phân Tích - Bản Tin Tổng Hợp",
+        "cover_note": "Bản tin này được thực hiện bởi Bộ phận Phân tích và Nghiên cứu của Công ty Cổ phần Chứng khoán KIS Việt Nam (\"KIS\"), với sự hỗ trợ của các công cụ trí tuệ nhân tạo (AI) trong việc tổng hợp, phân tích và biên soạn nội dung. KIS không đưa ra bất kỳ khuyến nghị đầu tư, tuyên bố hay bảo đảm nào, dù rõ ràng hay ngụ ý, về tính chính xác, công bằng, đầy đủ hoặc kịp thời của các thông tin được cung cấp ở trên. Người đọc được khuyến nghị nên độc lập xác minh và đánh giá thông tin trước khi dựa vào hoặc sử dụng.",
+        "outro_company": "CTCP CHỨNG KHOÁN KIS VIỆT NAM",
+        "outro_thanks": "TRÂN TRỌNG CẢM ƠN",
+        "outro_copy": "Bản quyền © 2026 thuộc về CTCP Chứng khoán KIS Việt Nam.<br>Bảo lưu mọi quyền.",
+    },
+    "en": {
+        "toc": "In this report",
+        "cont": "(cont.)",
+        "thanks": "Thank You",
+        "tagline": "Research Division - Comprehensive Bulletin",
+        "cover_note": "This bulletin is prepared by the Research Department of KIS Vietnam Securities Corporation (\"KIS\"), with the assistance of artificial intelligence (AI) tools in synthesizing, analyzing, and compiling content. KIS makes no investment recommendation, representation, or warranty, whether express or implied, regarding the accuracy, fairness, completeness, or timeliness of the information provided above. Readers are advised to independently verify and evaluate the information before relying upon or using it.",
+        "outro_company": "KIS VIETNAM SECURITIES CORPORATION",
+        "outro_thanks": "THANK YOU",
+        "outro_copy": "Copyright © 2026 by KIS Vietnam Securities Corporation.<br>All rights reserved.",
+    },
 }
 
 
@@ -245,34 +266,43 @@ def toc_lines(sections: list[dict], lang: str) -> str:
 # ---------------------------------------------------------------------------
 
 def generate(report_base: str, lang: str) -> str:
-    session = "after" if "after" in report_base else "mor"
-    cfg     = SESSION_CONFIG[session]
+    session = "afternoon" if "after" in report_base else "morning"
+    cfg_cover = get_coversheet_config(session, lang, report_base)
+    session_key = "after" if "after" in report_base else "mor"
+    cfg     = SESSION_CONFIG[session_key]
     date_en = parse_date(report_base)
-    date_dots = parse_date_dots(report_base)
+    date_dots = cfg_cover["date_dots"]
     sections = collect_sections(report_base)
     ui = UI[lang]
 
-    cover_bg = img_url(cfg["cover_bg"])
+    cover_bg = img_url(cfg_cover["bg_image_rel"])
     outro_bg = img_url(cfg["outro_bg"])
-    label = cfg["label_vn"] if lang == "vn" else cfg["label_en"]
+    cover_header = cfg_cover["top_title"]
+    session_title = cfg_cover["bottom_title"]
+    tagline = cfg_cover["subtitle"]
+    cover_note = cfg_cover["disclaimer"]
     title = f"KIS Vietnam — {date_en} {cfg['label_en']} ({lang.upper()})"
 
     doc = _HTML_TEMPLATE
     for ph, val in [
-        ("__LANG__",     lang),
-        ("__TITLE__",    title),
-        ("__DATE_EN__",  date_en),
-        ("__DATE_DOTS__", date_dots),
-        ("__SESSION__",  label),
-        ("__COVER_BG__", cover_bg),
-        ("__OUTRO_BG__", outro_bg),
-        ("__LOGO__",     LOGO_PATH),
-        ("__TOC_LABEL__", ui["toc"]),
-        ("__TOC__",      toc_lines(sections, lang)),
-        ("__THANKS__",   ui["thanks"]),
-        ("__TAGLINE__",  ui["tagline"]),
-        ("__COVER_NOTE__", ui["cover_note"]),
-        ("__BODY__",     render_pages(sections, lang)),
+        ("__LANG__",          lang),
+        ("__TITLE__",         title),
+        ("__DATE_EN__",       date_en),
+        ("__DATE_DOTS__",     date_dots),
+        ("__COVER_HEADER__",  cover_header),
+        ("__SESSION__",       session_title),
+        ("__COVER_BG__",      cover_bg),
+        ("__OUTRO_BG__",      outro_bg),
+        ("__LOGO__",          LOGO_PATH),
+        ("__TOC_LABEL__",     ui["toc"]),
+        ("__TOC__",           toc_lines(sections, lang)),
+        ("__THANKS__",        ui["thanks"]),
+        ("__TAGLINE__",       tagline),
+        ("__COVER_NOTE__",    cover_note),
+        ("__OUTRO_COMPANY__", ui["outro_company"]),
+        ("__OUTRO_THANKS__",  ui["outro_thanks"]),
+        ("__OUTRO_COPY__",    ui["outro_copy"]),
+        ("__BODY__",          render_pages(sections, lang)),
     ]:
         doc = doc.replace(ph, val)
     return doc
@@ -309,13 +339,13 @@ body{font-family:Arial,Helvetica,sans-serif;background:#d8d8d8;color:var(--ink);
 }
 
 .page-full{background-size:cover;background-position:center}
-.cover-over{position:absolute;inset:0;padding:62px 38px 34px;background:rgba(242,228,210,.25)}
-.cover-company{font-size:54px;font-weight:800;line-height:1.28;color:#000;text-transform:uppercase;max-width:760px}
-.cover-date{font-size:21px;margin:34px 0 0 8px;color:#000}
-.cover-title{position:absolute;right:38px;bottom:185px;text-align:right}
-.cover-session{font-size:49px;font-weight:bold;line-height:1;color:#000;text-transform:uppercase}
-.cover-sub{font-size:20px;margin-top:12px;color:#000}
-.cover-note{position:absolute;left:68px;right:70px;bottom:35px;font-size:12.5px;line-height:1.35;color:#808080;text-align:justify}
+.cover-over{position:absolute;inset:0;padding:62px 38px 34px;background:transparent}
+.cover-top,.cover-company{font-family:'Segoe UI Black','Segoe UI',Arial,sans-serif;font-size:48px;font-weight:900;line-height:1.15;color:#000;text-transform:uppercase;max-width:760px;text-align:left;letter-spacing:-0.5px;white-space:nowrap}
+.cover-date{font-family:Arial,Helvetica,sans-serif;font-size:21px;font-weight:bold;margin:18px 0 0 0;color:#000;text-align:left}
+.cover-bottom-wrap,.cover-title{position:absolute;right:38px;bottom:185px;text-align:right}
+.cover-bottom,.cover-session{font-family:'Segoe UI Black','Segoe UI',Arial,sans-serif;font-size:44px;font-weight:900;line-height:1.1;color:#000;text-transform:uppercase;letter-spacing:-0.5px;white-space:nowrap}
+.cover-sub{font-family:Arial,Helvetica,sans-serif;font-size:20px;font-weight:normal;margin-top:12px;color:#000;text-align:right}
+.cover-note{position:absolute;left:68px;right:70px;bottom:35px;font-family:Arial,Helvetica,sans-serif;font-size:12.5px;line-height:1.35;color:#7a7a7a;text-align:justify}
 
 .page-content{display:flex;flex-direction:column}
 .sec-banner{height:400px;background-size:cover;background-position:center;border-bottom:5px solid var(--brown-line);flex-shrink:0}
@@ -353,10 +383,10 @@ body{font-family:Arial,Helvetica,sans-serif;background:#d8d8d8;color:var(--ink);
 <!-- COVER -->
 <div class="page-full" style="background-image:url('__COVER_BG__')">
   <div class="cover-over">
-    <div class="cover-company">KIS Vietnam Securities Corporation</div>
+    <div class="cover-top cover-company">__COVER_HEADER__</div>
     <div class="cover-date">__DATE_DOTS__</div>
-    <div class="cover-title">
-      <div class="cover-session">__SESSION__</div>
+    <div class="cover-bottom-wrap cover-title">
+      <div class="cover-bottom cover-session">__SESSION__</div>
       <div class="cover-sub">__TAGLINE__</div>
     </div>
     <div class="cover-note">__COVER_NOTE__</div>
@@ -369,13 +399,13 @@ __BODY__
 <!-- OUTRO -->
 <div class="page-full" style="background-image:url('__OUTRO_BG__')">
   <div class="outro-over">
-    <div class="outro-company">KIS Vietnam Securities Corporation</div>
+    <div class="outro-company">__OUTRO_COMPANY__</div>
     <div class="outro-thanks-row">
       <div class="outro-rule"></div>
-      <div class="outro-ty">Thank You</div>
+      <div class="outro-ty">__OUTRO_THANKS__</div>
       <div class="outro-rule"></div>
     </div>
-    <div class="outro-copy">Copyright © 2026 by KIS Vietnam Securities Corporation.<br>All rights reserved.</div>
+    <div class="outro-copy">__OUTRO_COPY__</div>
   </div>
 </div>
 

@@ -6,9 +6,11 @@ const { execSync } = require('child_process');
 const { getTestingDir } = require('./report-paths');
 
 const CHROME_USER_DATA = path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'User Data');
-const CHROME_EXE = fs.existsSync('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe')
-  ? 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
-  : 'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe';
+const CHROME_EXE = [
+  'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
+  'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
+  path.join(os.homedir(), 'AppData', 'Local', 'Google', 'Chrome', 'Application', 'chrome.exe'),
+].find(p => fs.existsSync(p)) || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const REPORT_BASE = process.argv[2] || 'after_11_06_2026';
 const isMorning = REPORT_BASE.startsWith('mor');
 const dateStr = REPORT_BASE.split('_').slice(1).join('_');
